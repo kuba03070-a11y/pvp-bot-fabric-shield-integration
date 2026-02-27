@@ -542,7 +542,7 @@ public class BotAnchorPvp {
         }
         
         // Switch slot
-        ((org.stepan1411.pvp_bot.mixin.PlayerInventoryAccessor) inventory).setSelectedSlot(slot);
+        org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, slot);
         return true;
     }
     

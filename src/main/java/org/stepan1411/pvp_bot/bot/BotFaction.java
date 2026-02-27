@@ -12,20 +12,20 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Система фракций для ботов и игроков
+ * РЎРёСЃС‚РµРјР° С„СЂР°РєС†РёР№ РґР»СЏ Р±РѕС‚РѕРІ Рё РёРіСЂРѕРєРѕРІ
  */
 public class BotFaction {
     
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static Path configPath;
     
-    // Фракции: имя фракции -> список членов (ники)
+    // Р¤СЂР°РєС†РёРё: РёРјСЏ С„СЂР°РєС†РёРё -> СЃРїРёСЃРѕРє С‡Р»РµРЅРѕРІ (РЅРёРєРё)
     private static final Map<String, Set<String>> factions = new HashMap<>();
     
-    // Враждебные отношения: фракция -> список враждебных фракций
+    // Р’СЂР°Р¶РґРµР±РЅС‹Рµ РѕС‚РЅРѕС€РµРЅРёСЏ: С„СЂР°РєС†РёСЏ -> СЃРїРёСЃРѕРє РІСЂР°Р¶РґРµР±РЅС‹С… С„СЂР°РєС†РёР№
     private static final Map<String, Set<String>> hostileRelations = new HashMap<>();
     
-    // Кэш: игрок -> его фракция
+    // РљСЌС€: РёРіСЂРѕРє -> РµРіРѕ С„СЂР°РєС†РёСЏ
     private static final Map<String, String> playerFactionCache = new HashMap<>();
     
     static {
@@ -33,7 +33,7 @@ public class BotFaction {
     }
     
     /**
-     * Создать новую фракцию
+     * РЎРѕР·РґР°С‚СЊ РЅРѕРІСѓСЋ С„СЂР°РєС†РёСЋ
      */
     public static boolean createFaction(String name) {
         if (factions.containsKey(name)) return false;
@@ -44,12 +44,12 @@ public class BotFaction {
     }
     
     /**
-     * Удалить фракцию
+     * РЈРґР°Р»РёС‚СЊ С„СЂР°РєС†РёСЋ
      */
     public static boolean deleteFaction(String name) {
         if (!factions.containsKey(name)) return false;
         
-        // Удаляем всех членов из кэша
+        // РЈРґР°Р»СЏРµРј РІСЃРµС… С‡Р»РµРЅРѕРІ РёР· РєСЌС€Р°
         for (String member : factions.get(name)) {
             playerFactionCache.remove(member);
         }
@@ -57,7 +57,7 @@ public class BotFaction {
         factions.remove(name);
         hostileRelations.remove(name);
         
-        // Удаляем из враждебных отношений других фракций
+        // РЈРґР°Р»СЏРµРј РёР· РІСЂР°Р¶РґРµР±РЅС‹С… РѕС‚РЅРѕС€РµРЅРёР№ РґСЂСѓРіРёС… С„СЂР°РєС†РёР№
         for (Set<String> enemies : hostileRelations.values()) {
             enemies.remove(name);
         }
@@ -67,12 +67,12 @@ public class BotFaction {
     }
     
     /**
-     * Добавить игрока/бота в фракцию
+     * Р”РѕР±Р°РІРёС‚СЊ РёРіСЂРѕРєР°/Р±РѕС‚Р° РІ С„СЂР°РєС†РёСЋ
      */
     public static boolean addMember(String faction, String playerName) {
         if (!factions.containsKey(faction)) return false;
         
-        // Удаляем из старой фракции
+        // РЈРґР°Р»СЏРµРј РёР· СЃС‚Р°СЂРѕР№ С„СЂР°РєС†РёРё
         String oldFaction = playerFactionCache.get(playerName);
         if (oldFaction != null && factions.containsKey(oldFaction)) {
             factions.get(oldFaction).remove(playerName);
@@ -85,7 +85,7 @@ public class BotFaction {
     }
     
     /**
-     * Удалить игрока/бота из фракции
+     * РЈРґР°Р»РёС‚СЊ РёРіСЂРѕРєР°/Р±РѕС‚Р° РёР· С„СЂР°РєС†РёРё
      */
     public static boolean removeMember(String faction, String playerName) {
         if (!factions.containsKey(faction)) return false;
@@ -98,13 +98,13 @@ public class BotFaction {
     }
     
     /**
-     * Установить враждебные отношения между фракциями
+     * РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РІСЂР°Р¶РґРµР±РЅС‹Рµ РѕС‚РЅРѕС€РµРЅРёСЏ РјРµР¶РґСѓ С„СЂР°РєС†РёСЏРјРё
      */
     public static boolean setHostile(String faction1, String faction2, boolean hostile) {
         if (!factions.containsKey(faction1) || !factions.containsKey(faction2)) return false;
         if (faction1.equals(faction2)) return false;
         
-        // Убедимся что записи существуют
+        // РЈР±РµРґРёРјСЃСЏ С‡С‚Рѕ Р·Р°РїРёСЃРё СЃСѓС‰РµСЃС‚РІСѓСЋС‚
         hostileRelations.computeIfAbsent(faction1, k -> new HashSet<>());
         hostileRelations.computeIfAbsent(faction2, k -> new HashSet<>());
         
@@ -120,32 +120,32 @@ public class BotFaction {
     }
     
     /**
-     * Получить фракцию игрока
+     * РџРѕР»СѓС‡РёС‚СЊ С„СЂР°РєС†РёСЋ РёРіСЂРѕРєР°
      */
     public static String getFaction(String playerName) {
         return playerFactionCache.get(playerName);
     }
     
     /**
-     * Проверить являются ли два игрока врагами
+     * РџСЂРѕРІРµСЂРёС‚СЊ СЏРІР»СЏСЋС‚СЃСЏ Р»Рё РґРІР° РёРіСЂРѕРєР° РІСЂР°РіР°РјРё
      */
     public static boolean areEnemies(String player1, String player2) {
         String faction1 = getFaction(player1);
         String faction2 = getFaction(player2);
         
-        // Если кто-то без фракции - не враги по фракциям
+        // Р•СЃР»Рё РєС‚Рѕ-С‚Рѕ Р±РµР· С„СЂР°РєС†РёРё - РЅРµ РІСЂР°РіРё РїРѕ С„СЂР°РєС†РёСЏРј
         if (faction1 == null || faction2 == null) return false;
         
-        // Если в одной фракции - союзники
+        // Р•СЃР»Рё РІ РѕРґРЅРѕР№ С„СЂР°РєС†РёРё - СЃРѕСЋР·РЅРёРєРё
         if (faction1.equals(faction2)) return false;
         
-        // Проверяем враждебность
+        // РџСЂРѕРІРµСЂСЏРµРј РІСЂР°Р¶РґРµР±РЅРѕСЃС‚СЊ
         Set<String> enemies = hostileRelations.get(faction1);
         return enemies != null && enemies.contains(faction2);
     }
     
     /**
-     * Проверить являются ли два игрока союзниками (в одной фракции)
+     * РџСЂРѕРІРµСЂРёС‚СЊ СЏРІР»СЏСЋС‚СЃСЏ Р»Рё РґРІР° РёРіСЂРѕРєР° СЃРѕСЋР·РЅРёРєР°РјРё (РІ РѕРґРЅРѕР№ С„СЂР°РєС†РёРё)
      */
     public static boolean areAllies(String player1, String player2) {
         String faction1 = getFaction(player1);
@@ -156,14 +156,14 @@ public class BotFaction {
     }
     
     /**
-     * Получить список всех фракций
+     * РџРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РІСЃРµС… С„СЂР°РєС†РёР№
      */
     public static Set<String> getAllFactions() {
         return new HashSet<>(factions.keySet());
     }
     
     /**
-     * Получить членов фракции
+     * РџРѕР»СѓС‡РёС‚СЊ С‡Р»РµРЅРѕРІ С„СЂР°РєС†РёРё
      */
     public static Set<String> getMembers(String faction) {
         Set<String> members = factions.get(faction);
@@ -171,22 +171,22 @@ public class BotFaction {
     }
     
     /**
-     * Получить враждебные фракции
+     * РџРѕР»СѓС‡РёС‚СЊ РІСЂР°Р¶РґРµР±РЅС‹Рµ С„СЂР°РєС†РёРё
      */
     public static Set<String> getHostileFactions(String faction) {
         Set<String> enemies = hostileRelations.get(faction);
         return enemies != null ? new HashSet<>(enemies) : new HashSet<>();
     }
     
-    // ============ Сохранение/загрузка ============
+    // ============ РЎРѕС…СЂР°РЅРµРЅРёРµ/Р·Р°РіСЂСѓР·РєР° ============
     
     public static void load() {
-        // Создаём папку config/pvpbot если не существует
+        // РЎРѕР·РґР°С‘Рј РїР°РїРєСѓ config/pvpbot РµСЃР»Рё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve("pvpbot");
         try {
             Files.createDirectories(configDir);
         } catch (Exception e) {
-            // Игнорируем
+            // РРіРЅРѕСЂРёСЂСѓРµРј
         }
         
         configPath = configDir.resolve("factions.json");

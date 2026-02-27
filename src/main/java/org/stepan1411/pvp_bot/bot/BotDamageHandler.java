@@ -9,20 +9,20 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class BotDamageHandler {
     
     public static void register() {
-        // Регистрируем обработчик урона через Fabric API
+        // Р РµРіРёСЃС‚СЂРёСЂСѓРµРј РѕР±СЂР°Р±РѕС‚С‡РёРє СѓСЂРѕРЅР° С‡РµСЂРµР· Fabric API
         ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
-            // Проверяем, является ли это ServerPlayerEntity
+            // РџСЂРѕРІРµСЂСЏРµРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё СЌС‚Рѕ ServerPlayerEntity
             if (entity instanceof ServerPlayerEntity player) {
                 String playerName = player.getName().getString();
                 
-                // Проверяем, является ли этот игрок нашим ботом
+                // РџСЂРѕРІРµСЂСЏРµРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё СЌС‚РѕС‚ РёРіСЂРѕРє РЅР°С€РёРј Р±РѕС‚РѕРј
                 if (BotManager.getAllBots().contains(playerName)) {
-                    // Вызываем обработчик боя
+                    // Р’С‹Р·С‹РІР°РµРј РѕР±СЂР°Р±РѕС‚С‡РёРє Р±РѕСЏ
                     BotCombat.onBotDamaged(player, source);
                 }
             }
             
-            // Возвращаем true чтобы урон прошёл
+            // Р’РѕР·РІСЂР°С‰Р°РµРј true С‡С‚РѕР±С‹ СѓСЂРѕРЅ РїСЂРѕС€С‘Р»
             return true;
         });
     }

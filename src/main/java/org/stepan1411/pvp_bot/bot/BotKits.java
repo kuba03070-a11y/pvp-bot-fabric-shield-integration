@@ -25,21 +25,21 @@ public class BotKits {
     private static Path configPath;
     private static MinecraftServer currentServer;
     
-    // Хранение китов: имя кита -> список предметов (слот -> NBT как Map)
+    // РҐСЂР°РЅРµРЅРёРµ РєРёС‚РѕРІ: РёРјСЏ РєРёС‚Р° -> СЃРїРёСЃРѕРє РїСЂРµРґРјРµС‚РѕРІ (СЃР»РѕС‚ -> NBT РєР°Рє Map)
     private static final Map<String, Map<String, Object>> kitsRaw = new HashMap<>();
     
     /**
-     * Инициализация
+     * РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
      */
     public static void init(MinecraftServer srv) {
         currentServer = srv;
         
-        // Создаём папку config/pvpbot если не существует
+        // РЎРѕР·РґР°С‘Рј РїР°РїРєСѓ config/pvpbot РµСЃР»Рё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve("pvpbot");
         try {
             Files.createDirectories(configDir);
         } catch (Exception e) {
-            // Игнорируем
+            // РРіРЅРѕСЂРёСЂСѓРµРј
         }
         
         configPath = configDir.resolve("kits.json");
@@ -47,34 +47,34 @@ public class BotKits {
     }
     
     /**
-     * Создать кит из инвентаря игрока
+     * РЎРѕР·РґР°С‚СЊ РєРёС‚ РёР· РёРЅРІРµРЅС‚Р°СЂСЏ РёРіСЂРѕРєР°
      */
     public static boolean createKit(String kitName, ServerPlayerEntity player) {
         String key = kitName.toLowerCase();
         if (kitsRaw.containsKey(key)) {
-            return false; // Кит уже существует
+            return false; // РљРёС‚ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
         }
         
         Map<String, Object> kitItems = new HashMap<>();
         var inventory = player.getInventory();
         var registryOps = RegistryOps.of(NbtOps.INSTANCE, player.getRegistryManager());
         
-        // Копируем все предметы из инвентаря (слоты 0-35 + броня 36-39 + offhand 40)
+        // РљРѕРїРёСЂСѓРµРј РІСЃРµ РїСЂРµРґРјРµС‚С‹ РёР· РёРЅРІРµРЅС‚Р°СЂСЏ (СЃР»РѕС‚С‹ 0-35 + Р±СЂРѕРЅСЏ 36-39 + offhand 40)
         for (int i = 0; i < 41; i++) {
             ItemStack stack = inventory.getStack(i);
             if (!stack.isEmpty()) {
-                // Сериализуем ItemStack в NBT через CODEC
+                // РЎРµСЂРёР°Р»РёР·СѓРµРј ItemStack РІ NBT С‡РµСЂРµР· CODEC
                 DataResult<NbtElement> result = ItemStack.CODEC.encodeStart(registryOps, stack);
                 if (result.result().isPresent()) {
                     NbtElement nbt = result.result().get();
-                    // Конвертируем NBT в строку для JSON
+                    // РљРѕРЅРІРµСЂС‚РёСЂСѓРµРј NBT РІ СЃС‚СЂРѕРєСѓ РґР»СЏ JSON
                     kitItems.put(String.valueOf(i), nbt.toString());
                 }
             }
         }
         
         if (kitItems.isEmpty()) {
-            return false; // Пустой инвентарь
+            return false; // РџСѓСЃС‚РѕР№ РёРЅРІРµРЅС‚Р°СЂСЊ
         }
         
         kitsRaw.put(key, kitItems);
@@ -83,7 +83,7 @@ public class BotKits {
     }
     
     /**
-     * Удалить кит
+     * РЈРґР°Р»РёС‚СЊ РєРёС‚
      */
     public static boolean deleteKit(String kitName) {
         boolean removed = kitsRaw.remove(kitName.toLowerCase()) != null;
@@ -92,21 +92,21 @@ public class BotKits {
     }
     
     /**
-     * Получить список всех китов
+     * РџРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РІСЃРµС… РєРёС‚РѕРІ
      */
     public static Set<String> getKitNames() {
         return new HashSet<>(kitsRaw.keySet());
     }
     
     /**
-     * Проверить существует ли кит
+     * РџСЂРѕРІРµСЂРёС‚СЊ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё РєРёС‚
      */
     public static boolean kitExists(String kitName) {
         return kitsRaw.containsKey(kitName.toLowerCase());
     }
     
     /**
-     * Получить предметы кита
+     * РџРѕР»СѓС‡РёС‚СЊ РїСЂРµРґРјРµС‚С‹ РєРёС‚Р°
      */
     public static Map<Integer, ItemStack> getKitItems(String kitName, ServerPlayerEntity player) {
         Map<String, Object> data = kitsRaw.get(kitName.toLowerCase());
@@ -120,10 +120,10 @@ public class BotKits {
                 int slot = Integer.parseInt(entry.getKey());
                 String nbtString = entry.getValue().toString();
                 
-                // Парсим NBT строку
+                // РџР°СЂСЃРёРј NBT СЃС‚СЂРѕРєСѓ
                 NbtCompound nbt = net.minecraft.nbt.StringNbtReader.readCompound(nbtString);
                 
-                // Десериализуем ItemStack через CODEC
+                // Р”РµСЃРµСЂРёР°Р»РёР·СѓРµРј ItemStack С‡РµСЂРµР· CODEC
                 DataResult<ItemStack> result = ItemStack.CODEC.parse(registryOps, nbt);
                 if (result.result().isPresent()) {
                     items.put(slot, result.result().get());
@@ -136,7 +136,7 @@ public class BotKits {
     }
     
     /**
-     * Выдать кит боту
+     * Р’С‹РґР°С‚СЊ РєРёС‚ Р±РѕС‚Сѓ
      */
     public static boolean giveKit(String kitName, ServerPlayerEntity bot) {
         Map<Integer, ItemStack> kitItems = getKitItems(kitName, bot);
@@ -144,10 +144,10 @@ public class BotKits {
         
         var inventory = bot.getInventory();
         
-        // Очищаем инвентарь бота
+        // РћС‡РёС‰Р°РµРј РёРЅРІРµРЅС‚Р°СЂСЊ Р±РѕС‚Р°
         inventory.clear();
         
-        // Выдаём предметы
+        // Р’С‹РґР°С‘Рј РїСЂРµРґРјРµС‚С‹
         for (var entry : kitItems.entrySet()) {
             int slot = entry.getKey();
             ItemStack stack = entry.getValue();
@@ -158,7 +158,7 @@ public class BotKits {
     }
     
     /**
-     * Выдать кит всем ботам фракции
+     * Р’С‹РґР°С‚СЊ РєРёС‚ РІСЃРµРј Р±РѕС‚Р°Рј С„СЂР°РєС†РёРё
      */
     public static int giveKitToFaction(String kitName, String factionName) {
         if (!kitExists(kitName)) return -1;
@@ -169,7 +169,7 @@ public class BotKits {
         return members.size();
     }
     
-    // ============ Сохранение/загрузка ============
+    // ============ РЎРѕС…СЂР°РЅРµРЅРёРµ/Р·Р°РіСЂСѓР·РєР° ============
     
     private static void load() {
         if (configPath == null || !Files.exists(configPath)) return;

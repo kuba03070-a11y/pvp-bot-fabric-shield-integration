@@ -11,7 +11,7 @@ import java.util.List;
 public class BotEquipment {
 
     public static void autoEquip(ServerPlayerEntity bot) {
-        // НЕ экипируем оружие если бот ест!
+        // РќР• СЌРєРёРїРёСЂСѓРµРј РѕСЂСѓР¶РёРµ РµСЃР»Рё Р±РѕС‚ РµСЃС‚!
         var utilsState = BotUtils.getState(bot.getName().getString());
         if (utilsState.isEating) {
             return;
@@ -38,14 +38,14 @@ public class BotEquipment {
         BotSettings settings = BotSettings.get();
         var inventory = bot.getInventory();
         
-        // Шаг 1: Найти лучшую броню для этого слота (включая текущую экипированную)
+        // РЁР°Рі 1: РќР°Р№С‚Рё Р»СѓС‡С€СѓСЋ Р±СЂРѕРЅСЋ РґР»СЏ СЌС‚РѕРіРѕ СЃР»РѕС‚Р° (РІРєР»СЋС‡Р°СЏ С‚РµРєСѓС‰СѓСЋ СЌРєРёРїРёСЂРѕРІР°РЅРЅСѓСЋ)
         ItemStack currentArmor = bot.getEquippedStack(slot);
         double currentValue = getArmorValue(currentArmor, slot);
         
         int bestInvSlot = -1;
         double bestValue = currentValue;
         
-        // Ищем лучшую броню в инвентаре
+        // РС‰РµРј Р»СѓС‡С€СѓСЋ Р±СЂРѕРЅСЋ РІ РёРЅРІРµРЅС‚Р°СЂРµ
         for (int i = 0; i < inventory.size(); i++) {
             ItemStack stack = inventory.getStack(i);
             if (stack.isEmpty()) continue;
@@ -58,16 +58,16 @@ public class BotEquipment {
             }
         }
         
-        // Шаг 2: Экипируем лучшую броню если она в инвентаре
+        // РЁР°Рі 2: Р­РєРёРїРёСЂСѓРµРј Р»СѓС‡С€СѓСЋ Р±СЂРѕРЅСЋ РµСЃР»Рё РѕРЅР° РІ РёРЅРІРµРЅС‚Р°СЂРµ
         if (bestInvSlot >= 0) {
             ItemStack newArmor = inventory.getStack(bestInvSlot).copy();
             ItemStack oldArmor = currentArmor.copy();
             
-            // Надеваем новую броню
+            // РќР°РґРµРІР°РµРј РЅРѕРІСѓСЋ Р±СЂРѕРЅСЋ
             bot.equipStack(slot, newArmor);
             inventory.setStack(bestInvSlot, ItemStack.EMPTY);
             
-            // Старую броню кладём в инвентарь (если была)
+            // РЎС‚Р°СЂСѓСЋ Р±СЂРѕРЅСЋ РєР»Р°РґС‘Рј РІ РёРЅРІРµРЅС‚Р°СЂСЊ (РµСЃР»Рё Р±С‹Р»Р°)
             if (!oldArmor.isEmpty()) {
                 inventory.setStack(bestInvSlot, oldArmor);
             }
@@ -77,7 +77,7 @@ public class BotEquipment {
         }
 
         
-        // Шаг 3: Выбрасываем худшую броню (только если включено)
+        // РЁР°Рі 3: Р’С‹Р±СЂР°СЃС‹РІР°РµРј С…СѓРґС€СѓСЋ Р±СЂРѕРЅСЋ (С‚РѕР»СЊРєРѕ РµСЃР»Рё РІРєР»СЋС‡РµРЅРѕ)
         if (settings.isDropWorseArmor()) {
             for (int i = 0; i < inventory.size(); i++) {
                 ItemStack stack = inventory.getStack(i);
@@ -86,7 +86,7 @@ public class BotEquipment {
                 
                 double value = getArmorValue(stack, slot);
                 
-                // Выбрасываем только если хуже текущей экипированной
+                // Р’С‹Р±СЂР°СЃС‹РІР°РµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё С…СѓР¶Рµ С‚РµРєСѓС‰РµР№ СЌРєРёРїРёСЂРѕРІР°РЅРЅРѕР№
                 if (value < currentValue) {
                     dropItemBackward(bot, stack);
                     inventory.setStack(i, ItemStack.EMPTY);
@@ -96,7 +96,7 @@ public class BotEquipment {
     }
 
     /**
-     * Выбрасывает предмет назад или вбок от бота (как нажатие Q с поворотом)
+     * Р’С‹Р±СЂР°СЃС‹РІР°РµС‚ РїСЂРµРґРјРµС‚ РЅР°Р·Р°Рґ РёР»Рё РІР±РѕРє РѕС‚ Р±РѕС‚Р° (РєР°Рє РЅР°Р¶Р°С‚РёРµ Q СЃ РїРѕРІРѕСЂРѕС‚РѕРј)
      */
     private static void dropItemBackward(ServerPlayerEntity bot, ItemStack stack) {
         if (stack.isEmpty()) return;
@@ -104,22 +104,22 @@ public class BotEquipment {
         BotSettings settings = BotSettings.get();
         double distance = settings.getDropDistance();
         
-        // Сохраняем текущий угол
+        // РЎРѕС…СЂР°РЅСЏРµРј С‚РµРєСѓС‰РёР№ СѓРіРѕР»
         float oldYaw = bot.getYaw();
         float oldHeadYaw = bot.getHeadYaw();
         
-        // Поворачиваем назад или вбок (90-270 градусов от текущего направления)
-        float turnAngle = 90 + (float)(Math.random() * 180); // от 90 до 270 градусов
+        // РџРѕРІРѕСЂР°С‡РёРІР°РµРј РЅР°Р·Р°Рґ РёР»Рё РІР±РѕРє (90-270 РіСЂР°РґСѓСЃРѕРІ РѕС‚ С‚РµРєСѓС‰РµРіРѕ РЅР°РїСЂР°РІР»РµРЅРёСЏ)
+        float turnAngle = 90 + (float)(Math.random() * 180); // РѕС‚ 90 РґРѕ 270 РіСЂР°РґСѓСЃРѕРІ
         float newYaw = oldYaw + turnAngle;
         
         bot.setYaw(newYaw);
         bot.setHeadYaw(newYaw);
         
-        // Выбрасываем как при нажатии Q (throwRandomly=false, retainOwnership=true)
+        // Р’С‹Р±СЂР°СЃС‹РІР°РµРј РєР°Рє РїСЂРё РЅР°Р¶Р°С‚РёРё Q (throwRandomly=false, retainOwnership=true)
         ItemEntity dropped = bot.dropItem(stack.copy(), false, true);
         
         if (dropped != null) {
-            // Скорость в направлении взгляда
+            // РЎРєРѕСЂРѕСЃС‚СЊ РІ РЅР°РїСЂР°РІР»РµРЅРёРё РІР·РіР»СЏРґР°
             double yawRad = Math.toRadians(newYaw);
             double speed = 0.3 * distance;
             dropped.setVelocity(
@@ -127,10 +127,10 @@ public class BotEquipment {
                 0.2,
                 Math.cos(yawRad) * speed
             );
-            dropped.setPickupDelay(60); // 3 секунды задержки
+            dropped.setPickupDelay(60); // 3 СЃРµРєСѓРЅРґС‹ Р·Р°РґРµСЂР¶РєРё
         }
         
-        // Возвращаем угол обратно
+        // Р’РѕР·РІСЂР°С‰Р°РµРј СѓРіРѕР» РѕР±СЂР°С‚РЅРѕ
         bot.setYaw(oldYaw);
         bot.setHeadYaw(oldHeadYaw);
     }
@@ -182,7 +182,7 @@ public class BotEquipment {
         BotSettings settings = BotSettings.get();
         var inventory = bot.getInventory();
         
-        // Шаг 1: Найти лучшее оружие с учётом preferSword
+        // РЁР°Рі 1: РќР°Р№С‚Рё Р»СѓС‡С€РµРµ РѕСЂСѓР¶РёРµ СЃ СѓС‡С‘С‚РѕРј preferSword
         int bestSlotIndex = -1;
         double bestScore = 0;
         
@@ -197,20 +197,20 @@ public class BotEquipment {
             }
         }
         
-        // Шаг 2: Экипируем лучшее оружие
+        // РЁР°Рі 2: Р­РєРёРїРёСЂСѓРµРј Р»СѓС‡С€РµРµ РѕСЂСѓР¶РёРµ
         if (bestSlotIndex >= 0) {
             if (bestSlotIndex >= 9) {
-                // Перемещаем в хотбар слот 0
+                // РџРµСЂРµРјРµС‰Р°РµРј РІ С…РѕС‚Р±Р°СЂ СЃР»РѕС‚ 0
                 ItemStack weapon = inventory.getStack(bestSlotIndex);
                 ItemStack slot0 = inventory.getStack(0);
                 inventory.setStack(bestSlotIndex, slot0);
                 inventory.setStack(0, weapon);
                 bestSlotIndex = 0;
             }
-            ((org.stepan1411.pvp_bot.mixin.PlayerInventoryAccessor) inventory).setSelectedSlot(bestSlotIndex);
+            org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, bestSlotIndex);
         }
         
-        // Шаг 3: Выбрасываем худшее оружие
+        // РЁР°Рі 3: Р’С‹Р±СЂР°СЃС‹РІР°РµРј С…СѓРґС€РµРµ РѕСЂСѓР¶РёРµ
         if (settings.isDropWorseWeapons() && bestScore > 0) {
             for (int i = 0; i < 36; i++) {
                 if (i == bestSlotIndex) continue;
@@ -228,8 +228,8 @@ public class BotEquipment {
     }
 
     /**
-     * Получить "очки" оружия с учётом preferSword
-     * Если preferSword = true, мечи получают бонус +5 к очкам
+     * РџРѕР»СѓС‡РёС‚СЊ "РѕС‡РєРё" РѕСЂСѓР¶РёСЏ СЃ СѓС‡С‘С‚РѕРј preferSword
+     * Р•СЃР»Рё preferSword = true, РјРµС‡Рё РїРѕР»СѓС‡Р°СЋС‚ Р±РѕРЅСѓСЃ +5 Рє РѕС‡РєР°Рј
      */
     private static double getWeaponScore(ItemStack stack, boolean preferSword) {
         if (stack.isEmpty()) return 0;
@@ -238,16 +238,16 @@ public class BotEquipment {
         double baseDamage = getWeaponDamage(stack);
         if (baseDamage == 0) return 0;
         
-        // Если предпочитаем меч - даём мечам бонус
+        // Р•СЃР»Рё РїСЂРµРґРїРѕС‡РёС‚Р°РµРј РјРµС‡ - РґР°С‘Рј РјРµС‡Р°Рј Р±РѕРЅСѓСЃ
         if (preferSword && isSword(item)) {
-            return baseDamage + 5; // Меч всегда будет выбран если есть
+            return baseDamage + 5; // РњРµС‡ РІСЃРµРіРґР° Р±СѓРґРµС‚ РІС‹Р±СЂР°РЅ РµСЃР»Рё РµСЃС‚СЊ
         }
         
         return baseDamage;
     }
     
     /**
-     * Проверяет, является ли предмет мечом
+     * РџСЂРѕРІРµСЂСЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїСЂРµРґРјРµС‚ РјРµС‡РѕРј
      */
     private static boolean isSword(Item item) {
         return item == Items.NETHERITE_SWORD || 

@@ -7,15 +7,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Увеличивает максимальное количество игроков на сервере до 99999
- * Это позволяет спавнить много ботов без ограничений
+ * РЈРІРµР»РёС‡РёРІР°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РёРіСЂРѕРєРѕРІ РЅР° СЃРµСЂРІРµСЂРµ РґРѕ 99999
+ * Р­С‚Рѕ РїРѕР·РІРѕР»СЏРµС‚ СЃРїР°РІРЅРёС‚СЊ РјРЅРѕРіРѕ Р±РѕС‚РѕРІ Р±РµР· РѕРіСЂР°РЅРёС‡РµРЅРёР№
  */
 @Mixin(PlayerManager.class)
 public class ServerConfigHandlerMixin {
     
     @Inject(method = "getMaxPlayerCount", at = @At("RETURN"), cancellable = true)
     private void increaseMaxPlayers(CallbackInfoReturnable<Integer> cir) {
-        // Увеличиваем лимит до 99999 игроков
+        // РЈРІРµР»РёС‡РёРІР°РµРј Р»РёРјРёС‚ РґРѕ 99999 РёРіСЂРѕРєРѕРІ
         cir.setReturnValue(99999);
     }
 }

@@ -25,16 +25,16 @@ public class Pvp_bot implements ModInitializer {
             BotCommand.register(dispatcher);
         });
 
-        // Инициализация при старте сервера - восстановление ботов
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїСЂРё СЃС‚Р°СЂС‚Рµ СЃРµСЂРІРµСЂР° - РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ Р±РѕС‚РѕРІ
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             BotManager.init(server);
             BotKits.init(server);
-            StatsReporter.start(server); // Запускаем отправку статистики
+            StatsReporter.start(server); // Р—Р°РїСѓСЃРєР°РµРј РѕС‚РїСЂР°РІРєСѓ СЃС‚Р°С‚РёСЃС‚РёРєРё
         });
         
-        // Сохранение при остановке сервера
+        // РЎРѕС…СЂР°РЅРµРЅРёРµ РїСЂРё РѕСЃС‚Р°РЅРѕРІРєРµ СЃРµСЂРІРµСЂР°
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-            StatsReporter.stop(); // Останавливаем отправку статистики
+            StatsReporter.stop(); // РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕС‚РїСЂР°РІРєСѓ СЃС‚Р°С‚РёСЃС‚РёРєРё
             BotManager.reset(server);
         });
 

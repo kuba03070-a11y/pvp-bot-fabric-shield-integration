@@ -27,14 +27,14 @@ import java.util.stream.Collectors;
 
 public class BotCommand {
     
-    // Проверка наличия InvView
+    // РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ InvView
     private static final boolean HAS_INVVIEW = FabricLoader.getInstance().isModLoaded("invview");
     
-    // Подсказки для имён ботов
+    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ РёРјС‘РЅ Р±РѕС‚РѕРІ
     private static final SuggestionProvider<ServerCommandSource> BOT_SUGGESTIONS = (ctx, builder) -> 
         CommandSource.suggestMatching(BotManager.getAllBots(), builder);
     
-    // Подсказки для целей (все игроки на сервере)
+    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ С†РµР»РµР№ (РІСЃРµ РёРіСЂРѕРєРё РЅР° СЃРµСЂРІРµСЂРµ)
     private static final SuggestionProvider<ServerCommandSource> TARGET_SUGGESTIONS = (ctx, builder) -> 
         CommandSource.suggestMatching(
             ctx.getSource().getServer().getPlayerManager().getPlayerList().stream()
@@ -42,14 +42,14 @@ public class BotCommand {
                 .collect(Collectors.toList()), 
             builder);
     
-    // Подсказки для всех игроков (боты + игроки)
+    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ РІСЃРµС… РёРіСЂРѕРєРѕРІ (Р±РѕС‚С‹ + РёРіСЂРѕРєРё)
     private static final SuggestionProvider<ServerCommandSource> PLAYER_SUGGESTIONS = TARGET_SUGGESTIONS;
     
-    // Подсказки для фракций
+    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ С„СЂР°РєС†РёР№
     private static final SuggestionProvider<ServerCommandSource> FACTION_SUGGESTIONS = (ctx, builder) -> 
         CommandSource.suggestMatching(BotFaction.getAllFactions(), builder);
     
-    // Подсказки для китов
+    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ РєРёС‚РѕРІ
     private static final SuggestionProvider<ServerCommandSource> KIT_SUGGESTIONS = (ctx, builder) -> 
         CommandSource.suggestMatching(BotKits.getKitNames(), builder);
 
@@ -57,7 +57,7 @@ public class BotCommand {
         dispatcher.register(
             CommandManager.literal("pvpbot")
                 
-                // /pvpbot spawn [name] - без имени генерирует случайное
+                // /pvpbot spawn [name] - Р±РµР· РёРјРµРЅРё РіРµРЅРµСЂРёСЂСѓРµС‚ СЃР»СѓС‡Р°Р№РЅРѕРµ
                 .then(CommandManager.literal("spawn")
                     .executes(ctx -> spawnBot(ctx.getSource(), BotNameGenerator.generateUniqueName()))
                     .then(CommandManager.argument("name", StringArgumentType.word())
@@ -65,14 +65,14 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot massspawn <num> - спавнит несколько ботов с рандомными именами
+                // /pvpbot massspawn <num> - СЃРїР°РІРЅРёС‚ РЅРµСЃРєРѕР»СЊРєРѕ Р±РѕС‚РѕРІ СЃ СЂР°РЅРґРѕРјРЅС‹РјРё РёРјРµРЅР°РјРё
                 .then(CommandManager.literal("massspawn")
                     .then(CommandManager.argument("count", IntegerArgumentType.integer(1, 50))
                         .executes(ctx -> massSpawnBots(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "count")))
                     )
                 )
                 
-                // /pvpbot remove <name> - с подсказками ботов
+                // /pvpbot remove <name> - СЃ РїРѕРґСЃРєР°Р·РєР°РјРё Р±РѕС‚РѕРІ
                 .then(CommandManager.literal("remove")
                     .then(CommandManager.argument("name", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -90,7 +90,7 @@ public class BotCommand {
                     .executes(ctx -> listBots(ctx.getSource()))
                 )
                 
-                // /pvpbot sync [name] - синхронизировать список ботов с сервером
+                // /pvpbot sync [name] - СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°С‚СЊ СЃРїРёСЃРѕРє Р±РѕС‚РѕРІ СЃ СЃРµСЂРІРµСЂРѕРј
                 .then(CommandManager.literal("sync")
                     .executes(ctx -> syncBots(ctx.getSource()))
                     .then(CommandManager.argument("name", StringArgumentType.word())
@@ -99,7 +99,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot debug - система отладки
+                // /pvpbot debug - СЃРёСЃС‚РµРјР° РѕС‚Р»Р°РґРєРё
                 .then(CommandManager.literal("debug")
                     .then(CommandManager.argument("bot", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -151,7 +151,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot menu - открыть тестовое меню
+                // /pvpbot menu - РѕС‚РєСЂС‹С‚СЊ С‚РµСЃС‚РѕРІРѕРµ РјРµРЅСЋ
                 .then(CommandManager.literal("menu")
                     .executes(ctx -> openTestMenu(ctx.getSource()))
                 )
@@ -160,7 +160,7 @@ public class BotCommand {
                 .then(CommandManager.literal("settings")
                     .executes(ctx -> showSettings(ctx.getSource()))
                     
-                    // /pvpbot settings gui - открыть GUI настроек
+                    // /pvpbot settings gui - РѕС‚РєСЂС‹С‚СЊ GUI РЅР°СЃС‚СЂРѕРµРє
                     .then(CommandManager.literal("gui")
                         .executes(ctx -> openSettingsGui(ctx.getSource()))
                     )
@@ -249,7 +249,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // === Combat Settings (с показом текущего значения без аргумента) ===
+                    // === Combat Settings (СЃ РїРѕРєР°Р·РѕРј С‚РµРєСѓС‰РµРіРѕ Р·РЅР°С‡РµРЅРёСЏ Р±РµР· Р°СЂРіСѓРјРµРЅС‚Р°) ===
                     .then(CommandManager.literal("combat")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("combat: " + BotSettings.get().isCombatEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -572,7 +572,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot attack <botname> <target> - с подсказками
+                // /pvpbot attack <botname> <target> - СЃ РїРѕРґСЃРєР°Р·РєР°РјРё
                 .then(CommandManager.literal("attack")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -585,7 +585,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot stop <botname> - с подсказками
+                // /pvpbot stop <botname> - СЃ РїРѕРґСЃРєР°Р·РєР°РјРё
                 .then(CommandManager.literal("stop")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -593,7 +593,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot target <botname> - показать текущую цель
+                // /pvpbot target <botname> - РїРѕРєР°Р·Р°С‚СЊ С‚РµРєСѓС‰СѓСЋ С†РµР»СЊ
                 .then(CommandManager.literal("target")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -601,7 +601,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot inventory <botname> - показать инвентарь бота
+                // /pvpbot inventory <botname> - РїРѕРєР°Р·Р°С‚СЊ РёРЅРІРµРЅС‚Р°СЂСЊ Р±РѕС‚Р°
                 .then(CommandManager.literal("inventory")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -609,7 +609,7 @@ public class BotCommand {
                     )
                 )
                 
-                // ============ Команды фракций ============
+                // ============ РљРѕРјР°РЅРґС‹ С„СЂР°РєС†РёР№ ============
                 .then(CommandManager.literal("faction")
                     // /pvpbot faction list
                     .then(CommandManager.literal("list")
@@ -677,7 +677,7 @@ public class BotCommand {
                             .executes(ctx -> factionInfo(ctx.getSource(), StringArgumentType.getString(ctx, "faction")))
                         )
                     )
-                    // /pvpbot faction addnear <faction> <radius> - добавить всех ботов в радиусе
+                    // /pvpbot faction addnear <faction> <radius> - РґРѕР±Р°РІРёС‚СЊ РІСЃРµС… Р±РѕС‚РѕРІ РІ СЂР°РґРёСѓСЃРµ
                     .then(CommandManager.literal("addnear")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -688,7 +688,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction addall <faction> - добавить ВСЕХ ботов в фракцию
+                    // /pvpbot faction addall <faction> - РґРѕР±Р°РІРёС‚СЊ Р’РЎР•РҐ Р±РѕС‚РѕРІ РІ С„СЂР°РєС†РёСЋ
                     .then(CommandManager.literal("addall")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -696,7 +696,7 @@ public class BotCommand {
                                 StringArgumentType.getString(ctx, "faction")))
                         )
                     )
-                    // /pvpbot faction give <faction> <item> [count] - выдать предмет всей фракции
+                    // /pvpbot faction give <faction> <item> [count] - РІС‹РґР°С‚СЊ РїСЂРµРґРјРµС‚ РІСЃРµР№ С„СЂР°РєС†РёРё
                     .then(CommandManager.literal("give")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -707,7 +707,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction attack <faction> <target> - вся фракция атакует цель
+                    // /pvpbot faction attack <faction> <target> - РІСЃСЏ С„СЂР°РєС†РёСЏ Р°С‚Р°РєСѓРµС‚ С†РµР»СЊ
                     .then(CommandManager.literal("attack")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -721,7 +721,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot settings viewdistance [5-128] - дальность видимости
+                // /pvpbot settings viewdistance [5-128] - РґР°Р»СЊРЅРѕСЃС‚СЊ РІРёРґРёРјРѕСЃС‚Рё
                 .then(CommandManager.literal("settings")
                     .then(CommandManager.literal("viewdistance")
                         .executes(ctx -> { 
@@ -738,15 +738,15 @@ public class BotCommand {
                     )
                 )
                 
-                // ============ Команды китов ============
-                // /pvpbot createkit <name> - создать кит из инвентаря игрока
+                // ============ РљРѕРјР°РЅРґС‹ РєРёС‚РѕРІ ============
+                // /pvpbot createkit <name> - СЃРѕР·РґР°С‚СЊ РєРёС‚ РёР· РёРЅРІРµРЅС‚Р°СЂСЏ РёРіСЂРѕРєР°
                 .then(CommandManager.literal("createkit")
                     .then(CommandManager.argument("name", StringArgumentType.word())
                         .executes(ctx -> createKit(ctx.getSource(), StringArgumentType.getString(ctx, "name")))
                     )
                 )
                 
-                // /pvpbot deletekit <name> - удалить кит
+                // /pvpbot deletekit <name> - СѓРґР°Р»РёС‚СЊ РєРёС‚
                 .then(CommandManager.literal("deletekit")
                     .then(CommandManager.argument("name", StringArgumentType.word())
                         .suggests(KIT_SUGGESTIONS)
@@ -754,12 +754,12 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot kits - список китов
+                // /pvpbot kits - СЃРїРёСЃРѕРє РєРёС‚РѕРІ
                 .then(CommandManager.literal("kits")
                     .executes(ctx -> listKits(ctx.getSource()))
                 )
                 
-                // /pvpbot givekit <playername> <kitname> - выдать кит игроку или боту
+                // /pvpbot givekit <playername> <kitname> - РІС‹РґР°С‚СЊ РєРёС‚ РёРіСЂРѕРєСѓ РёР»Рё Р±РѕС‚Сѓ
                 .then(CommandManager.literal("givekit")
                     .then(CommandManager.argument("playername", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTIONS)
@@ -772,7 +772,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot faction givekit <faction> <kitname> - выдать кит всей фракции
+                // /pvpbot faction givekit <faction> <kitname> - РІС‹РґР°С‚СЊ РєРёС‚ РІСЃРµР№ С„СЂР°РєС†РёРё
                 .then(CommandManager.literal("faction")
                     .then(CommandManager.literal("givekit")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
@@ -787,7 +787,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot updatestats - отправить статистику сейчас (для отладки)
+                // /pvpbot updatestats - РѕС‚РїСЂР°РІРёС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ СЃРµР№С‡Р°СЃ (РґР»СЏ РѕС‚Р»Р°РґРєРё)
                 .then(CommandManager.literal("updatestats")
                     .executes(ctx -> updateStats(ctx.getSource()))
                 )
@@ -833,7 +833,7 @@ public class BotCommand {
 
 
     private static int spawnBot(ServerCommandSource source, String name) {
-        // Проверяем существует ли реальный игрок с таким ником
+        // РџСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё СЂРµР°Р»СЊРЅС‹Р№ РёРіСЂРѕРє СЃ С‚Р°РєРёРј РЅРёРєРѕРј
         var server = source.getServer();
         var existingPlayer = server.getPlayerManager().getPlayer(name);
         if (existingPlayer != null && !BotManager.getAllBots().contains(name)) {
@@ -857,7 +857,7 @@ public class BotCommand {
         
         source.sendFeedback(() -> Text.literal("Spawning " + count + " bots "), false);
         
-        // Спавним ботов с задержкой через scheduled tasks
+        // РЎРїР°РІРЅРёРј Р±РѕС‚РѕРІ СЃ Р·Р°РґРµСЂР¶РєРѕР№ С‡РµСЂРµР· scheduled tasks
         scheduleSpawn(server, source, count, spawned, current);
         
         return 1;
@@ -869,16 +869,16 @@ public class BotCommand {
             return;
         }
         
-        // Спавним одного бота
+        // РЎРїР°РІРЅРёРј РѕРґРЅРѕРіРѕ Р±РѕС‚Р°
         String name = BotNameGenerator.generateUniqueName();
         if (BotManager.spawnBot(server, name, source)) {
             spawned[0]++;
         }
         current[0]++;
         
-        // Планируем следующий спавн через 5 тиков
+        // РџР»Р°РЅРёСЂСѓРµРј СЃР»РµРґСѓСЋС‰РёР№ СЃРїР°РІРЅ С‡РµСЂРµР· 5 С‚РёРєРѕРІ
         server.execute(() -> {
-            // Используем простую задержку через тики сервера
+            // РСЃРїРѕР»СЊР·СѓРµРј РїСЂРѕСЃС‚СѓСЋ Р·Р°РґРµСЂР¶РєСѓ С‡РµСЂРµР· С‚РёРєРё СЃРµСЂРІРµСЂР°
             final int[] delay = {0};
             server.execute(new Runnable() {
                 @Override
@@ -929,7 +929,7 @@ public class BotCommand {
         var server = source.getServer();
         int beforeCount = BotManager.getAllBots().size();
         
-        // Показываем всех игроков и их классы для отладки
+        // РџРѕРєР°Р·С‹РІР°РµРј РІСЃРµС… РёРіСЂРѕРєРѕРІ Рё РёС… РєР»Р°СЃСЃС‹ РґР»СЏ РѕС‚Р»Р°РґРєРё
         source.sendFeedback(() -> Text.literal("=== Players on server ==="), false);
         for (var player : server.getPlayerManager().getPlayerList()) {
             String name = player.getName().getString();
@@ -938,7 +938,7 @@ public class BotCommand {
             source.sendFeedback(() -> Text.literal(" - " + name + " [" + className + "] " + (inList ? "(in list)" : "(NOT in list)")), false);
         }
         
-        // Синхронизируем
+        // РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј
         BotManager.syncBots(server);
         
         int afterCount = BotManager.getAllBots().size();
@@ -951,21 +951,21 @@ public class BotCommand {
     private static int syncBot(ServerCommandSource source, String name) {
         var server = source.getServer();
         
-        // Проверяем есть ли такой игрок
+        // РџСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё С‚Р°РєРѕР№ РёРіСЂРѕРє
         ServerPlayerEntity player = server.getPlayerManager().getPlayer(name);
         if (player == null) {
             source.sendFeedback(() -> Text.literal("Player " + name + " not found on server!"), false);
             return 0;
         }
         
-        // Показываем информацию об игроке
+        // РџРѕРєР°Р·С‹РІР°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёРіСЂРѕРєРµ
         String className = player.getClass().getName();
         boolean inList = BotManager.getAllBots().contains(name);
         source.sendFeedback(() -> Text.literal("Player: " + name), false);
         source.sendFeedback(() -> Text.literal("Class: " + className), false);
         source.sendFeedback(() -> Text.literal("In bot list: " + inList), false);
         
-        // Синхронизируем
+        // РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј
         boolean added = BotManager.syncBot(server, name);
         
         if (added) {
@@ -1046,7 +1046,7 @@ public class BotCommand {
         return 1;
     }
     
-    // ============ Команды фракций ============
+    // ============ РљРѕРјР°РЅРґС‹ С„СЂР°РєС†РёР№ ============
     
     private static int listFactions(ServerCommandSource source) {
         var factions = BotFaction.getAllFactions();
@@ -1192,7 +1192,7 @@ public class BotCommand {
             return 0;
         }
         
-        // Если InvView установлен - используем его GUI
+        // Р•СЃР»Рё InvView СѓСЃС‚Р°РЅРѕРІР»РµРЅ - РёСЃРїРѕР»СЊР·СѓРµРј РµРіРѕ GUI
         if (HAS_INVVIEW) {
             try {
                 return openInvViewGui(source, bot);
@@ -1202,14 +1202,14 @@ public class BotCommand {
             }
         }
         
-        // Если InvView не установлен - показываем сообщение
+        // Р•СЃР»Рё InvView РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ - РїРѕРєР°Р·С‹РІР°РµРј СЃРѕРѕР±С‰РµРЅРёРµ
         source.sendError(Text.literal("InvView mod is not installed!"));
         source.sendFeedback(() -> Text.literal("Please install InvView to view bot inventories: https://modrinth.com/mod/invview"), false);
         return 0;
     }
     
     /**
-     * Открывает GUI InvView через рефлексию (чтобы не было жесткой зависимости)
+     * РћС‚РєСЂС‹РІР°РµС‚ GUI InvView С‡РµСЂРµР· СЂРµС„Р»РµРєСЃРёСЋ (С‡С‚РѕР±С‹ РЅРµ Р±С‹Р»Рѕ Р¶РµСЃС‚РєРѕР№ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё)
      */
     private static int openInvViewGui(ServerCommandSource source, ServerPlayerEntity targetPlayer) throws Exception {
         ServerPlayerEntity viewer = source.getPlayer();
@@ -1218,11 +1218,11 @@ public class BotCommand {
             return 0;
         }
         
-        // Используем рефлексию только для классов InvView
+        // РСЃРїРѕР»СЊР·СѓРµРј СЂРµС„Р»РµРєСЃРёСЋ С‚РѕР»СЊРєРѕ РґР»СЏ РєР»Р°СЃСЃРѕРІ InvView
         Class<?> simpleGuiClass = Class.forName("eu.pb4.sgui.api.gui.SimpleGui");
         Class<?> savingGuiClass = Class.forName("us.potatoboy.invview.gui.SavingPlayerDataGui");
         
-        // Получаем ScreenHandlerType.GENERIC_9X5 напрямую
+        // РџРѕР»СѓС‡Р°РµРј ScreenHandlerType.GENERIC_9X5 РЅР°РїСЂСЏРјСѓСЋ
         Object screenHandlerType = net.minecraft.screen.ScreenHandlerType.GENERIC_9X5;
         
         // new SavingPlayerDataGui(ScreenHandlerType.GENERIC_9X5, viewer, targetPlayer)
@@ -1236,12 +1236,12 @@ public class BotCommand {
         Method setTitleMethod = simpleGuiClass.getMethod("setTitle", Text.class);
         setTitleMethod.invoke(gui, targetPlayer.getName());
         
-        // Добавляем слоты инвентаря (с возможностью редактирования)
+        // Р”РѕР±Р°РІР»СЏРµРј СЃР»РѕС‚С‹ РёРЅРІРµРЅС‚Р°СЂСЏ (СЃ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ)
         Method setSlotRedirectMethod = simpleGuiClass.getMethod("setSlotRedirect", int.class, net.minecraft.screen.slot.Slot.class);
         var inventory = targetPlayer.getInventory();
         
         for (int i = 0; i < inventory.size(); i++) {
-            // new Slot(inventory, i, 0, 0) - обычный слот с возможностью редактирования
+            // new Slot(inventory, i, 0, 0) - РѕР±С‹С‡РЅС‹Р№ СЃР»РѕС‚ СЃ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
             net.minecraft.screen.slot.Slot slot = new net.minecraft.screen.slot.Slot(inventory, i, 0, 0);
             setSlotRedirectMethod.invoke(gui, i, slot);
         }
@@ -1264,7 +1264,7 @@ public class BotCommand {
         int count = 0;
         
         for (String memberName : members) {
-            // Используем команду give для каждого члена фракции
+            // РСЃРїРѕР»СЊР·СѓРµРј РєРѕРјР°РЅРґСѓ give РґР»СЏ РєР°Р¶РґРѕРіРѕ С‡Р»РµРЅР° С„СЂР°РєС†РёРё
             try {
                 server.getCommandManager().getDispatcher().execute(
                     "give " + memberName + " " + itemCommand,
@@ -1272,7 +1272,7 @@ public class BotCommand {
                 );
                 count++;
             } catch (Exception e) {
-                // Игнорируем ошибки (игрок может быть оффлайн)
+                // РРіРЅРѕСЂРёСЂСѓРµРј РѕС€РёР±РєРё (РёРіСЂРѕРє РјРѕР¶РµС‚ Р±С‹С‚СЊ РѕС„С„Р»Р°Р№РЅ)
             }
         }
         
@@ -1291,7 +1291,7 @@ public class BotCommand {
         int count = 0;
         
         for (String memberName : members) {
-            // Только боты могут атаковать
+            // РўРѕР»СЊРєРѕ Р±РѕС‚С‹ РјРѕРіСѓС‚ Р°С‚Р°РєРѕРІР°С‚СЊ
             if (BotManager.getAllBots().contains(memberName)) {
                 BotCombat.setTarget(memberName, targetName);
                 count++;
@@ -1303,7 +1303,7 @@ public class BotCommand {
         return count;
     }
     
-    // ============ Команды китов ============
+    // ============ РљРѕРјР°РЅРґС‹ РєРёС‚РѕРІ ============
     
     private static int createKit(ServerCommandSource source, String kitName) {
         var player = source.getPlayer();
@@ -1352,7 +1352,7 @@ public class BotCommand {
             return 0;
         }
         
-        // Ищем игрока на сервере (бот или обычный игрок)
+        // РС‰РµРј РёРіСЂРѕРєР° РЅР° СЃРµСЂРІРµСЂРµ (Р±РѕС‚ РёР»Рё РѕР±С‹С‡РЅС‹Р№ РёРіСЂРѕРє)
         var player = source.getServer().getPlayerManager().getPlayer(playerName);
         if (player == null) {
             source.sendError(Text.literal("Player '" + playerName + "' not found!"));
@@ -1387,7 +1387,7 @@ public class BotCommand {
         
         int count = 0;
         for (String memberName : members) {
-            // Проверяем что это бот
+            // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ СЌС‚Рѕ Р±РѕС‚
             if (BotManager.getAllBots().contains(memberName)) {
                 var bot = BotManager.getBot(source.getServer(), memberName);
                 if (bot != null && BotKits.giveKit(kitName, bot)) {
@@ -1402,7 +1402,7 @@ public class BotCommand {
     }
     
     /**
-     * Открывает тестовое меню с примерами sgui
+     * РћС‚РєСЂС‹РІР°РµС‚ С‚РµСЃС‚РѕРІРѕРµ РјРµРЅСЋ СЃ РїСЂРёРјРµСЂР°РјРё sgui
      */
     private static int openTestMenu(ServerCommandSource source) {
         try {
@@ -1412,7 +1412,7 @@ public class BotCommand {
                 return 0;
             }
             
-            // Открываем главное меню
+            // РћС‚РєСЂС‹РІР°РµРј РіР»Р°РІРЅРѕРµ РјРµРЅСЋ
             org.stepan1411.pvp_bot.gui.BotMenuGui.openMainMenu(player);
             return 1;
         } catch (Exception e) {
@@ -1423,7 +1423,7 @@ public class BotCommand {
     }
     
     /**
-     * Отправляет статистику на сервер (для отладки)
+     * РћС‚РїСЂР°РІР»СЏРµС‚ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РЅР° СЃРµСЂРІРµСЂ (РґР»СЏ РѕС‚Р»Р°РґРєРё)
      */
     private static int updateStats(ServerCommandSource source) {
         try {

@@ -14,90 +14,90 @@ public class BotSettings {
     private static BotSettings INSTANCE;
     private static Path configPath;
     
-    // Настройки экипировки
+    // РќР°СЃС‚СЂРѕР№РєРё СЌРєРёРїРёСЂРѕРІРєРё
     private boolean autoEquipArmor = true;
     private boolean autoEquipWeapon = true;
     
-    // Настройки выбрасывания
+    // РќР°СЃС‚СЂРѕР№РєРё РІС‹Р±СЂР°СЃС‹РІР°РЅРёСЏ
     private boolean dropWorseArmor = false;
     private boolean dropWorseWeapons = false;
     private double dropDistance = 3.0;
     private int dropDelay = 20;
     
-    // Интервал проверки
+    // РРЅС‚РµСЂРІР°Р» РїСЂРѕРІРµСЂРєРё
     private int checkInterval = 20;
     
-    // Минимальный уровень брони
+    // РњРёРЅРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ Р±СЂРѕРЅРё
     private int minArmorLevel = 0;
     
-    // ============ Настройки боя ============
+    // ============ РќР°СЃС‚СЂРѕР№РєРё Р±РѕСЏ ============
     private boolean combatEnabled = true;
-    private boolean revengeEnabled = true;        // Атаковать того кто атаковал бота
-    private boolean autoTargetEnabled = false;    // Автоматически искать врагов
-    private boolean targetPlayers = true;         // Атаковать игроков
-    private boolean targetHostileMobs = false;    // Атаковать враждебных мобов
-    private boolean targetOtherBots = false;      // Атаковать других ботов
+    private boolean revengeEnabled = true;        // РђС‚Р°РєРѕРІР°С‚СЊ С‚РѕРіРѕ РєС‚Рѕ Р°С‚Р°РєРѕРІР°Р» Р±РѕС‚Р°
+    private boolean autoTargetEnabled = false;    // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РёСЃРєР°С‚СЊ РІСЂР°РіРѕРІ
+    private boolean targetPlayers = true;         // РђС‚Р°РєРѕРІР°С‚СЊ РёРіСЂРѕРєРѕРІ
+    private boolean targetHostileMobs = false;    // РђС‚Р°РєРѕРІР°С‚СЊ РІСЂР°Р¶РґРµР±РЅС‹С… РјРѕР±РѕРІ
+    private boolean targetOtherBots = false;      // РђС‚Р°РєРѕРІР°С‚СЊ РґСЂСѓРіРёС… Р±РѕС‚РѕРІ
     
-    // Дистанции
-    private double maxTargetDistance = 64.0;      // Максимальная дистанция поиска цели (увеличено)
-    private double meleeRange = 3.5;              // Дистанция ближнего боя
-    private double rangedMinRange = 8.0;          // Минимальная дистанция для лука
-    private double rangedOptimalRange = 20.0;     // Оптимальная дистанция для лука
-    private double maceRange = 6.0;               // Дистанция для булавы
+    // Р”РёСЃС‚Р°РЅС†РёРё
+    private double maxTargetDistance = 64.0;      // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ РїРѕРёСЃРєР° С†РµР»Рё (СѓРІРµР»РёС‡РµРЅРѕ)
+    private double meleeRange = 3.5;              // Р”РёСЃС‚Р°РЅС†РёСЏ Р±Р»РёР¶РЅРµРіРѕ Р±РѕСЏ
+    private double rangedMinRange = 8.0;          // РњРёРЅРёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ РґР»СЏ Р»СѓРєР°
+    private double rangedOptimalRange = 20.0;     // РћРїС‚РёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ РґР»СЏ Р»СѓРєР°
+    private double maceRange = 6.0;               // Р”РёСЃС‚Р°РЅС†РёСЏ РґР»СЏ Р±СѓР»Р°РІС‹
     
-    // Параметры боя
-    private int attackCooldown = 10;              // Кулдаун атаки в тиках
-    private double moveSpeed = 1.0;               // Скорость движения
-    private boolean criticalsEnabled = true;      // Критические удары
-    private int bowMinDrawTime = 15;              // Минимальное время натяжения лука
+    // РџР°СЂР°РјРµС‚СЂС‹ Р±РѕСЏ
+    private int attackCooldown = 10;              // РљСѓР»РґР°СѓРЅ Р°С‚Р°РєРё РІ С‚РёРєР°С…
+    private double moveSpeed = 1.0;               // РЎРєРѕСЂРѕСЃС‚СЊ РґРІРёР¶РµРЅРёСЏ
+    private boolean criticalsEnabled = true;      // РљСЂРёС‚РёС‡РµСЃРєРёРµ СѓРґР°СЂС‹
+    private int bowMinDrawTime = 15;              // РњРёРЅРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ РЅР°С‚СЏР¶РµРЅРёСЏ Р»СѓРєР°
     
-    // Включение типов оружия
-    private boolean rangedEnabled = true;         // Использовать лук/арбалет
-    private boolean maceEnabled = true;           // Использовать булаву
-    private boolean spearEnabled = false;         // Использовать копьё (1.21.11) - ВЫКЛЮЧЕНО из-за бага Carpet
-    private boolean crystalPvpEnabled = true;     // Использовать Crystal PVP (обсидиан + кристалл)
-    private boolean anchorPvpEnabled = true;      // Использовать Anchor PVP (якорь + glowstone)
+    // Р’РєР»СЋС‡РµРЅРёРµ С‚РёРїРѕРІ РѕСЂСѓР¶РёСЏ
+    private boolean rangedEnabled = true;         // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р»СѓРє/Р°СЂР±Р°Р»РµС‚
+    private boolean maceEnabled = true;           // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±СѓР»Р°РІСѓ
+    private boolean spearEnabled = false;         // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РєРѕРїСЊС‘ (1.21.11) - Р’Р«РљР›Р®Р§Р•РќРћ РёР·-Р·Р° Р±Р°РіР° Carpet
+    private boolean crystalPvpEnabled = true;     // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Crystal PVP (РѕР±СЃРёРґРёР°РЅ + РєСЂРёСЃС‚Р°Р»Р»)
+    private boolean anchorPvpEnabled = true;      // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Anchor PVP (СЏРєРѕСЂСЊ + glowstone)
     
-    // Настройки копья (Spear) - 1.21.11
-    private double spearRange = 4.5;              // Дистанция для jab атаки
-    private double spearChargeRange = 12.0;       // Дистанция для charge атаки
-    private int spearMinChargeTime = 15;          // Минимальное время заряда
-    private int spearMaxChargeTime = 40;          // Максимальное время заряда
+    // РќР°СЃС‚СЂРѕР№РєРё РєРѕРїСЊСЏ (Spear) - 1.21.11
+    private double spearRange = 4.5;              // Р”РёСЃС‚Р°РЅС†РёСЏ РґР»СЏ jab Р°С‚Р°РєРё
+    private double spearChargeRange = 12.0;       // Р”РёСЃС‚Р°РЅС†РёСЏ РґР»СЏ charge Р°С‚Р°РєРё
+    private int spearMinChargeTime = 15;          // РњРёРЅРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ Р·Р°СЂСЏРґР°
+    private int spearMaxChargeTime = 40;          // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ Р·Р°СЂСЏРґР°
     
-    // ============ Утилиты ============
-    private boolean autoTotemEnabled = true;      // Авто-тотем в offhand
-    private boolean totemPriority = true;         // Приоритет тотема (не заменять на щит)
-    private boolean autoEatEnabled = true;        // Авто-еда
-    private boolean autoShieldEnabled = true;     // Авто-щит
-    private boolean autoMendEnabled = true;       // Авто-ремонт брони с Mending через XP бутылки
-    private double mendDurabilityThreshold = 0.25; // Порог прочности для ремонта (0.25 = 25%)
-    private double shieldHealthThreshold = 0.5;   // Порог HP для использования щита (0.5 = 50%)
-    private boolean shieldBreakEnabled = true;    // Сбивать щит топором
-    private boolean preferSword = true;           // Предпочитать меч вместо топора
-    private int minHungerToEat = 14;              // Минимальный голод для еды
-    private boolean autoPotionEnabled = true;     // Авто-зелья исцеления
-    private boolean cobwebEnabled = true;         // Использовать паутину
+    // ============ РЈС‚РёР»РёС‚С‹ ============
+    private boolean autoTotemEnabled = true;      // РђРІС‚Рѕ-С‚РѕС‚РµРј РІ offhand
+    private boolean totemPriority = true;         // РџСЂРёРѕСЂРёС‚РµС‚ С‚РѕС‚РµРјР° (РЅРµ Р·Р°РјРµРЅСЏС‚СЊ РЅР° С‰РёС‚)
+    private boolean autoEatEnabled = true;        // РђРІС‚Рѕ-РµРґР°
+    private boolean autoShieldEnabled = true;     // РђРІС‚Рѕ-С‰РёС‚
+    private boolean autoMendEnabled = true;       // РђРІС‚Рѕ-СЂРµРјРѕРЅС‚ Р±СЂРѕРЅРё СЃ Mending С‡РµСЂРµР· XP Р±СѓС‚С‹Р»РєРё
+    private double mendDurabilityThreshold = 0.25; // РџРѕСЂРѕРі РїСЂРѕС‡РЅРѕСЃС‚Рё РґР»СЏ СЂРµРјРѕРЅС‚Р° (0.25 = 25%)
+    private double shieldHealthThreshold = 0.5;   // РџРѕСЂРѕРі HP РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ С‰РёС‚Р° (0.5 = 50%)
+    private boolean shieldBreakEnabled = true;    // РЎР±РёРІР°С‚СЊ С‰РёС‚ С‚РѕРїРѕСЂРѕРј
+    private boolean preferSword = true;           // РџСЂРµРґРїРѕС‡РёС‚Р°С‚СЊ РјРµС‡ РІРјРµСЃС‚Рѕ С‚РѕРїРѕСЂР°
+    private int minHungerToEat = 14;              // РњРёРЅРёРјР°Р»СЊРЅС‹Р№ РіРѕР»РѕРґ РґР»СЏ РµРґС‹
+    private boolean autoPotionEnabled = true;     // РђРІС‚Рѕ-Р·РµР»СЊСЏ РёСЃС†РµР»РµРЅРёСЏ
+    private boolean cobwebEnabled = true;         // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїР°СѓС‚РёРЅСѓ
     
-    // ============ Навигация и движение ============
-    private boolean retreatEnabled = false;       // Отступать при низком HP (ВЫКЛЮЧЕНО по умолчанию)
-    private double retreatHealthPercent = 0.3;    // Процент HP для отступления (0.3 = 30%)
-    private double criticalHealthPercent = 0.15;  // Критический HP для отступления даже со сбитым щитом (0.15 = 15%)
-    private boolean bhopEnabled = true;           // Bunny hop (прыжки при беге)
-    private int bhopCooldown = 12;                // Кулдаун между прыжками (тики)
-    private double jumpBoost = 0.0;               // Дополнительная высота прыжка (0.0 - 0.5)
-    private boolean idleWanderEnabled = true;     // Бродить когда нет цели
-    private double idleWanderRadius = 10.0;       // Радиус блуждания
+    // ============ РќР°РІРёРіР°С†РёСЏ Рё РґРІРёР¶РµРЅРёРµ ============
+    private boolean retreatEnabled = false;       // РћС‚СЃС‚СѓРїР°С‚СЊ РїСЂРё РЅРёР·РєРѕРј HP (Р’Р«РљР›Р®Р§Р•РќРћ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ)
+    private double retreatHealthPercent = 0.3;    // РџСЂРѕС†РµРЅС‚ HP РґР»СЏ РѕС‚СЃС‚СѓРїР»РµРЅРёСЏ (0.3 = 30%)
+    private double criticalHealthPercent = 0.15;  // РљСЂРёС‚РёС‡РµСЃРєРёР№ HP РґР»СЏ РѕС‚СЃС‚СѓРїР»РµРЅРёСЏ РґР°Р¶Рµ СЃРѕ СЃР±РёС‚С‹Рј С‰РёС‚РѕРј (0.15 = 15%)
+    private boolean bhopEnabled = true;           // Bunny hop (РїСЂС‹Р¶РєРё РїСЂРё Р±РµРіРµ)
+    private int bhopCooldown = 12;                // РљСѓР»РґР°СѓРЅ РјРµР¶РґСѓ РїСЂС‹Р¶РєР°РјРё (С‚РёРєРё)
+    private double jumpBoost = 0.0;               // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° РїСЂС‹Р¶РєР° (0.0 - 0.5)
+    private boolean idleWanderEnabled = true;     // Р‘СЂРѕРґРёС‚СЊ РєРѕРіРґР° РЅРµС‚ С†РµР»Рё
+    private double idleWanderRadius = 10.0;       // Р Р°РґРёСѓСЃ Р±Р»СѓР¶РґР°РЅРёСЏ
     
-    // ============ Фракции и ошибки ============
-    private boolean factionsEnabled = true;       // Использовать систему фракций
-    private boolean friendlyFireEnabled = false;  // Урон по союзникам (false = нельзя бить союзников)
-    private int missChance = 10;                  // Шанс промаха (0-100%)
-    private int mistakeChance = 5;                // Шанс ошибки (0-100%)
-    private int reactionDelay = 0;                // Задержка реакции в тиках (0-20)
-    private boolean botsRelogs = true;            // Боты респавнятся после рестарта сервера
+    // ============ Р¤СЂР°РєС†РёРё Рё РѕС€РёР±РєРё ============
+    private boolean factionsEnabled = true;       // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃРёСЃС‚РµРјСѓ С„СЂР°РєС†РёР№
+    private boolean friendlyFireEnabled = false;  // РЈСЂРѕРЅ РїРѕ СЃРѕСЋР·РЅРёРєР°Рј (false = РЅРµР»СЊР·СЏ Р±РёС‚СЊ СЃРѕСЋР·РЅРёРєРѕРІ)
+    private int missChance = 10;                  // РЁР°РЅСЃ РїСЂРѕРјР°С…Р° (0-100%)
+    private int mistakeChance = 5;                // РЁР°РЅСЃ РѕС€РёР±РєРё (0-100%)
+    private int reactionDelay = 0;                // Р—Р°РґРµСЂР¶РєР° СЂРµР°РєС†РёРё РІ С‚РёРєР°С… (0-20)
+    private boolean botsRelogs = true;            // Р‘РѕС‚С‹ СЂРµСЃРїР°РІРЅСЏС‚СЃСЏ РїРѕСЃР»Рµ СЂРµСЃС‚Р°СЂС‚Р° СЃРµСЂРІРµСЂР°
     
-    // ============ Статистика ============
-    private boolean sendStats = true;             // Отправлять анонимную статистику
+    // ============ РЎС‚Р°С‚РёСЃС‚РёРєР° ============
+    private boolean sendStats = true;             // РћС‚РїСЂР°РІР»СЏС‚СЊ Р°РЅРѕРЅРёРјРЅСѓСЋ СЃС‚Р°С‚РёСЃС‚РёРєСѓ
     
     private BotSettings() {}
     
@@ -109,12 +109,12 @@ public class BotSettings {
     }
     
     public static void load() {
-        // Создаём папку config/pvpbot если не существует
+        // РЎРѕР·РґР°С‘Рј РїР°РїРєСѓ config/pvpbot РµСЃР»Рё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve("pvpbot");
         try {
             Files.createDirectories(configDir);
         } catch (Exception e) {
-            // Игнорируем
+            // РРіРЅРѕСЂРёСЂСѓРµРј
         }
         
         configPath = configDir.resolve("settings.json");
@@ -216,7 +216,7 @@ public class BotSettings {
     // Getters - Stats
     public boolean isSendStats() { return sendStats; }
     
-    // Setters (с автосохранением)
+    // Setters (СЃ Р°РІС‚РѕСЃРѕС…СЂР°РЅРµРЅРёРµРј)
     public void setAutoEquipArmor(boolean value) { 
         this.autoEquipArmor = value; 
         save();

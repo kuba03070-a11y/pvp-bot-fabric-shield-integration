@@ -26,12 +26,12 @@ public class BotManager {
     private static Path savePath;
     private static boolean initialized = false;
     
-    // Статистика
+    // РЎС‚Р°С‚РёСЃС‚РёРєР°
     private static int botsSpawnedTotal = 0;
     private static int botsKilledTotal = 0;
     
     /**
-     * Данные бота для сохранения
+     * Р”Р°РЅРЅС‹Рµ Р±РѕС‚Р° РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ
      */
     public static class BotData {
         public String name;
@@ -55,7 +55,7 @@ public class BotManager {
     }
     
     /**
-     * Класс для сохранения статистики
+     * РљР»Р°СЃСЃ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ СЃС‚Р°С‚РёСЃС‚РёРєРё
      */
     public static class StatsData {
         public int botsSpawnedTotal = 0;
@@ -63,12 +63,12 @@ public class BotManager {
     }
 
     /**
-     * Инициализация - загрузка сохранённых ботов
+     * РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ - Р·Р°РіСЂСѓР·РєР° СЃРѕС…СЂР°РЅС‘РЅРЅС‹С… Р±РѕС‚РѕРІ
      */
     public static void init(MinecraftServer server) {
         if (initialized) return;
         
-        // Создаём папку config/pvpbot если не существует
+        // РЎРѕР·РґР°С‘Рј РїР°РїРєСѓ config/pvpbot РµСЃР»Рё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve("pvpbot");
         try {
             Files.createDirectories(configDir);
@@ -80,7 +80,7 @@ public class BotManager {
         loadBots();
         loadStats();
         
-        // Респавним сохранённых ботов только если включена настройка botsRelogs
+        // Р РµСЃРїР°РІРЅРёРј СЃРѕС…СЂР°РЅС‘РЅРЅС‹С… Р±РѕС‚РѕРІ С‚РѕР»СЊРєРѕ РµСЃР»Рё РІРєР»СЋС‡РµРЅР° РЅР°СЃС‚СЂРѕР№РєР° botsRelogs
         BotSettings settings = BotSettings.get();
         if (settings.isBotsRelogs() && !botDataMap.isEmpty()) {
             System.out.println("[PVP_BOT] Restoring " + botDataMap.size() + " bots...");
@@ -88,10 +88,10 @@ public class BotManager {
             bots.clear();
             botDataMap.clear();
             
-            // Запускаем респавн с задержкой
+            // Р—Р°РїСѓСЃРєР°РµРј СЂРµСЃРїР°РІРЅ СЃ Р·Р°РґРµСЂР¶РєРѕР№
             server.execute(() -> restoreBotsDelayed(server, botsToRestore, 0));
         } else if (!settings.isBotsRelogs()) {
-            // Если релоги выключены - очищаем список
+            // Р•СЃР»Рё СЂРµР»РѕРіРё РІС‹РєР»СЋС‡РµРЅС‹ - РѕС‡РёС‰Р°РµРј СЃРїРёСЃРѕРє
             bots.clear();
             botDataMap.clear();
             saveBots();
@@ -105,7 +105,7 @@ public class BotManager {
     }
     
     private static void restoreBotsDelayedWithRetry(MinecraftServer server, Map<String, BotData> botsToRestore, int index, int retryCount) {
-        final int MAX_RETRIES = 2; // Максимум 2 повторные попытки (всего 3 попытки)
+        final int MAX_RETRIES = 2; // РњР°РєСЃРёРјСѓРј 2 РїРѕРІС‚РѕСЂРЅС‹Рµ РїРѕРїС‹С‚РєРё (РІСЃРµРіРѕ 3 РїРѕРїС‹С‚РєРё)
         
         if (index >= botsToRestore.size()) {
             System.out.println("[PVP_BOT] Restored " + bots.size() + " bots");
@@ -117,22 +117,22 @@ public class BotManager {
             String name = names[index];
             BotData data = botsToRestore.get(name);
             
-            // Проверяем не онлайн ли уже реальный игрок с таким ником
+            // РџСЂРѕРІРµСЂСЏРµРј РЅРµ РѕРЅР»Р°Р№РЅ Р»Рё СѓР¶Рµ СЂРµР°Р»СЊРЅС‹Р№ РёРіСЂРѕРє СЃ С‚Р°РєРёРј РЅРёРєРѕРј
             ServerPlayerEntity existingPlayer = server.getPlayerManager().getPlayer(name);
             if (existingPlayer != null && !bots.contains(name)) {
                 System.out.println("[PVP_BOT] Skipping bot '" + name + "': real player with this name is online");
-                // Переходим к следующему боту
+                // РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµРјСѓ Р±РѕС‚Сѓ
                 final int nextIndex = index + 1;
                 server.execute(() -> restoreBotsDelayedWithRetry(server, botsToRestore, nextIndex, 0));
                 return;
             }
             
-            // Спавним бота с позицией и измерением
+            // РЎРїР°РІРЅРёРј Р±РѕС‚Р° СЃ РїРѕР·РёС†РёРµР№ Рё РёР·РјРµСЂРµРЅРёРµРј
             var dispatcher = server.getCommandManager().getDispatcher();
             boolean success = false;
             
             try {
-                // Формат: player NAME spawn at X Y Z facing YAW PITCH in DIMENSION in GAMEMODE
+                // Р¤РѕСЂРјР°С‚: player NAME spawn at X Y Z facing YAW PITCH in DIMENSION in GAMEMODE
                 String command = String.format(java.util.Locale.US,
                     "player %s spawn at %.2f %.2f %.2f facing %.2f %.2f in %s in %s",
                     name, data.x, data.y, data.z, data.yaw, data.pitch, data.dimension, data.gamemode
@@ -146,9 +146,9 @@ public class BotManager {
                 bots.add(name);
                 botDataMap.put(name, data);
                 success = true;
-                System.out.println("[PVP_BOT] ✓ Successfully restored bot: " + name);
+                System.out.println("[PVP_BOT] вњ“ Successfully restored bot: " + name);
             } catch (Exception e) {
-                // Пробуем упрощённую команду
+                // РџСЂРѕР±СѓРµРј СѓРїСЂРѕС‰С‘РЅРЅСѓСЋ РєРѕРјР°РЅРґСѓ
                 try {
                     String simpleCommand = String.format(java.util.Locale.US,
                         "player %s spawn at %.2f %.2f %.2f",
@@ -158,17 +158,17 @@ public class BotManager {
                     bots.add(name);
                     botDataMap.put(name, data);
                     success = true;
-                    System.out.println("[PVP_BOT] ✓ Restored bot with simple command: " + name);
+                    System.out.println("[PVP_BOT] вњ“ Restored bot with simple command: " + name);
                 } catch (Exception e2) {
                     if (retryCount < MAX_RETRIES) {
-                        System.out.println("[PVP_BOT] ⚠ Failed to restore bot '" + name + "', will retry... (" + (retryCount + 1) + "/" + MAX_RETRIES + ")");
+                        System.out.println("[PVP_BOT] вљ  Failed to restore bot '" + name + "', will retry... (" + (retryCount + 1) + "/" + MAX_RETRIES + ")");
                     } else {
-                        System.out.println("[PVP_BOT] ✗ Failed to restore bot '" + name + "' after " + (MAX_RETRIES + 1) + " attempts: " + e2.getMessage());
+                        System.out.println("[PVP_BOT] вњ— Failed to restore bot '" + name + "' after " + (MAX_RETRIES + 1) + " attempts: " + e2.getMessage());
                     }
                 }
             }
             
-            // Если не удалось и есть попытки - повторяем через 20 тиков
+            // Р•СЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ Рё РµСЃС‚СЊ РїРѕРїС‹С‚РєРё - РїРѕРІС‚РѕСЂСЏРµРј С‡РµСЂРµР· 20 С‚РёРєРѕРІ
             if (!success && retryCount < MAX_RETRIES) {
                 final int currentRetry = retryCount + 1;
                 server.execute(() -> {
@@ -177,7 +177,7 @@ public class BotManager {
                         @Override
                         public void run() {
                             delay[0]++;
-                            if (delay[0] < 20) { // 20 тиков = 1 секунда
+                            if (delay[0] < 20) { // 20 С‚РёРєРѕРІ = 1 СЃРµРєСѓРЅРґР°
                                 server.execute(this);
                             } else {
                                 restoreBotsDelayedWithRetry(server, botsToRestore, index, currentRetry);
@@ -186,7 +186,7 @@ public class BotManager {
                     });
                 });
             } else {
-                // Переходим к следующему боту через 10 тиков
+                // РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµРјСѓ Р±РѕС‚Сѓ С‡РµСЂРµР· 10 С‚РёРєРѕРІ
                 final int nextIndex = index + 1;
                 server.execute(() -> {
                     final int[] delay = {0};
@@ -207,8 +207,8 @@ public class BotManager {
     }
     
     /**
-     * Обновление данных всех ботов перед сохранением
-     * Сохраняем данные только живых ботов, мёртвые сохраняют последнюю позицию
+     * РћР±РЅРѕРІР»РµРЅРёРµ РґР°РЅРЅС‹С… РІСЃРµС… Р±РѕС‚РѕРІ РїРµСЂРµРґ СЃРѕС…СЂР°РЅРµРЅРёРµРј
+     * РЎРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ С‚РѕР»СЊРєРѕ Р¶РёРІС‹С… Р±РѕС‚РѕРІ, РјС‘СЂС‚РІС‹Рµ СЃРѕС…СЂР°РЅСЏСЋС‚ РїРѕСЃР»РµРґРЅСЋСЋ РїРѕР·РёС†РёСЋ
      */
     public static void updateBotData(MinecraftServer server) {
         int updated = 0;
@@ -217,16 +217,16 @@ public class BotManager {
         for (String name : bots) {
             ServerPlayerEntity bot = server.getPlayerManager().getPlayer(name);
             if (bot != null && bot.isAlive()) {
-                // Обновляем данные живого бота
+                // РћР±РЅРѕРІР»СЏРµРј РґР°РЅРЅС‹Рµ Р¶РёРІРѕРіРѕ Р±РѕС‚Р°
                 botDataMap.put(name, new BotData(bot));
                 updated++;
             } else if (!botDataMap.containsKey(name)) {
-                // Бот в списке но нет данных - это проблема!
-                // Удаляем такого бота из списка
+                // Р‘РѕС‚ РІ СЃРїРёСЃРєРµ РЅРѕ РЅРµС‚ РґР°РЅРЅС‹С… - СЌС‚Рѕ РїСЂРѕР±Р»РµРјР°!
+                // РЈРґР°Р»СЏРµРј С‚Р°РєРѕРіРѕ Р±РѕС‚Р° РёР· СЃРїРёСЃРєР°
                 missing++;
                 System.out.println("[PVP_BOT] WARNING: Bot " + name + " in list but has no data!");
             } else {
-                // Бот не загружен или мёртв - сохраняем старые данные
+                // Р‘РѕС‚ РЅРµ Р·Р°РіСЂСѓР¶РµРЅ РёР»Рё РјС‘СЂС‚РІ - СЃРѕС…СЂР°РЅСЏРµРј СЃС‚Р°СЂС‹Рµ РґР°РЅРЅС‹Рµ
                 skipped++;
             }
         }
@@ -234,7 +234,7 @@ public class BotManager {
     }
     
     /**
-     * Сохранение списка ботов
+     * РЎРѕС…СЂР°РЅРµРЅРёРµ СЃРїРёСЃРєР° Р±РѕС‚РѕРІ
      */
     public static void saveBots() {
         if (savePath == null) return;
@@ -247,7 +247,7 @@ public class BotManager {
     }
     
     /**
-     * Загрузка списка ботов
+     * Р—Р°РіСЂСѓР·РєР° СЃРїРёСЃРєР° Р±РѕС‚РѕРІ
      */
     private static void loadBots() {
         if (savePath == null || !Files.exists(savePath)) return;
@@ -264,7 +264,7 @@ public class BotManager {
     }
     
     /**
-     * Сброс при выходе из мира
+     * РЎР±СЂРѕСЃ РїСЂРё РІС‹С…РѕРґРµ РёР· РјРёСЂР°
      */
     public static void reset(MinecraftServer server) {
         updateBotData(server);
@@ -273,12 +273,12 @@ public class BotManager {
     }
 
     public static boolean spawnBot(MinecraftServer server, String name, ServerCommandSource source) {
-        // Проверяем, существует ли уже игрок с таким именем на сервере
+        // РџСЂРѕРІРµСЂСЏРµРј, СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё СѓР¶Рµ РёРіСЂРѕРє СЃ С‚Р°РєРёРј РёРјРµРЅРµРј РЅР° СЃРµСЂРІРµСЂРµ
         ServerPlayerEntity existingPlayer = server.getPlayerManager().getPlayer(name);
         if (existingPlayer != null && existingPlayer.isAlive()) {
-            // Бот уже существует и жив
+            // Р‘РѕС‚ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Рё Р¶РёРІ
             if (!bots.contains(name)) {
-                bots.add(name); // Добавляем в список если не было
+                bots.add(name); // Р”РѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє РµСЃР»Рё РЅРµ Р±С‹Р»Рѕ
                 botDataMap.put(name, new BotData(existingPlayer));
                 saveBots();
                 System.out.println("[PVP_BOT] Added existing bot to list: " + name);
@@ -298,45 +298,45 @@ public class BotManager {
                 // Force gamemode change after spawn
                 dispatcher.execute("gamemode survival " + name, server.getCommandSource());
             } catch (Exception e2) {
-                // Даже если команда выбросила исключение, проверим появился ли бот
+                // Р”Р°Р¶Рµ РµСЃР»Рё РєРѕРјР°РЅРґР° РІС‹Р±СЂРѕСЃРёР»Р° РёСЃРєР»СЋС‡РµРЅРёРµ, РїСЂРѕРІРµСЂРёРј РїРѕСЏРІРёР»СЃСЏ Р»Рё Р±РѕС‚
             }
         }
         
-        // Проверяем появился ли бот на сервере (независимо от результата команды)
-        // Даём небольшую задержку через execute
+        // РџСЂРѕРІРµСЂСЏРµРј РїРѕСЏРІРёР»СЃСЏ Р»Рё Р±РѕС‚ РЅР° СЃРµСЂРІРµСЂРµ (РЅРµР·Р°РІРёСЃРёРјРѕ РѕС‚ СЂРµР·СѓР»СЊС‚Р°С‚Р° РєРѕРјР°РЅРґС‹)
+        // Р”Р°С‘Рј РЅРµР±РѕР»СЊС€СѓСЋ Р·Р°РґРµСЂР¶РєСѓ С‡РµСЂРµР· execute
         server.execute(() -> {
             ServerPlayerEntity newBot = server.getPlayerManager().getPlayer(name);
             if (newBot != null && !bots.contains(name)) {
                 bots.add(name);
                 botDataMap.put(name, new BotData(newBot));
-                incrementBotsSpawned(); // Увеличиваем счетчик
+                incrementBotsSpawned(); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє
                 saveBots();
                 System.out.println("[PVP_BOT] Added bot to list (delayed): " + name);
             } else if (newBot != null && bots.contains(name)) {
-                // Бот уже в списке, но обновим данные
+                // Р‘РѕС‚ СѓР¶Рµ РІ СЃРїРёСЃРєРµ, РЅРѕ РѕР±РЅРѕРІРёРј РґР°РЅРЅС‹Рµ
                 botDataMap.put(name, new BotData(newBot));
                 saveBots();
                 System.out.println("[PVP_BOT] Updated bot data (delayed): " + name);
             }
         });
         
-        // Добавляем в список сразу (на случай если бот уже появился)
+        // Р”РѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє СЃСЂР°Р·Сѓ (РЅР° СЃР»СѓС‡Р°Р№ РµСЃР»Рё Р±РѕС‚ СѓР¶Рµ РїРѕСЏРІРёР»СЃСЏ)
         ServerPlayerEntity newBot = server.getPlayerManager().getPlayer(name);
         if (newBot != null) {
             if (!bots.contains(name)) {
                 bots.add(name);
                 botDataMap.put(name, new BotData(newBot));
-                incrementBotsSpawned(); // Увеличиваем счетчик
+                incrementBotsSpawned(); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє
                 saveBots();
                 System.out.println("[PVP_BOT] Added bot to list (immediate): " + name);
             }
             return true;
         }
         
-        // Бот ещё не появился, добавим имя в список с дефолтными данными
+        // Р‘РѕС‚ РµС‰С‘ РЅРµ РїРѕСЏРІРёР»СЃСЏ, РґРѕР±Р°РІРёРј РёРјСЏ РІ СЃРїРёСЃРѕРє СЃ РґРµС„РѕР»С‚РЅС‹РјРё РґР°РЅРЅС‹РјРё
         if (!bots.contains(name)) {
             bots.add(name);
-            // Создаём дефолтные данные (позиция игрока который спавнит)
+            // РЎРѕР·РґР°С‘Рј РґРµС„РѕР»С‚РЅС‹Рµ РґР°РЅРЅС‹Рµ (РїРѕР·РёС†РёСЏ РёРіСЂРѕРєР° РєРѕС‚РѕСЂС‹Р№ СЃРїР°РІРЅРёС‚)
             BotData defaultData = new BotData();
             defaultData.name = name;
             defaultData.x = source.getPosition().x;
@@ -347,7 +347,7 @@ public class BotManager {
             defaultData.dimension = source.getWorld().getRegistryKey().getValue().toString();
             defaultData.gamemode = "survival";
             botDataMap.put(name, defaultData);
-            incrementBotsSpawned(); // Увеличиваем счетчик
+            incrementBotsSpawned(); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє
             saveBots();
             System.out.println("[PVP_BOT] Added bot to list (default data): " + name);
         }
@@ -356,12 +356,12 @@ public class BotManager {
     }
 
     public static boolean removeBot(MinecraftServer server, String name, ServerCommandSource source) {
-        // Удаляем из списка в любом случае
+        // РЈРґР°Р»СЏРµРј РёР· СЃРїРёСЃРєР° РІ Р»СЋР±РѕРј СЃР»СѓС‡Р°Рµ
         boolean wasInList = bots.remove(name);
-        botDataMap.remove(name); // Удаляем данные бота
+        botDataMap.remove(name); // РЈРґР°Р»СЏРµРј РґР°РЅРЅС‹Рµ Р±РѕС‚Р°
         saveBots();
         
-        // Очищаем все состояния бота
+        // РћС‡РёС‰Р°РµРј РІСЃРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ Р±РѕС‚Р°
         BotCombat.removeState(name);
         BotUtils.removeState(name);
         BotNavigation.resetIdle(name);
@@ -374,7 +374,7 @@ public class BotManager {
             // Ignore
         }
         
-        // Убрали мгновенную отправку - статистика отправится через 30 секунд
+        // РЈР±СЂР°Р»Рё РјРіРЅРѕРІРµРЅРЅСѓСЋ РѕС‚РїСЂР°РІРєСѓ - СЃС‚Р°С‚РёСЃС‚РёРєР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР· 30 СЃРµРєСѓРЅРґ
         
         return wasInList;
     }
@@ -386,7 +386,7 @@ public class BotManager {
     public static void removeAllBots(MinecraftServer server, ServerCommandSource source) {
         var dispatcher = server.getCommandManager().getDispatcher();
         for (String name : new HashSet<>(bots)) {
-            // Очищаем все состояния бота
+            // РћС‡РёС‰Р°РµРј РІСЃРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ Р±РѕС‚Р°
             BotCombat.removeState(name);
             BotUtils.removeState(name);
             BotNavigation.resetIdle(name);
@@ -399,10 +399,10 @@ public class BotManager {
             }
         }
         bots.clear();
-        botDataMap.clear(); // Очищаем данные всех ботов
+        botDataMap.clear(); // РћС‡РёС‰Р°РµРј РґР°РЅРЅС‹Рµ РІСЃРµС… Р±РѕС‚РѕРІ
         saveBots();
         
-        // Убрали мгновенную отправку - статистика отправится через 30 секунд
+        // РЈР±СЂР°Р»Рё РјРіРЅРѕРІРµРЅРЅСѓСЋ РѕС‚РїСЂР°РІРєСѓ - СЃС‚Р°С‚РёСЃС‚РёРєР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР· 30 СЃРµРєСѓРЅРґ
     }
 
     public static int getBotCount() {
@@ -414,30 +414,30 @@ public class BotManager {
     }
     
     /**
-     * Проверяет жив ли бот - удаляет мёртвых из списка
-     * НЕ удаляет ботов которые просто не загружены (bot == null)
+     * РџСЂРѕРІРµСЂСЏРµС‚ Р¶РёРІ Р»Рё Р±РѕС‚ - СѓРґР°Р»СЏРµС‚ РјС‘СЂС‚РІС‹С… РёР· СЃРїРёСЃРєР°
+     * РќР• СѓРґР°Р»СЏРµС‚ Р±РѕС‚РѕРІ РєРѕС‚РѕСЂС‹Рµ РїСЂРѕСЃС‚Рѕ РЅРµ Р·Р°РіСЂСѓР¶РµРЅС‹ (bot == null)
      */
     public static void cleanupDeadBots(MinecraftServer server) {
         boolean changed = false;
         for (String name : new HashSet<>(bots)) {
             ServerPlayerEntity bot = server.getPlayerManager().getPlayer(name);
             
-            // Если бот не найден (bot == null) - НЕ удаляем его!
-            // Он может быть просто выгружен из памяти (далеко от игрока в синглплеере)
+            // Р•СЃР»Рё Р±РѕС‚ РЅРµ РЅР°Р№РґРµРЅ (bot == null) - РќР• СѓРґР°Р»СЏРµРј РµРіРѕ!
+            // РћРЅ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСЂРѕСЃС‚Рѕ РІС‹РіСЂСѓР¶РµРЅ РёР· РїР°РјСЏС‚Рё (РґР°Р»РµРєРѕ РѕС‚ РёРіСЂРѕРєР° РІ СЃРёРЅРіР»РїР»РµРµСЂРµ)
             if (bot == null) {
-                continue; // Пропускаем, не удаляем
+                continue; // РџСЂРѕРїСѓСЃРєР°РµРј, РЅРµ СѓРґР°Р»СЏРµРј
             }
             
-            // Удаляем только если бот существует НО мёртв
+            // РЈРґР°Р»СЏРµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё Р±РѕС‚ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РќРћ РјС‘СЂС‚РІ
             boolean isDead = !bot.isAlive() || bot.getHealth() <= 0 || bot.isDead();
             if (isDead) {
-                // Удаляем мёртвого бота из списка
+                // РЈРґР°Р»СЏРµРј РјС‘СЂС‚РІРѕРіРѕ Р±РѕС‚Р° РёР· СЃРїРёСЃРєР°
                 bots.remove(name);
                 botDataMap.remove(name);
                 BotCombat.removeState(name);
                 BotUtils.removeState(name);
                 BotNavigation.resetIdle(name);
-                incrementBotsKilled(); // Увеличиваем счетчик убитых
+                incrementBotsKilled(); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє СѓР±РёС‚С‹С…
                 changed = true;
                 System.out.println("[PVP_BOT] Removed dead bot: " + name);
             }
@@ -448,19 +448,19 @@ public class BotManager {
     }
     
     /**
-     * Синхронизирует список ботов с реальными Carpet ботами на сервере
-     * Добавляет ботов которые есть на сервере но нет в списке
+     * РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµС‚ СЃРїРёСЃРѕРє Р±РѕС‚РѕРІ СЃ СЂРµР°Р»СЊРЅС‹РјРё Carpet Р±РѕС‚Р°РјРё РЅР° СЃРµСЂРІРµСЂРµ
+     * Р”РѕР±Р°РІР»СЏРµС‚ Р±РѕС‚РѕРІ РєРѕС‚РѕСЂС‹Рµ РµСЃС‚СЊ РЅР° СЃРµСЂРІРµСЂРµ РЅРѕ РЅРµС‚ РІ СЃРїРёСЃРєРµ
      */
     public static void syncBots(MinecraftServer server) {
         boolean changed = false;
-        // Проверяем всех игроков на сервере
+        // РџСЂРѕРІРµСЂСЏРµРј РІСЃРµС… РёРіСЂРѕРєРѕРІ РЅР° СЃРµСЂРІРµСЂРµ
         for (var player : server.getPlayerManager().getPlayerList()) {
             String name = player.getName().getString();
             
-            // Пропускаем если уже в списке
+            // РџСЂРѕРїСѓСЃРєР°РµРј РµСЃР»Рё СѓР¶Рµ РІ СЃРїРёСЃРєРµ
             if (bots.contains(name)) continue;
             
-            // Carpet боты имеют класс carpet.patches.EntityPlayerMPFake
+            // Carpet Р±РѕС‚С‹ РёРјРµСЋС‚ РєР»Р°СЃСЃ carpet.patches.EntityPlayerMPFake
             String className = player.getClass().getName();
             boolean isFakePlayer = className.contains("EntityPlayerMPFake") || 
                                    className.contains("FakePlayer") ||
@@ -480,22 +480,22 @@ public class BotManager {
     }
     
     /**
-     * Синхронизирует конкретного бота по имени
-     * Добавляет бота в список если он fake player и его нет в списке
+     * РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµС‚ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ Р±РѕС‚Р° РїРѕ РёРјРµРЅРё
+     * Р”РѕР±Р°РІР»СЏРµС‚ Р±РѕС‚Р° РІ СЃРїРёСЃРѕРє РµСЃР»Рё РѕРЅ fake player Рё РµРіРѕ РЅРµС‚ РІ СЃРїРёСЃРєРµ
      */
     public static boolean syncBot(MinecraftServer server, String name) {
-        // Проверяем если уже в списке
+        // РџСЂРѕРІРµСЂСЏРµРј РµСЃР»Рё СѓР¶Рµ РІ СЃРїРёСЃРєРµ
         if (bots.contains(name)) {
             return false;
         }
         
-        // Ищем игрока на сервере
+        // РС‰РµРј РёРіСЂРѕРєР° РЅР° СЃРµСЂРІРµСЂРµ
         ServerPlayerEntity player = server.getPlayerManager().getPlayer(name);
         if (player == null) {
             return false;
         }
         
-        // Проверяем что это fake player
+        // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ СЌС‚Рѕ fake player
         String className = player.getClass().getName();
         boolean isFakePlayer = className.contains("EntityPlayerMPFake") || 
                                className.contains("FakePlayer") ||
@@ -515,39 +515,39 @@ public class BotManager {
     }
     
     /**
-     * Увеличивает счетчик заспавненных ботов
+     * РЈРІРµР»РёС‡РёРІР°РµС‚ СЃС‡РµС‚С‡РёРє Р·Р°СЃРїР°РІРЅРµРЅРЅС‹С… Р±РѕС‚РѕРІ
      */
     public static void incrementBotsSpawned() {
         botsSpawnedTotal++;
         saveStats();
-        // Убрали мгновенную отправку - статистика отправится через 30 секунд
+        // РЈР±СЂР°Р»Рё РјРіРЅРѕРІРµРЅРЅСѓСЋ РѕС‚РїСЂР°РІРєСѓ - СЃС‚Р°С‚РёСЃС‚РёРєР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР· 30 СЃРµРєСѓРЅРґ
     }
     
     /**
-     * Увеличивает счетчик убитых ботов
+     * РЈРІРµР»РёС‡РёРІР°РµС‚ СЃС‡РµС‚С‡РёРє СѓР±РёС‚С‹С… Р±РѕС‚РѕРІ
      */
     public static void incrementBotsKilled() {
         botsKilledTotal++;
         saveStats();
-        // Убрали мгновенную отправку - статистика отправится через 30 секунд
+        // РЈР±СЂР°Р»Рё РјРіРЅРѕРІРµРЅРЅСѓСЋ РѕС‚РїСЂР°РІРєСѓ - СЃС‚Р°С‚РёСЃС‚РёРєР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР· 30 СЃРµРєСѓРЅРґ
     }
     
     /**
-     * Возвращает общее количество заспавненных ботов
+     * Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°СЃРїР°РІРЅРµРЅРЅС‹С… Р±РѕС‚РѕРІ
      */
     public static int getBotsSpawnedTotal() {
         return botsSpawnedTotal;
     }
     
     /**
-     * Возвращает общее количество убитых ботов
+     * Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СѓР±РёС‚С‹С… Р±РѕС‚РѕРІ
      */
     public static int getBotsKilledTotal() {
         return botsKilledTotal;
     }
     
     /**
-     * Сохранение статистики
+     * РЎРѕС…СЂР°РЅРµРЅРёРµ СЃС‚Р°С‚РёСЃС‚РёРєРё
      */
     private static void saveStats() {
         if (savePath == null) return;
@@ -564,7 +564,7 @@ public class BotManager {
     }
     
     /**
-     * Загрузка статистики
+     * Р—Р°РіСЂСѓР·РєР° СЃС‚Р°С‚РёСЃС‚РёРєРё
      */
     private static void loadStats() {
         if (savePath == null) return;

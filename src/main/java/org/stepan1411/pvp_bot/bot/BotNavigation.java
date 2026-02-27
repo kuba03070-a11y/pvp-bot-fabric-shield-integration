@@ -115,6 +115,44 @@ public class BotNavigation {
             dz /= horizontalDist;
         }
         
+        // ВАЖНО: Проверяем воду ПЕРЕД всеми другими действиями
+        boolean inWater = bot.isTouchingWater() || bot.isSubmergedInWater();
+        if (inWater) {
+            double distanceToTarget = horizontalDist;
+            boolean targetFar = distanceToTarget > 8.0;
+            
+            double waterLevel = bot.getY();
+            double targetLevel = targetPos.y;
+            if (targetLevel > waterLevel + 0.5) {
+                bot.addVelocity(0, 0.08, 0);
+            } else if (targetLevel < waterLevel - 0.5) {
+                bot.addVelocity(0, -0.04, 0);
+            }
+            
+            if (targetFar) {
+                bot.setSprinting(false);
+                bot.forwardSpeed = 0.8f;
+                bot.sidewaysSpeed = 0;
+                bot.addVelocity(dx * speed * 0.02, 0, dz * speed * 0.02);
+                if (state.jumpCooldown <= 0) {
+                    bot.jump();
+                    state.jumpCooldown = 8;
+                }
+            } else {
+                bot.setSprinting(false);
+                bot.forwardSpeed = 0.6f;
+                bot.sidewaysSpeed = 0;
+                bot.addVelocity(dx * speed * 0.015, 0, dz * speed * 0.015);
+                if (state.jumpCooldown <= 0) {
+                    bot.jump();
+                    state.jumpCooldown = 10;
+                }
+            }
+            
+            state.lastPosition = botPos;
+            return;
+        }
+        
         // Если застряли или обходим препятствие - корректируем направление
         if (state.avoidTicks > 0) {
             // Поворачиваем в сторону обхода

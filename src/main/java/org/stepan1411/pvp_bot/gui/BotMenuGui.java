@@ -13,12 +13,12 @@ import org.stepan1411.pvp_bot.bot.BotKits;
 import org.stepan1411.pvp_bot.bot.BotManager;
 
 /**
- * Главное меню бота с навигацией
+ * Р“Р»Р°РІРЅРѕРµ РјРµРЅСЋ Р±РѕС‚Р° СЃ РЅР°РІРёРіР°С†РёРµР№
  */
 public class BotMenuGui {
     
     /**
-     * Главное меню
+     * Р“Р»Р°РІРЅРѕРµ РјРµРЅСЋ
      */
     public static void openMainMenu(ServerPlayerEntity player) {
         SimpleGui gui = new SimpleGui(ScreenHandlerType.GENERIC_3X3, player, false);
@@ -26,7 +26,7 @@ public class BotMenuGui {
         
         MinecraftServer server = player.getCommandSource().getServer();
         
-        // Слот 0: Настройки
+        // РЎР»РѕС‚ 0: РќР°СЃС‚СЂРѕР№РєРё
         gui.setSlot(0, new GuiElementBuilder()
             .setItem(Items.WRITABLE_BOOK)
             .setName(Text.literal("Settings").formatted(Formatting.GREEN))
@@ -38,7 +38,7 @@ public class BotMenuGui {
             })
         );
         
-        // Слот 1: Список ботов
+        // РЎР»РѕС‚ 1: РЎРїРёСЃРѕРє Р±РѕС‚РѕРІ
         gui.setSlot(1, new GuiElementBuilder()
             .setItem(Items.PLAYER_HEAD)
             .setName(Text.literal("Bot List").formatted(Formatting.AQUA))
@@ -50,7 +50,7 @@ public class BotMenuGui {
             })
         );
         
-        // Слот 2: Фракции
+        // РЎР»РѕС‚ 2: Р¤СЂР°РєС†РёРё
         gui.setSlot(2, new GuiElementBuilder()
             .setItem(Items.WHITE_BANNER)
             .setName(Text.literal("Factions").formatted(Formatting.LIGHT_PURPLE))
@@ -62,7 +62,7 @@ public class BotMenuGui {
             })
         );
         
-        // Слот 3: Киты
+        // РЎР»РѕС‚ 3: РљРёС‚С‹
         gui.setSlot(3, new GuiElementBuilder()
             .setItem(Items.CHEST)
             .setName(Text.literal("Kits").formatted(Formatting.GOLD))
@@ -73,7 +73,7 @@ public class BotMenuGui {
             })
         );
         
-        // Слот 8: Закрыть
+        // РЎР»РѕС‚ 8: Р—Р°РєСЂС‹С‚СЊ
         gui.setSlot(8, new GuiElementBuilder()
             .setItem(Items.BARRIER)
             .setName(Text.literal("Close").formatted(Formatting.RED))

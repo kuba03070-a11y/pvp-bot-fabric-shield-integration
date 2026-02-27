@@ -10,31 +10,31 @@ import net.minecraft.util.math.Vec3d;
 import java.util.*;
 
 /**
- * Система отладки для визуализации поведения ботов
+ * РЎРёСЃС‚РµРјР° РѕС‚Р»Р°РґРєРё РґР»СЏ РІРёР·СѓР°Р»РёР·Р°С†РёРё РїРѕРІРµРґРµРЅРёСЏ Р±РѕС‚РѕРІ
  */
 public class BotDebug {
     
-    // Цвета для частиц (RGB в hex)
-    private static final int COLOR_GREEN = 0x00FF00;   // Зелёный для углов блоков пути
-    private static final int COLOR_GRAY = 0x808080;    // Серый для линии пути
-    private static final int COLOR_RED = 0xFF0000;     // Красный для целевого блока (navigation)
-    private static final int COLOR_PURPLE = 0xFF00FF;  // Фиолетовый для хитбокса цели (target)
-    private static final int COLOR_BLUE = 0x0080FF;    // Синий для направления взгляда
-    private static final int COLOR_YELLOW = 0xFFFF00;  // Жёлтый для боя
+    // Р¦РІРµС‚Р° РґР»СЏ С‡Р°СЃС‚РёС† (RGB РІ hex)
+    private static final int COLOR_GREEN = 0x00FF00;   // Р—РµР»С‘РЅС‹Р№ РґР»СЏ СѓРіР»РѕРІ Р±Р»РѕРєРѕРІ РїСѓС‚Рё
+    private static final int COLOR_GRAY = 0x808080;    // РЎРµСЂС‹Р№ РґР»СЏ Р»РёРЅРёРё РїСѓС‚Рё
+    private static final int COLOR_RED = 0xFF0000;     // РљСЂР°СЃРЅС‹Р№ РґР»СЏ С†РµР»РµРІРѕРіРѕ Р±Р»РѕРєР° (navigation)
+    private static final int COLOR_PURPLE = 0xFF00FF;  // Р¤РёРѕР»РµС‚РѕРІС‹Р№ РґР»СЏ С…РёС‚Р±РѕРєСЃР° С†РµР»Рё (target)
+    private static final int COLOR_BLUE = 0x0080FF;    // РЎРёРЅРёР№ РґР»СЏ РЅР°РїСЂР°РІР»РµРЅРёСЏ РІР·РіР»СЏРґР°
+    private static final int COLOR_YELLOW = 0xFFFF00;  // Р–С‘Р»С‚С‹Р№ РґР»СЏ Р±РѕСЏ
     
-    // Настройки отладки для каждого бота
+    // РќР°СЃС‚СЂРѕР№РєРё РѕС‚Р»Р°РґРєРё РґР»СЏ РєР°Р¶РґРѕРіРѕ Р±РѕС‚Р°
     private static final Map<String, DebugSettings> debugSettings = new HashMap<>();
     
     /**
-     * Настройки отладки для бота
+     * РќР°СЃС‚СЂРѕР№РєРё РѕС‚Р»Р°РґРєРё РґР»СЏ Р±РѕС‚Р°
      */
     public static class DebugSettings {
-        public boolean pathVisualization = false;    // Показывать путь движения (зелёная линия)
-        public boolean targetVisualization = false;  // Показывать хитбокс цели (фиолетовый)
-        public boolean combatInfo = false;           // Показывать информацию о бое (жёлтый)
-        public boolean navigationInfo = false;       // Показывать целевой блок (красный куб)
+        public boolean pathVisualization = false;    // РџРѕРєР°Р·С‹РІР°С‚СЊ РїСѓС‚СЊ РґРІРёР¶РµРЅРёСЏ (Р·РµР»С‘РЅР°СЏ Р»РёРЅРёСЏ)
+        public boolean targetVisualization = false;  // РџРѕРєР°Р·С‹РІР°С‚СЊ С…РёС‚Р±РѕРєСЃ С†РµР»Рё (С„РёРѕР»РµС‚РѕРІС‹Р№)
+        public boolean combatInfo = false;           // РџРѕРєР°Р·С‹РІР°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р±РѕРµ (Р¶С‘Р»С‚С‹Р№)
+        public boolean navigationInfo = false;       // РџРѕРєР°Р·С‹РІР°С‚СЊ С†РµР»РµРІРѕР№ Р±Р»РѕРє (РєСЂР°СЃРЅС‹Р№ РєСѓР±)
         
-        // Счётчики для контроля частоты отображения
+        // РЎС‡С‘С‚С‡РёРєРё РґР»СЏ РєРѕРЅС‚СЂРѕР»СЏ С‡Р°СЃС‚РѕС‚С‹ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ
         public int pathTickCounter = 0;
         public int targetTickCounter = 0;
         public int navigationTickCounter = 0;
@@ -45,42 +45,42 @@ public class BotDebug {
     }
     
     /**
-     * Получить настройки отладки для бота
+     * РџРѕР»СѓС‡РёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё РѕС‚Р»Р°РґРєРё РґР»СЏ Р±РѕС‚Р°
      */
     public static DebugSettings getSettings(String botName) {
         return debugSettings.computeIfAbsent(botName, k -> new DebugSettings());
     }
     
     /**
-     * Включить/выключить визуализацию пути
+     * Р’РєР»СЋС‡РёС‚СЊ/РІС‹РєР»СЋС‡РёС‚СЊ РІРёР·СѓР°Р»РёР·Р°С†РёСЋ РїСѓС‚Рё
      */
     public static void setPathVisualization(String botName, boolean enabled) {
         getSettings(botName).pathVisualization = enabled;
     }
     
     /**
-     * Включить/выключить визуализацию цели
+     * Р’РєР»СЋС‡РёС‚СЊ/РІС‹РєР»СЋС‡РёС‚СЊ РІРёР·СѓР°Р»РёР·Р°С†РёСЋ С†РµР»Рё
      */
     public static void setTargetVisualization(String botName, boolean enabled) {
         getSettings(botName).targetVisualization = enabled;
     }
     
     /**
-     * Включить/выключить информацию о бое
+     * Р’РєР»СЋС‡РёС‚СЊ/РІС‹РєР»СЋС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р±РѕРµ
      */
     public static void setCombatInfo(String botName, boolean enabled) {
         getSettings(botName).combatInfo = enabled;
     }
     
     /**
-     * Включить/выключить информацию о навигации
+     * Р’РєР»СЋС‡РёС‚СЊ/РІС‹РєР»СЋС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РЅР°РІРёРіР°С†РёРё
      */
     public static void setNavigationInfo(String botName, boolean enabled) {
         getSettings(botName).navigationInfo = enabled;
     }
     
     /**
-     * Включить все режимы отладки
+     * Р’РєР»СЋС‡РёС‚СЊ РІСЃРµ СЂРµР¶РёРјС‹ РѕС‚Р»Р°РґРєРё
      */
     public static void enableAll(String botName) {
         DebugSettings settings = getSettings(botName);
@@ -91,14 +91,14 @@ public class BotDebug {
     }
     
     /**
-     * Выключить все режимы отладки
+     * Р’С‹РєР»СЋС‡РёС‚СЊ РІСЃРµ СЂРµР¶РёРјС‹ РѕС‚Р»Р°РґРєРё
      */
     public static void disableAll(String botName) {
         debugSettings.remove(botName);
     }
     
     /**
-     * Проверить включена ли отладка для бота
+     * РџСЂРѕРІРµСЂРёС‚СЊ РІРєР»СЋС‡РµРЅР° Р»Рё РѕС‚Р»Р°РґРєР° РґР»СЏ Р±РѕС‚Р°
      */
     public static boolean isEnabled(String botName) {
         DebugSettings settings = debugSettings.get(botName);
@@ -106,9 +106,9 @@ public class BotDebug {
     }
     
     /**
-     * Показать путь движения с минимальным количеством частиц
-     * Показывает реальную историю + планируемый путь до цели
-     * Обновляется каждые 5 тиков для уменьшения наложения частиц
+     * РџРѕРєР°Р·Р°С‚СЊ РїСѓС‚СЊ РґРІРёР¶РµРЅРёСЏ СЃ РјРёРЅРёРјР°Р»СЊРЅС‹Рј РєРѕР»РёС‡РµСЃС‚РІРѕРј С‡Р°СЃС‚РёС†
+     * РџРѕРєР°Р·С‹РІР°РµС‚ СЂРµР°Р»СЊРЅСѓСЋ РёСЃС‚РѕСЂРёСЋ + РїР»Р°РЅРёСЂСѓРµРјС‹Р№ РїСѓС‚СЊ РґРѕ С†РµР»Рё
+     * РћР±РЅРѕРІР»СЏРµС‚СЃСЏ РєР°Р¶РґС‹Рµ 5 С‚РёРєРѕРІ РґР»СЏ СѓРјРµРЅСЊС€РµРЅРёСЏ РЅР°Р»РѕР¶РµРЅРёСЏ С‡Р°СЃС‚РёС†
      */
     public static void showPath(ServerPlayerEntity bot, Vec3d targetPos, java.util.LinkedList<Vec3d> pathHistory) {
         DebugSettings settings = getSettings(bot.getName().getString());
@@ -116,7 +116,7 @@ public class BotDebug {
             return;
         }
         
-        // Показываем частицы только каждые 5 тиков
+        // РџРѕРєР°Р·С‹РІР°РµРј С‡Р°СЃС‚РёС†С‹ С‚РѕР»СЊРєРѕ РєР°Р¶РґС‹Рµ 5 С‚РёРєРѕРІ
         settings.pathTickCounter++;
         if (settings.pathTickCounter < 5) {
             return;
@@ -125,27 +125,27 @@ public class BotDebug {
         
         ServerWorld world = (ServerWorld) bot.getEntityWorld();
         
-        // Создаём частицы
+        // РЎРѕР·РґР°С‘Рј С‡Р°СЃС‚РёС†С‹
         DustParticleEffect greenDust = new DustParticleEffect(COLOR_GREEN, 1.0f);
         DustParticleEffect grayDust = new DustParticleEffect(COLOR_GRAY, 0.7f);
         
-        // Собираем все позиции: история + текущая позиция + цель
+        // РЎРѕР±РёСЂР°РµРј РІСЃРµ РїРѕР·РёС†РёРё: РёСЃС‚РѕСЂРёСЏ + С‚РµРєСѓС‰Р°СЏ РїРѕР·РёС†РёСЏ + С†РµР»СЊ
         List<Vec3d> allPositions = new ArrayList<>(pathHistory);
         Vec3d currentPos = new Vec3d(bot.getX(), bot.getY(), bot.getZ());
         
-        // Добавляем текущую позицию
+        // Р”РѕР±Р°РІР»СЏРµРј С‚РµРєСѓС‰СѓСЋ РїРѕР·РёС†РёСЋ
         if (allPositions.isEmpty() || currentPos.distanceTo(allPositions.get(allPositions.size() - 1)) > 0.3) {
             allPositions.add(currentPos);
         }
         
-        // Добавляем целевую позицию (планируемый путь)
+        // Р”РѕР±Р°РІР»СЏРµРј С†РµР»РµРІСѓСЋ РїРѕР·РёС†РёСЋ (РїР»Р°РЅРёСЂСѓРµРјС‹Р№ РїСѓС‚СЊ)
         allPositions.add(targetPos);
         
         if (allPositions.isEmpty()) {
             return;
         }
         
-        // Собираем уникальные блоки по всему пути
+        // РЎРѕР±РёСЂР°РµРј СѓРЅРёРєР°Р»СЊРЅС‹Рµ Р±Р»РѕРєРё РїРѕ РІСЃРµРјСѓ РїСѓС‚Рё
         Set<BlockPos> uniqueBlocks = new LinkedHashSet<>();
         for (Vec3d pos : allPositions) {
             BlockPos blockPos = new BlockPos(
@@ -156,24 +156,24 @@ public class BotDebug {
             uniqueBlocks.add(blockPos);
         }
         
-        // Рисуем только 2 угла каждого блока для производительности
+        // Р РёСЃСѓРµРј С‚РѕР»СЊРєРѕ 2 СѓРіР»Р° РєР°Р¶РґРѕРіРѕ Р±Р»РѕРєР° РґР»СЏ РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚Рё
         for (BlockPos blockPos : uniqueBlocks) {
             int bx = blockPos.getX();
             int by = blockPos.getY();
             int bz = blockPos.getZ();
             
-            // Только 2 противоположных угла
+            // РўРѕР»СЊРєРѕ 2 РїСЂРѕС‚РёРІРѕРїРѕР»РѕР¶РЅС‹С… СѓРіР»Р°
             world.spawnParticles(greenDust, bx, by + 1, bz, 1, 0, 0, 0, 0);
             world.spawnParticles(greenDust, bx + 1, by + 1, bz + 1, 1, 0, 0, 0, 0);
         }
         
-        // Рисуем серую линию по всему пути (история + планируемый)
+        // Р РёСЃСѓРµРј СЃРµСЂСѓСЋ Р»РёРЅРёСЋ РїРѕ РІСЃРµРјСѓ РїСѓС‚Рё (РёСЃС‚РѕСЂРёСЏ + РїР»Р°РЅРёСЂСѓРµРјС‹Р№)
         if (allPositions.size() > 1) {
             for (int i = 0; i < allPositions.size() - 1; i++) {
                 Vec3d pos1 = allPositions.get(i);
                 Vec3d pos2 = allPositions.get(i + 1);
                 
-                // Линия с большим шагом (меньше частиц)
+                // Р›РёРЅРёСЏ СЃ Р±РѕР»СЊС€РёРј С€Р°РіРѕРј (РјРµРЅСЊС€Рµ С‡Р°СЃС‚РёС†)
                 drawLine(world, grayDust, 
                     pos1.x, pos1.y + 0.1, pos1.z, 
                     pos2.x, pos2.y + 0.1, pos2.z, 
@@ -183,8 +183,8 @@ public class BotDebug {
     }
     
     /**
-     * Показать целевой блок красным кубом (куда бот хочет прийти)
-     * Обновляется каждые 5 тиков для уменьшения наложения частиц
+     * РџРѕРєР°Р·Р°С‚СЊ С†РµР»РµРІРѕР№ Р±Р»РѕРє РєСЂР°СЃРЅС‹Рј РєСѓР±РѕРј (РєСѓРґР° Р±РѕС‚ С…РѕС‡РµС‚ РїСЂРёР№С‚Рё)
+     * РћР±РЅРѕРІР»СЏРµС‚СЃСЏ РєР°Р¶РґС‹Рµ 5 С‚РёРєРѕРІ РґР»СЏ СѓРјРµРЅСЊС€РµРЅРёСЏ РЅР°Р»РѕР¶РµРЅРёСЏ С‡Р°СЃС‚РёС†
      */
     public static void showTargetBlock(ServerPlayerEntity bot, Vec3d targetPos) {
         DebugSettings settings = getSettings(bot.getName().getString());
@@ -192,7 +192,7 @@ public class BotDebug {
             return;
         }
         
-        // Показываем частицы только каждые 5 тиков
+        // РџРѕРєР°Р·С‹РІР°РµРј С‡Р°СЃС‚РёС†С‹ С‚РѕР»СЊРєРѕ РєР°Р¶РґС‹Рµ 5 С‚РёРєРѕРІ
         settings.navigationTickCounter++;
         if (settings.navigationTickCounter < 5) {
             return;
@@ -201,30 +201,30 @@ public class BotDebug {
         
         ServerWorld world = (ServerWorld) bot.getEntityWorld();
         
-        // Получаем координаты блока
+        // РџРѕР»СѓС‡Р°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ Р±Р»РѕРєР°
         int blockX = (int) Math.floor(targetPos.x);
         int blockY = (int) Math.floor(targetPos.y);
         int blockZ = (int) Math.floor(targetPos.z);
         
-        // Создаём красную dust частицу (RGB: 255, 0, 0)
+        // РЎРѕР·РґР°С‘Рј РєСЂР°СЃРЅСѓСЋ dust С‡Р°СЃС‚РёС†Сѓ (RGB: 255, 0, 0)
         DustParticleEffect redDust = new DustParticleEffect(COLOR_RED, 1.0f);
         
-        // Рисуем рёбра куба (12 рёбер) с увеличенным шагом
-        double step = 0.2; // Увеличен с 0.1 до 0.2 для производительности
+        // Р РёСЃСѓРµРј СЂС‘Р±СЂР° РєСѓР±Р° (12 СЂС‘Р±РµСЂ) СЃ СѓРІРµР»РёС‡РµРЅРЅС‹Рј С€Р°РіРѕРј
+        double step = 0.2; // РЈРІРµР»РёС‡РµРЅ СЃ 0.1 РґРѕ 0.2 РґР»СЏ РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚Рё
         
-        // Нижние 4 ребра (y = blockY)
+        // РќРёР¶РЅРёРµ 4 СЂРµР±СЂР° (y = blockY)
         drawLine(world, redDust, blockX, blockY, blockZ, blockX + 1, blockY, blockZ, step);
         drawLine(world, redDust, blockX, blockY, blockZ + 1, blockX + 1, blockY, blockZ + 1, step);
         drawLine(world, redDust, blockX, blockY, blockZ, blockX, blockY, blockZ + 1, step);
         drawLine(world, redDust, blockX + 1, blockY, blockZ, blockX + 1, blockY, blockZ + 1, step);
         
-        // Верхние 4 ребра (y = blockY + 1)
+        // Р’РµСЂС…РЅРёРµ 4 СЂРµР±СЂР° (y = blockY + 1)
         drawLine(world, redDust, blockX, blockY + 1, blockZ, blockX + 1, blockY + 1, blockZ, step);
         drawLine(world, redDust, blockX, blockY + 1, blockZ + 1, blockX + 1, blockY + 1, blockZ + 1, step);
         drawLine(world, redDust, blockX, blockY + 1, blockZ, blockX, blockY + 1, blockZ + 1, step);
         drawLine(world, redDust, blockX + 1, blockY + 1, blockZ, blockX + 1, blockY + 1, blockZ + 1, step);
         
-        // Вертикальные 4 ребра
+        // Р’РµСЂС‚РёРєР°Р»СЊРЅС‹Рµ 4 СЂРµР±СЂР°
         drawLine(world, redDust, blockX, blockY, blockZ, blockX, blockY + 1, blockZ, step);
         drawLine(world, redDust, blockX + 1, blockY, blockZ, blockX + 1, blockY + 1, blockZ, step);
         drawLine(world, redDust, blockX, blockY, blockZ + 1, blockX, blockY + 1, blockZ + 1, step);
@@ -232,8 +232,8 @@ public class BotDebug {
     }
     
     /**
-     * Показать хитбокс цели фиолетовым цветом
-     * Обновляется каждые 3 тика для уменьшения наложения частиц
+     * РџРѕРєР°Р·Р°С‚СЊ С…РёС‚Р±РѕРєСЃ С†РµР»Рё С„РёРѕР»РµС‚РѕРІС‹Рј С†РІРµС‚РѕРј
+     * РћР±РЅРѕРІР»СЏРµС‚СЃСЏ РєР°Р¶РґС‹Рµ 3 С‚РёРєР° РґР»СЏ СѓРјРµРЅСЊС€РµРЅРёСЏ РЅР°Р»РѕР¶РµРЅРёСЏ С‡Р°СЃС‚РёС†
      */
     public static void showTargetEntity(ServerPlayerEntity bot, net.minecraft.entity.Entity target) {
         DebugSettings settings = getSettings(bot.getName().getString());
@@ -241,7 +241,7 @@ public class BotDebug {
             return;
         }
         
-        // Показываем частицы только каждые 3 тика (цель движется)
+        // РџРѕРєР°Р·С‹РІР°РµРј С‡Р°СЃС‚РёС†С‹ С‚РѕР»СЊРєРѕ РєР°Р¶РґС‹Рµ 3 С‚РёРєР° (С†РµР»СЊ РґРІРёР¶РµС‚СЃСЏ)
         settings.targetTickCounter++;
         if (settings.targetTickCounter < 3) {
             return;
@@ -250,27 +250,27 @@ public class BotDebug {
         
         ServerWorld world = (ServerWorld) bot.getEntityWorld();
         
-        // Получаем хитбокс цели
+        // РџРѕР»СѓС‡Р°РµРј С…РёС‚Р±РѕРєСЃ С†РµР»Рё
         var box = target.getBoundingBox();
         
-        // Создаём фиолетовую dust частицу (RGB: 255, 0, 255)
+        // РЎРѕР·РґР°С‘Рј С„РёРѕР»РµС‚РѕРІСѓСЋ dust С‡Р°СЃС‚РёС†Сѓ (RGB: 255, 0, 255)
         DustParticleEffect purpleDust = new DustParticleEffect(COLOR_PURPLE, 1.0f);
         
-        double step = 0.2; // Увеличен с 0.1 до 0.2 для производительности
+        double step = 0.2; // РЈРІРµР»РёС‡РµРЅ СЃ 0.1 РґРѕ 0.2 РґР»СЏ РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚Рё
         
-        // Нижние 4 ребра
+        // РќРёР¶РЅРёРµ 4 СЂРµР±СЂР°
         drawLine(world, purpleDust, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ, step);
         drawLine(world, purpleDust, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ, step);
         drawLine(world, purpleDust, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ, step);
         drawLine(world, purpleDust, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, step);
         
-        // Верхние 4 ребра
+        // Р’РµСЂС…РЅРёРµ 4 СЂРµР±СЂР°
         drawLine(world, purpleDust, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, step);
         drawLine(world, purpleDust, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ, step);
         drawLine(world, purpleDust, box.minX, box.maxY, box.minZ, box.minX, box.maxY, box.maxZ, step);
         drawLine(world, purpleDust, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, step);
         
-        // Вертикальные 4 ребра
+        // Р’РµСЂС‚РёРєР°Р»СЊРЅС‹Рµ 4 СЂРµР±СЂР°
         drawLine(world, purpleDust, box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ, step);
         drawLine(world, purpleDust, box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.minZ, step);
         drawLine(world, purpleDust, box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.maxZ, step);
@@ -278,7 +278,7 @@ public class BotDebug {
     }
     
     /**
-     * Нарисовать линию dust частицами между двумя точками
+     * РќР°СЂРёСЃРѕРІР°С‚СЊ Р»РёРЅРёСЋ dust С‡Р°СЃС‚РёС†Р°РјРё РјРµР¶РґСѓ РґРІСѓРјСЏ С‚РѕС‡РєР°РјРё
      */
     private static void drawLine(ServerWorld world, DustParticleEffect dust, double x1, double y1, double z1, double x2, double y2, double z2, double step) {
         double dx = x2 - x1;
@@ -293,7 +293,7 @@ public class BotDebug {
             double y = y1 + dy * t;
             double z = z1 + dz * t;
             
-            // Dust частицы
+            // Dust С‡Р°СЃС‚РёС†С‹
             world.spawnParticles(
                 dust,
                 x, y, z,
@@ -305,7 +305,7 @@ public class BotDebug {
     }
     
     /**
-     * Показать направление взгляда синими частицами
+     * РџРѕРєР°Р·Р°С‚СЊ РЅР°РїСЂР°РІР»РµРЅРёРµ РІР·РіР»СЏРґР° СЃРёРЅРёРјРё С‡Р°СЃС‚РёС†Р°РјРё
      */
     public static void showLookDirection(ServerPlayerEntity bot) {
         if (!getSettings(bot.getName().getString()).navigationInfo) {
@@ -316,10 +316,10 @@ public class BotDebug {
         Vec3d lookVec = bot.getRotationVec(1.0f);
         Vec3d startPos = bot.getEyePos();
         
-        // Создаём синюю dust частицу (RGB: 0, 128, 255)
+        // РЎРѕР·РґР°С‘Рј СЃРёРЅСЋСЋ dust С‡Р°СЃС‚РёС†Сѓ (RGB: 0, 128, 255)
         DustParticleEffect blueDust = new DustParticleEffect(0x0080FF, 1.0f);
         
-        // Рисуем линию взгляда синими частицами
+        // Р РёСЃСѓРµРј Р»РёРЅРёСЋ РІР·РіР»СЏРґР° СЃРёРЅРёРјРё С‡Р°СЃС‚РёС†Р°РјРё
         for (int i = 1; i <= 10; i++) {
             double x = startPos.x + lookVec.x * i * 0.5;
             double y = startPos.y + lookVec.y * i * 0.5;
@@ -336,7 +336,7 @@ public class BotDebug {
     }
     
     /**
-     * Показать позицию атаки жёлтыми частицами
+     * РџРѕРєР°Р·Р°С‚СЊ РїРѕР·РёС†РёСЋ Р°С‚Р°РєРё Р¶С‘Р»С‚С‹РјРё С‡Р°СЃС‚РёС†Р°РјРё
      */
     public static void showAttackPosition(ServerPlayerEntity bot, Vec3d attackPos) {
         if (!getSettings(bot.getName().getString()).combatInfo) {
@@ -345,10 +345,10 @@ public class BotDebug {
         
         ServerWorld world = (ServerWorld) bot.getEntityWorld();
         
-        // Создаём жёлтую dust частицу (RGB: 255, 255, 0)
+        // РЎРѕР·РґР°С‘Рј Р¶С‘Р»С‚СѓСЋ dust С‡Р°СЃС‚РёС†Сѓ (RGB: 255, 255, 0)
         DustParticleEffect yellowDust = new DustParticleEffect(0xFFFF00, 1.0f);
         
-        // Жёлтые частицы на позиции атаки
+        // Р–С‘Р»С‚С‹Рµ С‡Р°СЃС‚РёС†С‹ РЅР° РїРѕР·РёС†РёРё Р°С‚Р°РєРё
         world.spawnParticles(
             yellowDust,
             attackPos.x, attackPos.y + 1, attackPos.z,
@@ -359,7 +359,7 @@ public class BotDebug {
     }
     
     /**
-     * Очистить все настройки отладки
+     * РћС‡РёСЃС‚РёС‚СЊ РІСЃРµ РЅР°СЃС‚СЂРѕР№РєРё РѕС‚Р»Р°РґРєРё
      */
     public static void clearAll() {
         debugSettings.clear();
