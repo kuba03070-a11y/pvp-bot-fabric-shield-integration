@@ -7,4 +7,4 @@ build/reports/problems/problems-report.html
 /.gradle/loom-cache
 /build/tmp
 /run
-.gradle/8.14.1/checksums/checksums.lock
+/wiki
