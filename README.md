@@ -56,6 +56,13 @@ This mod adds bots to the server with advanced combat AI, a faction system, auto
 - **Giving Out kits**
 - **Saving kits**
 
+### 🛤️ Path System
+- **Create paths** for bots to follow
+- **Add waypoints** to paths
+- **Loop mode** - back-and-forth or circular movement
+- **Combat mode** - stop for combat or continue moving
+- **Visual indicators** - particles showing path points and lines
+
 ### 🎯 Realism
 - **Miss Chance**
 - **Error Chance**
@@ -215,7 +222,45 @@ This mod adds bots to the server with advanced combat AI, a faction system, auto
 /pvpbot faction info <name> - Faction information
 ```
 ```
-/pvpbot faction ally <faction1> <faction2> - Create
+/pvpbot faction ally <faction1> <faction2> - Create alliance
+```
+
+### Paths
+```
+/pvpbot path create <name> - Create a new path
+```
+```
+/pvpbot path delete <name> - Delete a path
+```
+```
+/pvpbot path add <name> - Add current position as waypoint
+```
+```
+/pvpbot path remove <name> <index> - Remove waypoint by index
+```
+```
+/pvpbot path clear <name> - Remove all waypoints
+```
+```
+/pvpbot path list - List all paths
+```
+```
+/pvpbot path info <name> - Show path information
+```
+```
+/pvpbot path start <bot> <path> - Make bot follow path
+```
+```
+/pvpbot path stop <bot> - Stop bot from following path
+```
+```
+/pvpbot path loop <name> <true/false> - Toggle loop mode (back-and-forth)
+```
+```
+/pvpbot path attack <name> <true/false> - Toggle combat mode (stop for combat)
+```
+```
+/pvpbot path show <name> <true/false> - Toggle path visualization
 ```
 
 ## 🖼️ Screenshots
@@ -235,9 +280,12 @@ This mod adds bots to the server with advanced combat AI, a faction system, auto
 <img width="1920" height="1009" alt="изображение" src="https://github.com/user-attachments/assets/e63bb460-97e5-45f7-bc94-8db54e299222" />
 <img width="1920" height="1009" alt="изображение" src="https://github.com/user-attachments/assets/522a5072-5a28-4e60-abd3-53a183039a1c" />
 
-> - Mass bot spawn
+- Mass bot spawn
 <img width="1691" height="888" alt="изображение" src="https://github.com/user-attachments/assets/ecfcd7c4-f430-4765-8391-09d3d4761cb6" />
 
+- Path system in action
+<img width="1920" height="1009" alt="изображение" src="https://github.com/user-attachments/assets/1e609988-78b7-4261-a831-75587380b270" />
+<img width="1920" height="1009" alt="изображение" src="https://github.com/user-attachments/assets/6a2c5679-41b2-4792-bda6-fdeca4fb107c" />
 
 
 ## 🔗 Links

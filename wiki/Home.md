@@ -2,8 +2,6 @@
 
 Welcome to the official PVP Bot documentation!
 
-**🇷🇺 [Русская версия](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Home-RU)**
-
 ---
 
 ## 📖 About
@@ -27,6 +25,7 @@ PVP Bot is a Minecraft Fabric mod that adds intelligent combat bots powered by C
 | [🎮 Commands](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Commands) | All available commands |
 | [⚔️ Combat System](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Combat) | How bots fight |
 | [🚶 Navigation](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Navigation) | Movement and pathfinding |
+| [🛤️ Paths](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Paths) | Path system and waypoints |
 | [👥 Factions](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Factions) | Team system |
 | [🎒 Kits](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Kits) | Equipment presets |
 | [⚙️ Settings](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Settings) | All configuration options |

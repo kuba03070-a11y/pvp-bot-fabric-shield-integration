@@ -10,6 +10,7 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 - [Combat Commands](#-combat-commands)
 - [Faction Commands](#-faction-commands)
 - [Kit Commands](#-kit-commands)
+- [Path Commands](#-path-commands)
 - [Settings](#-settings)
 
 ---
@@ -132,6 +133,51 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 # Give kit to entire faction
 /pvpbot faction givekit RedTeam warrior
 ```
+
+---
+
+## 🛤️ Path Commands
+
+| Command | Description |
+|---------|-------------|
+| `/pvpbot path create <name>` | Create a new path |
+| `/pvpbot path delete <name>` | Delete a path |
+| `/pvpbot path add <name>` | Add current position as waypoint |
+| `/pvpbot path remove <name> <index>` | Remove waypoint by index |
+| `/pvpbot path clear <name>` | Remove all waypoints |
+| `/pvpbot path list` | List all paths |
+| `/pvpbot path info <name>` | Show path information |
+| `/pvpbot path follow <bot> <path>` | Make bot follow path |
+| `/pvpbot path stop <bot>` | Stop bot from following path |
+| `/pvpbot path loop <name> <true/false>` | Toggle loop mode |
+| `/pvpbot path attack <name> <true/false>` | Toggle combat mode |
+| `/pvpbot path show <name> <true/false>` | Toggle path visualization |
+
+### Examples
+
+```mcfunction
+# Create a patrol route
+/pvpbot path create patrol
+
+# Add waypoints (stand at each location)
+/pvpbot path add patrol
+/pvpbot path add patrol
+/pvpbot path add patrol
+
+# Make bot follow the path
+/pvpbot path follow Guard1 patrol
+
+# Enable back-and-forth movement
+/pvpbot path loop patrol true
+
+# Disable combat while patrolling
+/pvpbot path attack patrol false
+
+# Show path with particles
+/pvpbot path show patrol true
+```
+
+See [Paths](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Paths) page for detailed guide.
 
 ---
 
