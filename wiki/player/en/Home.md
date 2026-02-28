@@ -24,8 +24,9 @@ PVP Bot is a Minecraft Fabric mod that adds intelligent combat bots powered by C
 |------|-------------|
 | [🎮 Commands](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Commands) | All available commands |
 | [⚔️ Combat System](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Combat) | How bots fight |
-| [🚶 Navigation](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Navigation) | Movement and pathfinding |
-| [🛤️ Paths](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Paths) | Path system and waypoints |
+| [� Explosive Combat](https://github.com/Stepan1411/pvp-bot-fabric/wiki/ExplosiveCombat) | Crystal PVP and Anchor PVP |
+| [� Navigation](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Navigation) | Movement and pathfinding |
+| [�️ Paths](https://github.com/Stepean1411/pvp-bot-fabric/wiki/Paths) | Path system and waypoints |
 | [👥 Factions](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Factions) | Team system |
 | [🎒 Kits](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Kits) | Equipment presets |
 | [⚙️ Settings](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Settings) | All configuration options |
@@ -37,6 +38,16 @@ PVP Bot is a Minecraft Fabric mod that adds intelligent combat bots powered by C
 ### Create a simple bot
 ```
 /pvpbot spawn MyBot
+```
+
+### Enable Crystal PVP
+```
+/pvpbot settings crystalpvp true
+```
+
+### Enable Anchor PVP
+```
+/pvpbot settings anchorpvp true
 ```
 
 ### Make two teams fight

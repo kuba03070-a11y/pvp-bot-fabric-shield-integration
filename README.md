@@ -9,6 +9,27 @@ This mod adds bots to the server with advanced combat AI, a faction system, auto
 
 ---
 
+## 🔌 Developer API
+
+PVP Bot Fabric provides a powerful API for creating addons and extensions!
+
+### API Features
+- **Events** - track bot spawn, death, attacks, and damage
+- **Combat Strategies** - create custom combat logic
+- **Integration** - easily integrate with other mods
+- **Utilities** - access settings and statistics
+
+### Quick Example
+```java
+PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
+    System.out.println("Bot spawned: " + bot.getName().getString());
+});
+```
+
+📖 [Full API Documentation](API_README.md) | [Code Examples](wiki/developer/Examples.md)
+
+---
+
 ## 🎮 Main Features
 
 ### 🤖 Bot Management
@@ -295,6 +316,7 @@ This mod adds bots to the server with advanced combat AI, a faction system, auto
 - **Issues**: https://github.com/Stepan1411/pvp-bot-fabric/issues
 - **Wiki**: https://github.com/Stepan1411/pvp-bot-fabric/wiki
 - **Statistics**: https://stepan1411.github.io/pvp-bot-fabric/
+- **Developer API**: [API Documentation](API_README.md)
 
 
 Made for my friend [Nantag](https://youtube.com/@nantagmc?si=jCx-NguyQ5zxGm_w) he does really cool videos go check them out if you want

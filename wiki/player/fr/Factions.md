@@ -1,19 +1,19 @@
-# 👥 Faction System
+# 👥 Système de factions
 
-Organize bots and players into teams that can fight each other!
-
----
-
-## 📖 Overview
-
-Factions are groups of bots and players. You can:
-- Create teams of bots
-- Set factions as hostile to each other
-- Bots automatically attack enemies from hostile factions
+Organisez les robots et les joueurs en équipes qui peuvent s'affronter !
 
 ---
 
-## 🏗️ Creating Factions
+## 📖 Aperçu
+
+Les factions sont des groupes de robots et de joueurs. Tu peux:
+- Créer des équipes de robots
+- Définir les factions comme hostiles les unes aux autres
+- Les robots attaquent automatiquement les ennemis des factions hostiles
+
+---
+
+## 🏗️ Créer des factions
 
 ```mcfunction
 # Create a faction
@@ -31,9 +31,9 @@ Factions are groups of bots and players. You can:
 
 ---
 
-## 👤 Managing Members
+## 👤 Gestion des membres
 
-### Add Members
+### Ajouter des membres
 ```mcfunction
 # Add a bot to faction
 /pvpbot faction add RedTeam Bot1
@@ -45,16 +45,16 @@ Factions are groups of bots and players. You can:
 /pvpbot faction addnear RedTeam 20
 ```
 
-### Remove Members
+### Supprimer des membres
 ```mcfunction
 /pvpbot faction remove RedTeam Bot1
 ```
 
 ---
 
-## ⚔️ Hostile Relations
+## ⚔️ Relations hostiles
 
-Make factions enemies - their members will automatically attack each other!
+Faites des factions des ennemies - leurs membres s'attaqueront automatiquement les uns les autres !
 
 ```mcfunction
 # Make factions hostile
@@ -64,18 +64,18 @@ Make factions enemies - their members will automatically attack each other!
 /pvpbot faction hostile RedTeam BlueTeam false
 ```
 
-### How It Works
-1. Bot from RedTeam sees player/bot from BlueTeam
-2. If factions are hostile, bot automatically targets them
-3. Combat begins!
+### Comment ça marche
+1. Le bot de RedTeam voit le joueur/bot de BlueTeam
+2. Si les factions sont hostiles, le bot les cible automatiquement
+3. Le combat commence !
 
-> **Note:** Requires `autotarget` to be enabled for automatic targeting.
+> **Remarque :** Nécessite`autotarget`être activé pour le ciblage automatique.
 
 ---
 
-## 🎁 Giving Items
+## 🎁 Donner des objets
 
-### Give Items
+### Donner des objets
 ```mcfunction
 # Give diamond sword to all faction members
 /pvpbot faction give RedTeam diamond_sword
@@ -85,7 +85,7 @@ Make factions enemies - their members will automatically attack each other!
 /pvpbot faction give RedTeam golden_apple 16
 ```
 
-### Give Kits
+### Offrez des kits
 ```mcfunction
 # Give a saved kit to entire faction
 /pvpbot faction givekit RedTeam warrior
@@ -93,9 +93,9 @@ Make factions enemies - their members will automatically attack each other!
 
 ---
 
-## 📋 Complete Example
+## 📋 Exemple complet
 
-Create two teams and make them fight:
+Créez deux équipes et faites-les combattre :
 
 ```mcfunction
 # Create bots
@@ -135,7 +135,7 @@ Create two teams and make them fight:
 
 ---
 
-## ⚙️ Settings
+## ⚙️ Paramètres
 
 ```mcfunction
 # Enable/disable faction system
@@ -145,15 +145,15 @@ Create two teams and make them fight:
 /pvpbot settings friendlyfire false
 ```
 
-When friendly fire is disabled (default), bots cannot damage members of their own faction or allied factions.
+Lorsque les tirs amis sont désactivés (par défaut), les robots ne peuvent pas endommager les membres de leur propre faction ou des factions alliées.
 
 ---
 
-## 💾 Data Storage
+## 💾 Stockage des données
 
-Faction data is saved in:
+Les données de faction sont enregistrées dans :
 ```
 config/pvp_bot_factions.json
 ```
 
-This file persists across server restarts.
+Ce fichier persiste lors des redémarrages du serveur.

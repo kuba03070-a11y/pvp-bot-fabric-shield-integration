@@ -140,7 +140,12 @@ Create two teams and make them fight:
 ```mcfunction
 # Enable/disable faction system
 /pvpbot settings factions true
+
+# Enable/disable friendly fire (damage to allies)
+/pvpbot settings friendlyfire false
 ```
+
+When friendly fire is disabled (default), bots cannot damage members of their own faction or allied factions.
 
 ---
 

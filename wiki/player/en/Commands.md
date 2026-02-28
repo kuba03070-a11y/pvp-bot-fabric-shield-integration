@@ -24,6 +24,7 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 | `/pvpbot remove <name>` | Remove a bot |
 | `/pvpbot removeall` | Remove all bots |
 | `/pvpbot list` | List all active bots |
+| `/pvpbot menu` | Open GUI menu |
 | `/pvpbot inventory <name>` | Show bot's inventory |
 
 ### Examples
@@ -188,6 +189,8 @@ Use `/pvpbot settings` to see all current settings.
 Use `/pvpbot settings <setting>` to see current value.
 
 Use `/pvpbot settings <setting> <value>` to change a setting.
+
+Use `/pvpbot settings gui` to open the graphical settings menu.
 
 See [Settings](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Settings) page for full list of all settings.
 

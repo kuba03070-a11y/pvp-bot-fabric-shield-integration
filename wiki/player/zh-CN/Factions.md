@@ -1,19 +1,19 @@
-# 👥 Faction System
+# 👥 派系系统
 
-Organize bots and players into teams that can fight each other!
-
----
-
-## 📖 Overview
-
-Factions are groups of bots and players. You can:
-- Create teams of bots
-- Set factions as hostile to each other
-- Bots automatically attack enemies from hostile factions
+将机器人和玩家组织成可以互相战斗的团队！
 
 ---
 
-## 🏗️ Creating Factions
+## 📖 概述
+
+派系是由机器人和玩家组成的群体。你可以：
+- 创建机器人团队
+- 将派系设置为彼此敌对
+- 机器人自动攻击敌对派系的敌人
+
+---
+
+## 🏗️ 创建派系
 
 ```mcfunction
 # Create a faction
@@ -31,9 +31,9 @@ Factions are groups of bots and players. You can:
 
 ---
 
-## 👤 Managing Members
+## 👤 管理会员
 
-### Add Members
+### 添加成员
 ```mcfunction
 # Add a bot to faction
 /pvpbot faction add RedTeam Bot1
@@ -45,16 +45,16 @@ Factions are groups of bots and players. You can:
 /pvpbot faction addnear RedTeam 20
 ```
 
-### Remove Members
+### 删除成员
 ```mcfunction
 /pvpbot faction remove RedTeam Bot1
 ```
 
 ---
 
-## ⚔️ Hostile Relations
+## ⚔️ 敌对关系
 
-Make factions enemies - their members will automatically attack each other!
+让派系成为敌人——他们的成员会自动互相攻击！
 
 ```mcfunction
 # Make factions hostile
@@ -64,16 +64,16 @@ Make factions enemies - their members will automatically attack each other!
 /pvpbot faction hostile RedTeam BlueTeam false
 ```
 
-### How It Works
-1. Bot from RedTeam sees player/bot from BlueTeam
-2. If factions are hostile, bot automatically targets them
-3. Combat begins!
+### 它是如何运作的
+1. 红队的机器人看到蓝队的玩家/机器人
+2. 如果派系存在敌对，机器人会自动瞄准他们
+3.战斗开始！
 
-> **Note:** Requires `autotarget` to be enabled for automatic targeting.
+> **注意：** 需要`autotarget`启用自动定位。
 
 ---
 
-## 🎁 Giving Items
+## 🎁 给予物品
 
 ### Give Items
 ```mcfunction
@@ -85,7 +85,7 @@ Make factions enemies - their members will automatically attack each other!
 /pvpbot faction give RedTeam golden_apple 16
 ```
 
-### Give Kits
+### 赠送套件
 ```mcfunction
 # Give a saved kit to entire faction
 /pvpbot faction givekit RedTeam warrior
@@ -93,9 +93,9 @@ Make factions enemies - their members will automatically attack each other!
 
 ---
 
-## 📋 Complete Example
+## 📋 完整示例
 
-Create two teams and make them fight:
+创建两支队伍并让他们战斗：
 
 ```mcfunction
 # Create bots
@@ -135,7 +135,7 @@ Create two teams and make them fight:
 
 ---
 
-## ⚙️ Settings
+## ⚙️ 设置
 
 ```mcfunction
 # Enable/disable faction system
@@ -149,11 +149,11 @@ When friendly fire is disabled (default), bots cannot damage members of their ow
 
 ---
 
-## 💾 Data Storage
+## 💾 数据存储
 
-Faction data is saved in:
+派系数据保存在：
 ```
 config/pvp_bot_factions.json
 ```
 
-This file persists across server restarts.
+该文件在服务器重新启动后仍然存在。

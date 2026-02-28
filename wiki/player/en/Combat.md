@@ -21,6 +21,18 @@ PVP Bot features an advanced combat AI that can use different weapons and tactic
 - Bots use wind charges to launch into the air
 - Devastating falling attacks
 
+### Crystal PVP
+- **End Crystals + Obsidian** - Place obsidian and detonate crystals
+- Bots calculate safe explosion distances
+- Automatic crystal placement and detonation
+- High damage explosive combat
+
+### Anchor PVP
+- **Respawn Anchor + Glowstone** - Explosive weapon in Overworld/End
+- Bots charge anchors with glowstone
+- Detonate for massive damage
+- Only works outside the Nether
+
 ---
 
 ## 🎯 Targeting
@@ -71,6 +83,14 @@ Bots use axes to disable enemy shields.
 Bots keep totems of undying in offhand.
 ```mcfunction
 /pvpbot settings autototem true
+/pvpbot settings totempriority true  # Prioritize totem over shield
+```
+
+### Auto-Mend
+Bots automatically repair damaged armor using XP bottles.
+```mcfunction
+/pvpbot settings automend true
+/pvpbot settings menddurability 0.5  # Repair at 50% durability
 ```
 
 ---
@@ -143,7 +163,12 @@ Bots can use cobwebs strategically:
 | `ranged` | true/false | true | Use bows |
 | `mace` | true/false | true | Use mace |
 | `spear` | true/false | false | Use spear (buggy) |
+| `crystalpvp` | true/false | false | Use crystal PVP |
+| `anchorpvp` | true/false | false | Use anchor PVP |
 | `autopotion` | true/false | true | Auto-use potions |
+| `automend` | true/false | true | Auto-repair armor |
+| `menddurability` | 0.1-1.0 | 0.5 | Durability % to repair |
+| `totempriority` | true/false | true | Totem over shield |
 | `cobweb` | true/false | true | Use cobwebs |
 | `retreat` | true/false | true | Retreat when low HP |
 | `retreathp` | 0.1-0.9 | 0.3 | HP % to retreat |

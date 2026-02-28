@@ -33,6 +33,8 @@ Complete list of all configuration options.
 | `ranged` | bool | - | true | Use bows/crossbows |
 | `mace` | bool | - | true | Use mace with wind charges |
 | `spear` | bool | - | false | Use spear (disabled due to Carpet bug) |
+| `crystalpvp` | bool | - | false | Use crystal PVP (obsidian + crystals) |
+| `anchorpvp` | bool | - | false | Use anchor PVP (respawn anchor + glowstone) |
 | `attackcooldown` | int | 1-40 | 10 | Ticks between attacks |
 | `meleerange` | double | 2-6 | 3.5 | Melee attack distance |
 | `movespeed` | double | 0.1-2.0 | 1.0 | Movement speed multiplier |
@@ -79,7 +81,10 @@ All buff potions are thrown at once when combat starts or when effects expire.
 | `autoarmor` | bool | - | true | Auto-equip best armor |
 | `autoweapon` | bool | - | true | Auto-equip best weapon |
 | `autototem` | bool | - | true | Auto-equip totem in offhand |
+| `totempriority` | bool | - | true | Prioritize totem over shield |
 | `autoshield` | bool | - | true | Auto-use shield when blocking |
+| `automend` | bool | - | true | Auto-repair armor with XP bottles |
+| `menddurability` | double | 0.1-1.0 | 0.5 | Durability % threshold to repair (50%) |
 | `prefersword` | bool | - | true | Prefer sword over axe |
 | `shieldbreak` | bool | - | true | Switch to axe to break enemy shield |
 | `droparmor` | bool | - | false | Drop worse armor pieces |
@@ -116,6 +121,7 @@ All buff potions are thrown at once when combat starts or when effects expire.
 | Setting | Type | Range | Default | Description |
 |---------|------|-------|---------|-------------|
 | `factions` | bool | - | true | Enable faction system |
+| `friendlyfire` | bool | - | false | Allow damage to faction allies |
 
 ---
 
@@ -156,6 +162,8 @@ Both settings and bots persist across server restarts. Bots are automatically re
 ```mcfunction
 /pvpbot settings ranged false
 /pvpbot settings mace false
+/pvpbot settings crystalpvp false
+/pvpbot settings anchorpvp false
 ```
 
 ### Fast movement
