@@ -1,0 +1,30 @@
+{
+  "pages": [
+    {
+      "id": "Home",
+      "icon": "🏠",
+      "file": "Home.md",
+      "translations": {
+        "en": "Home",
+        "ru": "Главная",
+        "zh": "主页",
+        "fr": "Accueil",
+        "es": "Inicio",
+        "de": "Startseite"
+      }
+    },
+    {
+      "id": "Events",
+      "icon": "🎮",
+      "file": "Events.md",
+      "translations": {
+        "en": "Events",
+        "ru": "Ивенты",
+        "zh": "",
+        "fr": "",
+        "es": "",
+        "de": ""
+      }
+    }
+  ]
+}

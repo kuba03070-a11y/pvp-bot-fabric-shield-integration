@@ -3,3 +3,5 @@
 /meteor
 /run
 src/count_lines.py
+/build/tmp
+/build/tmp/compileJava

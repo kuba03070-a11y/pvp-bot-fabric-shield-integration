@@ -80,6 +80,7 @@ public class BotNavigation {
         Vec3d awayPos = new Vec3d(bot.getX() + dx * 10, bot.getY(), bot.getZ() + dz * 10);
         moveTowardPos(bot, awayPos, speed, state);
     }
+
     /**
      * Двигаться к указанной позиции с обходом препятствий
      */

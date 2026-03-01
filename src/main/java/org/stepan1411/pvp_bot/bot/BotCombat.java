@@ -759,7 +759,16 @@ public class BotCombat {
         // Р вЂќР ВµРЎР‚Р В¶Р С‘Р С Р Т‘Р С‘РЎРѓРЎвЂљР В°Р Р…РЎвЂ Р С‘РЎР‹ РЎРѓ Р Р…Р В°Р Р†Р С‘Р С–Р В°РЎвЂ Р С‘Р ВµР в„–
         double optimalRange = settings.getRangedOptimalRange();
         if (distance < optimalRange - 5) {
-            BotNavigation.moveAway(bot, target, settings.getMoveSpeed());
+            // Слишком близко - отходим назад БЕЗ поворота (продолжаем смотреть на цель)
+            double dx = bot.getX() - target.getX();
+            double dz = bot.getZ() - target.getZ();
+            double dist = Math.sqrt(dx * dx + dz * dz);
+            if (dist > 0) {
+                dx /= dist;
+                dz /= dist;
+                bot.addVelocity(dx * settings.getMoveSpeed() * 0.05, 0, dz * settings.getMoveSpeed() * 0.05);
+                // Velocity applied
+            }
         } else if (distance > optimalRange + 10) {
             BotNavigation.moveToward(bot, target, settings.getMoveSpeed());
         }
