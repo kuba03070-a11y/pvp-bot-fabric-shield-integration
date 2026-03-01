@@ -164,6 +164,53 @@ API version mismatch. Update dependency to latest version.
 2. Add logging for debugging
 3. Ensure conditions in `canUse()` are met
 
+### Combat Strategy not being called
+
+**Problem:** Your `CombatStrategy` is registered but `canUse()` and `execute()` are never called.
+
+**Solution:** This was fixed in version 1.1.0+. Make sure you're using the latest version. The combat strategies are now properly integrated into the bot combat loop.
+
+**Verification:**
+```java
+CombatStrategyRegistry.getInstance().register(myStrategy);
+System.out.println("Strategy registered: " + myStrategy.getName());
+```
+
+### BotAttackHandler returns true but attack still happens
+
+**Problem:** Returning `true` from `BotAttackHandler.onBotAttack()` doesn't cancel the attack.
+
+**Solution:** This was fixed in version 1.1.0+. The attack cancellation now works correctly. The handler is called before the attack is executed, and returning `true` will prevent the attack.
+
+**Example:**
+```java
+PvpBotAPI.getEventManager().registerAttackHandler((bot, target) -> {
+    if (target.getName().getString().equals("FriendlyPlayer")) {
+        return true; // Attack will be cancelled
+    }
+    return false; // Attack will proceed
+});
+```
+
+### "Cannot resolve method getServer()" in bot code
+
+**Problem:** Documentation shows `bot.getServer()` but this method doesn't exist in Minecraft 1.21.1.
+
+**Solution:** Use the `server` parameter passed to your method, or get the world:
+
+```java
+// WRONG (doesn't exist):
+MinecraftServer server = bot.getServer();
+
+// CORRECT (use parameter):
+public boolean execute(ServerPlayerEntity bot, Entity target, BotSettings settings, MinecraftServer server) {
+    // server is already available as parameter
+}
+
+// CORRECT (get world):
+ServerWorld world = (ServerWorld) bot.getEntityWorld();
+```
+
 ## Publishing
 
 ### How do I publish my addon?

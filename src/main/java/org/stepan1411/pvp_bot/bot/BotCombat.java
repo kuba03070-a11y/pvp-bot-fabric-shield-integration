@@ -17,51 +17,51 @@ import java.util.*;
 
 public class BotCombat {
     
-    // РҐСЂР°РЅРµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ Р±РѕСЏ РґР»СЏ РєР°Р¶РґРѕРіРѕ Р±РѕС‚Р°
+    // Р ТђРЎР‚Р В°Р Р…Р ВµР Р…Р С‘Р Вµ РЎРѓР С•РЎРѓРЎвЂљР С•РЎРЏР Р…Р С‘РЎРЏ Р В±Р С•РЎРЏ Р Т‘Р В»РЎРЏ Р С”Р В°Р В¶Р Т‘Р С•Р С–Р С• Р В±Р С•РЎвЂљР В°
     private static final Map<String, CombatState> combatStates = new HashMap<>();
     
     public static class CombatState {
         public Entity target = null;
-        public String forcedTargetName = null; // РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅР°СЏ С†РµР»СЊ РїРѕ РєРѕРјР°РЅРґРµ
+        public String forcedTargetName = null; // Р СџРЎР‚Р С‘Р Р…РЎС“Р Т‘Р С‘РЎвЂљР ВµР В»РЎРЉР Р…Р В°РЎРЏ РЎвЂ Р ВµР В»РЎРЉ Р С—Р С• Р С”Р С•Р СР В°Р Р…Р Т‘Р Вµ
         public int attackCooldown = 0;
         public int bowDrawTicks = 0;
         public boolean isDrawingBow = false;
         public Entity lastAttacker = null;
         public long lastAttackTime = 0;
         public WeaponMode currentMode = WeaponMode.MELEE;
-        public float lastHealth = 20.0f; // Р”Р»СЏ РѕС‚СЃР»РµР¶РёРІР°РЅРёСЏ СѓСЂРѕРЅР°
-        public boolean isRetreating = false; // РћС‚СЃС‚СѓРїР°РµС‚ РґР»СЏ Р»РµС‡РµРЅРёСЏ
+        public float lastHealth = 20.0f; // Р вЂќР В»РЎРЏ Р С•РЎвЂљРЎРѓР В»Р ВµР В¶Р С‘Р Р†Р В°Р Р…Р С‘РЎРЏ РЎС“РЎР‚Р С•Р Р…Р В°
+        public boolean isRetreating = false; // Р С›РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°Р ВµРЎвЂљ Р Т‘Р В»РЎРЏ Р В»Р ВµРЎвЂЎР ВµР Р…Р С‘РЎРЏ
         
-        // РЎРѕСЃС‚РѕСЏРЅРёРµ РєРѕРїСЊСЏ (Spear) - 1.21.11
+        // Р РЋР С•РЎРѓРЎвЂљР С•РЎРЏР Р…Р С‘Р Вµ Р С”Р С•Р С—РЎРЉРЎРЏ (Spear) - 1.21.11
         public boolean isChargingSpear = false;
         public int spearChargeTicks = 0;
         
-        // РЎРѕСЃС‚РѕСЏРЅРёРµ РїР°СѓС‚РёРЅС‹
-        public int cobwebCooldown = 0; // РљСѓР»РґР°СѓРЅ РЅР° СЂР°Р·РјРµС‰РµРЅРёРµ РїР°СѓС‚РёРЅС‹
+        // Р РЋР С•РЎРѓРЎвЂљР С•РЎРЏР Р…Р С‘Р Вµ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎвЂ№
+        public int cobwebCooldown = 0; // Р С™РЎС“Р В»Р Т‘Р В°РЎС“Р Р… Р Р…Р В° РЎР‚Р В°Р В·Р СР ВµРЎвЂ°Р ВµР Р…Р С‘Р Вµ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎвЂ№
         
-        // РЎРѕСЃС‚РѕСЏРЅРёРµ С‰РёС‚Р°
-        public boolean isUsingShield = false; // Р©РёС‚ Р°РєС‚РёРІРµРЅ С‡РµСЂРµР· Carpet РєРѕРјР°РЅРґСѓ
-        public int shieldToggleCooldown = 0; // РљСѓР»РґР°СѓРЅ РЅР° РїРµСЂРµРєР»СЋС‡РµРЅРёРµ С‰РёС‚Р° (РїСЂРµРґРѕС‚РІСЂР°С‰Р°РµС‚ СЃРїР°Рј)
-        public int airTimeTicks = 0; // РЎРєРѕР»СЊРєРѕ С‚РёРєРѕРІ Р±РѕС‚ РІ РІРѕР·РґСѓС…Рµ
-        public boolean shieldBroken = false; // Р©РёС‚ Р±С‹Р» СЃР±РёС‚ С‚РѕРїРѕСЂРѕРј
-        public long shieldBrokenTime = 0; // Р’СЂРµРјСЏ РєРѕРіРґР° С‰РёС‚ Р±С‹Р» СЃР±РёС‚
-        public boolean isPlacingCobweb = false; // РџСЂРѕС†РµСЃСЃ СЂР°Р·РјРµС‰РµРЅРёСЏ РїР°СѓС‚РёРЅС‹
-        public int cobwebPlaceTicks = 0; // РўРёРєРё СЂР°Р·РјРµС‰РµРЅРёСЏ
+        // Р РЋР С•РЎРѓРЎвЂљР С•РЎРЏР Р…Р С‘Р Вµ РЎвЂ°Р С‘РЎвЂљР В°
+        public boolean isUsingShield = false; // Р В©Р С‘РЎвЂљ Р В°Р С”РЎвЂљР С‘Р Р†Р ВµР Р… РЎвЂЎР ВµРЎР‚Р ВµР В· Carpet Р С”Р С•Р СР В°Р Р…Р Т‘РЎС“
+        public int shieldToggleCooldown = 0; // Р С™РЎС“Р В»Р Т‘Р В°РЎС“Р Р… Р Р…Р В° Р С—Р ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР ВµР Р…Р С‘Р Вµ РЎвЂ°Р С‘РЎвЂљР В° (Р С—РЎР‚Р ВµР Т‘Р С•РЎвЂљР Р†РЎР‚Р В°РЎвЂ°Р В°Р ВµРЎвЂљ РЎРѓР С—Р В°Р С)
+        public int airTimeTicks = 0; // Р РЋР С”Р С•Р В»РЎРЉР С”Р С• РЎвЂљР С‘Р С”Р С•Р Р† Р В±Р С•РЎвЂљ Р Р† Р Р†Р С•Р В·Р Т‘РЎС“РЎвЂ¦Р Вµ
+        public boolean shieldBroken = false; // Р В©Р С‘РЎвЂљ Р В±РЎвЂ№Р В» РЎРѓР В±Р С‘РЎвЂљ РЎвЂљР С•Р С—Р С•РЎР‚Р С•Р С
+        public long shieldBrokenTime = 0; // Р вЂ™РЎР‚Р ВµР СРЎРЏ Р С”Р С•Р С–Р Т‘Р В° РЎвЂ°Р С‘РЎвЂљ Р В±РЎвЂ№Р В» РЎРѓР В±Р С‘РЎвЂљ
+        public boolean isPlacingCobweb = false; // Р СџРЎР‚Р С•РЎвЂ Р ВµРЎРѓРЎРѓ РЎР‚Р В°Р В·Р СР ВµРЎвЂ°Р ВµР Р…Р С‘РЎРЏ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎвЂ№
+        public int cobwebPlaceTicks = 0; // Р СћР С‘Р С”Р С‘ РЎР‚Р В°Р В·Р СР ВµРЎвЂ°Р ВµР Р…Р С‘РЎРЏ
         
-        // РЎРѕСЃС‚РѕСЏРЅРёРµ Crystal PVP
-        public boolean isCrystalPvping = false; // Р РµР¶РёРј Crystal PVP Р°РєС‚РёРІРµРЅ
-        public int crystalCooldown = 0; // РљСѓР»РґР°СѓРЅ РјРµР¶РґСѓ РєСЂРёСЃС‚Р°Р»Р»Р°РјРё
-        public net.minecraft.util.math.BlockPos lastObsidianPos = null; // РџРѕСЃР»РµРґРЅРёР№ РїРѕСЃС‚Р°РІР»РµРЅРЅС‹Р№ РѕР±СЃРёРґРёР°РЅ
-        public int crystalPvpStep = 0; // РўРµРєСѓС‰РёР№ С€Р°Рі: 0=СЃС‚Р°РІРёРј РѕР±СЃРёРґРёР°РЅ, 1=СЃС‚Р°РІРёРј РєСЂРёСЃС‚Р°Р»Р», 2=Р±СЊС‘Рј РєСЂРёСЃС‚Р°Р»Р»
-        public int crystalPvpTicks = 0; // РўРёРєРё РЅР° С‚РµРєСѓС‰РµРј С€Р°РіРµ
+        // Р РЋР С•РЎРѓРЎвЂљР С•РЎРЏР Р…Р С‘Р Вµ Crystal PVP
+        public boolean isCrystalPvping = false; // Р В Р ВµР В¶Р С‘Р С Crystal PVP Р В°Р С”РЎвЂљР С‘Р Р†Р ВµР Р…
+        public int crystalCooldown = 0; // Р С™РЎС“Р В»Р Т‘Р В°РЎС“Р Р… Р СР ВµР В¶Р Т‘РЎС“ Р С”РЎР‚Р С‘РЎРѓРЎвЂљР В°Р В»Р В»Р В°Р СР С‘
+        public net.minecraft.util.math.BlockPos lastObsidianPos = null; // Р СџР С•РЎРѓР В»Р ВµР Т‘Р Р…Р С‘Р в„– Р С—Р С•РЎРѓРЎвЂљР В°Р Р†Р В»Р ВµР Р…Р Р…РЎвЂ№Р в„– Р С•Р В±РЎРѓР С‘Р Т‘Р С‘Р В°Р Р…
+        public int crystalPvpStep = 0; // Р СћР ВµР С”РЎС“РЎвЂ°Р С‘Р в„– РЎв‚¬Р В°Р С–: 0=РЎРѓРЎвЂљР В°Р Р†Р С‘Р С Р С•Р В±РЎРѓР С‘Р Т‘Р С‘Р В°Р Р…, 1=РЎРѓРЎвЂљР В°Р Р†Р С‘Р С Р С”РЎР‚Р С‘РЎРѓРЎвЂљР В°Р В»Р В», 2=Р В±РЎРЉРЎвЂР С Р С”РЎР‚Р С‘РЎРѓРЎвЂљР В°Р В»Р В»
+        public int crystalPvpTicks = 0; // Р СћР С‘Р С”Р С‘ Р Р…Р В° РЎвЂљР ВµР С”РЎС“РЎвЂ°Р ВµР С РЎв‚¬Р В°Р С–Р Вµ
         
         public enum WeaponMode {
-            MELEE,      // Р‘Р»РёР¶РЅРёР№ Р±РѕР№ (РјРµС‡/С‚РѕРїРѕСЂ)
-            RANGED,     // Р”Р°Р»СЊРЅРёР№ Р±РѕР№ (Р»СѓРє/Р°СЂР±Р°Р»РµС‚)
-            MACE,       // Р‘СѓР»Р°РІР° (РїСЂС‹Р¶РѕРє + СѓРґР°СЂ)
-            SPEAR,      // РљРѕРїСЊС‘ (charge + jab) - 1.21.11
-            CRYSTAL,    // Crystal PVP (РѕР±СЃРёРґРёР°РЅ + РєСЂРёСЃС‚Р°Р»Р» + СѓРґР°СЂ)
-            ANCHOR      // Anchor PVP (СЏРєРѕСЂСЊ + glowstone + РІР·СЂС‹РІ)
+            MELEE,      // Р вЂР В»Р С‘Р В¶Р Р…Р С‘Р в„– Р В±Р С•Р в„– (Р СР ВµРЎвЂЎ/РЎвЂљР С•Р С—Р С•РЎР‚)
+            RANGED,     // Р вЂќР В°Р В»РЎРЉР Р…Р С‘Р в„– Р В±Р С•Р в„– (Р В»РЎС“Р С”/Р В°РЎР‚Р В±Р В°Р В»Р ВµРЎвЂљ)
+            MACE,       // Р вЂРЎС“Р В»Р В°Р Р†Р В° (Р С—РЎР‚РЎвЂ№Р В¶Р С•Р С” + РЎС“Р Т‘Р В°РЎР‚)
+            SPEAR,      // Р С™Р С•Р С—РЎРЉРЎвЂ (charge + jab) - 1.21.11
+            CRYSTAL,    // Crystal PVP (Р С•Р В±РЎРѓР С‘Р Т‘Р С‘Р В°Р Р… + Р С”РЎР‚Р С‘РЎРѓРЎвЂљР В°Р В»Р В» + РЎС“Р Т‘Р В°РЎР‚)
+            ANCHOR      // Anchor PVP (РЎРЏР С”Р С•РЎР‚РЎРЉ + glowstone + Р Р†Р В·РЎР‚РЎвЂ№Р Р†)
         }
     }
     
@@ -74,7 +74,7 @@ public class BotCombat {
     }
     
     /**
-     * РћСЃРЅРѕРІРЅРѕР№ РјРµС‚РѕРґ РѕР±РЅРѕРІР»РµРЅРёСЏ Р±РѕСЏ - РІС‹Р·С‹РІР°РµС‚СЃСЏ РєР°Р¶РґС‹Р№ С‚РёРє
+     * Р С›РЎРѓР Р…Р С•Р Р†Р Р…Р С•Р в„– Р СР ВµРЎвЂљР С•Р Т‘ Р С•Р В±Р Р…Р С•Р Р†Р В»Р ВµР Р…Р С‘РЎРЏ Р В±Р С•РЎРЏ - Р Р†РЎвЂ№Р В·РЎвЂ№Р Р†Р В°Р ВµРЎвЂљРЎРѓРЎРЏ Р С”Р В°Р В¶Р Т‘РЎвЂ№Р в„– РЎвЂљР С‘Р С”
      */
     public static void update(ServerPlayerEntity bot, net.minecraft.server.MinecraftServer server) {
         BotSettings settings = BotSettings.get();
@@ -82,10 +82,10 @@ public class BotCombat {
         
         CombatState state = getState(bot.getName().getString());
         
-        // РџСЂРѕРІРµСЂСЏРµРј РїРѕР»СѓС‡РёР» Р»Рё Р±РѕС‚ СѓСЂРѕРЅ (Р°Р»СЊС‚РµСЂРЅР°С‚РёРІР° mixin)
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р С—Р С•Р В»РЎС“РЎвЂЎР С‘Р В» Р В»Р С‘ Р В±Р С•РЎвЂљ РЎС“РЎР‚Р С•Р Р… (Р В°Р В»РЎРЉРЎвЂљР ВµРЎР‚Р Р…Р В°РЎвЂљР С‘Р Р†Р В° mixin)
         float currentHealth = bot.getHealth();
         if (currentHealth < state.lastHealth && settings.isRevengeEnabled()) {
-            // Р‘РѕС‚ РїРѕР»СѓС‡РёР» СѓСЂРѕРЅ - РёС‰РµРј РєС‚Рѕ Р°С‚Р°РєРѕРІР°Р»
+            // Р вЂР С•РЎвЂљ Р С—Р С•Р В»РЎС“РЎвЂЎР С‘Р В» РЎС“РЎР‚Р С•Р Р… - Р С‘РЎвЂ°Р ВµР С Р С”РЎвЂљР С• Р В°РЎвЂљР В°Р С”Р С•Р Р†Р В°Р В»
             Entity attacker = bot.getAttacker();
             if (attacker != null && attacker != bot && attacker instanceof LivingEntity) {
                 state.lastAttacker = attacker;
@@ -94,7 +94,7 @@ public class BotCombat {
         }
         state.lastHealth = currentHealth;
         
-        // РЈРјРµРЅСЊС€Р°РµРј РєСѓР»РґР°СѓРЅ
+        // Р Р€Р СР ВµР Р…РЎРЉРЎв‚¬Р В°Р ВµР С Р С”РЎС“Р В»Р Т‘Р В°РЎС“Р Р…
         if (state.attackCooldown > 0) {
             state.attackCooldown--;
         }
@@ -108,180 +108,199 @@ public class BotCombat {
             state.crystalCooldown--;
         }
         
-        // РќР°С…РѕРґРёРј С†РµР»СЊ
+        // Р СњР В°РЎвЂ¦Р С•Р Т‘Р С‘Р С РЎвЂ Р ВµР В»РЎРЉ
         Entity target = findTarget(bot, state, settings, server);
         state.target = target;
         
-        // === DEBUG: РџРѕРєР°Р·С‹РІР°РµРј С…РёС‚Р±РѕРєСЃ С†РµР»Рё ===
+        // === DEBUG: Р СџР С•Р С”Р В°Р В·РЎвЂ№Р Р†Р В°Р ВµР С РЎвЂ¦Р С‘РЎвЂљР В±Р С•Р С”РЎРѓ РЎвЂ Р ВµР В»Р С‘ ===
         if (target != null) {
             BotDebug.showTargetEntity(bot, target);
         }
         // ======================================
         
-        // РћР±СЂР°Р±РѕС‚РєР° СЂР°Р·РјРµС‰РµРЅРёСЏ РїР°СѓС‚РёРЅС‹ (РїСЂРёРѕСЂРёС‚РµС‚ РЅР°Рґ РІСЃРµРј)
+        // Р С›Р В±РЎР‚Р В°Р В±Р С•РЎвЂљР С”Р В° РЎР‚Р В°Р В·Р СР ВµРЎвЂ°Р ВµР Р…Р С‘РЎРЏ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎвЂ№ (Р С—РЎР‚Р С‘Р С•РЎР‚Р С‘РЎвЂљР ВµРЎвЂљ Р Р…Р В°Р Т‘ Р Р†РЎРѓР ВµР С)
         if (state.isPlacingCobweb && target != null) {
             handleCobwebPlacement(bot, target, state, server);
-            return; // РќРµ РґРµР»Р°РµРј РЅРёС‡РµРіРѕ РґСЂСѓРіРѕРіРѕ РїРѕРєР° СЃС‚Р°РІРёРј РїР°СѓС‚РёРЅСѓ
+            return; // Р СњР Вµ Р Т‘Р ВµР В»Р В°Р ВµР С Р Р…Р С‘РЎвЂЎР ВµР С–Р С• Р Т‘РЎР‚РЎС“Р С–Р С•Р С–Р С• Р С—Р С•Р С”Р В° РЎРѓРЎвЂљР В°Р Р†Р С‘Р С Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎС“
         }
         
         if (target == null) {
-            // РќРµС‚ С†РµР»Рё - РїСЂРµРєСЂР°С‰Р°РµРј РЅР°С‚СЏРіРёРІР°С‚СЊ Р»СѓРє
+            // Р СњР ВµРЎвЂљ РЎвЂ Р ВµР В»Р С‘ - Р С—РЎР‚Р ВµР С”РЎР‚Р В°РЎвЂ°Р В°Р ВµР С Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°РЎвЂљРЎРЉ Р В»РЎС“Р С”
             if (state.isDrawingBow) {
                 stopUsingBow(bot, state);
             }
-            // Idle Р±Р»СѓР¶РґР°РЅРёРµ РєРѕРіРґР° РЅРµС‚ С†РµР»Рё
+            // Idle Р В±Р В»РЎС“Р В¶Р Т‘Р В°Р Р…Р С‘Р Вµ Р С”Р С•Р С–Р Т‘Р В° Р Р…Р ВµРЎвЂљ РЎвЂ Р ВµР В»Р С‘
             BotNavigation.idleWander(bot);
             return;
         }
         
-        // Р•СЃС‚СЊ С†РµР»СЊ - СЃР±СЂР°СЃС‹РІР°РµРј idle
+        // Р вЂўРЎРѓРЎвЂљРЎРЉ РЎвЂ Р ВµР В»РЎРЉ - РЎРѓР В±РЎР‚Р В°РЎРѓРЎвЂ№Р Р†Р В°Р ВµР С idle
         BotNavigation.resetIdle(bot.getName().getString());
         
-        // РћРїСЂРµРґРµР»СЏРµРј РґРёСЃС‚Р°РЅС†РёСЋ РґРѕ С†РµР»Рё
+        // Р С›Р С—РЎР‚Р ВµР Т‘Р ВµР В»РЎРЏР ВµР С Р Т‘Р С‘РЎРѓРЎвЂљР В°Р Р…РЎвЂ Р С‘РЎР‹ Р Т‘Р С• РЎвЂ Р ВµР В»Р С‘
         double distance = bot.distanceTo(target);
         
-        // РџСЂРѕРІРµСЂСЏРµРј РЅСѓР¶РЅРѕ Р»Рё РѕС‚СЃС‚СѓРїР°С‚СЊ (РЅРёР·РєРѕРµ HP)
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р Р…РЎС“Р В¶Р Р…Р С• Р В»Р С‘ Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°РЎвЂљРЎРЉ (Р Р…Р С‘Р В·Р С”Р С•Р Вµ HP)
         float health = bot.getHealth();
         float maxHealth = bot.getMaxHealth();
         float healthPercent = health / maxHealth;
         boolean lowHealth = healthPercent <= settings.getRetreatHealthPercent();
         boolean criticalHealth = healthPercent <= settings.getCriticalHealthPercent();
         
-        // РџСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё РµРґР° РґР»СЏ РѕС‚СЃС‚СѓРїР»РµРЅРёСЏ
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р ВµРЎРѓРЎвЂљРЎРЉ Р В»Р С‘ Р ВµР Т‘Р В° Р Т‘Р В»РЎРЏ Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В»Р ВµР Р…Р С‘РЎРЏ
         boolean hasFood = BotUtils.hasFood(bot);
         
-        // РЎР±СЂР°СЃС‹РІР°РµРј С„Р»Р°Рі СЃР±РёС‚РѕРіРѕ С‰РёС‚Р° С‡РµСЂРµР· 5 СЃРµРєСѓРЅРґ
+        // Р РЋР В±РЎР‚Р В°РЎРѓРЎвЂ№Р Р†Р В°Р ВµР С РЎвЂћР В»Р В°Р С– РЎРѓР В±Р С‘РЎвЂљР С•Р С–Р С• РЎвЂ°Р С‘РЎвЂљР В° РЎвЂЎР ВµРЎР‚Р ВµР В· 5 РЎРѓР ВµР С”РЎС“Р Р…Р Т‘
         if (state.shieldBroken && System.currentTimeMillis() - state.shieldBrokenTime > 5000) {
             state.shieldBroken = false;
         }
         
-        // РџСЂРѕРІРµСЂСЏРµРј РµСЃС‚ Р»Рё Р±РѕС‚ - РќРРљРћР“Р”Рђ РЅРµ РїРµСЂРµРєР»СЋС‡Р°РµРј СЃР»РѕС‚С‹ РїРѕРєР° РµРґРёРј!
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р ВµРЎРѓРЎвЂљ Р В»Р С‘ Р В±Р С•РЎвЂљ - Р СњР ВР С™Р С›Р вЂњР вЂќР С’ Р Р…Р Вµ Р С—Р ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР С РЎРѓР В»Р С•РЎвЂљРЎвЂ№ Р С—Р С•Р С”Р В° Р ВµР Т‘Р С‘Р С!
         var utilsState = BotUtils.getState(bot.getName().getString());
         boolean isEating = utilsState.isEating;
         
         if (isEating && settings.isRetreatEnabled()) {
-            // Р‘РѕС‚ РµСЃС‚ Р retreat РІРєР»СЋС‡С‘РЅ - РѕС‚СЃС‚СѓРїР°РµРј
+            // Р вЂР С•РЎвЂљ Р ВµРЎРѓРЎвЂљ Р В retreat Р Р†Р С”Р В»РЎР‹РЎвЂЎРЎвЂР Р… - Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°Р ВµР С
             state.isRetreating = true;
             if (state.isDrawingBow) {
                 stopUsingBow(bot, state);
             }
-            // РЈР±РµРіР°РµРј РѕС‚ РІСЂР°РіР° СЃ РЅР°РІРёРіР°С†РёРµР№ (СЃРєРѕСЂРѕСЃС‚СЊ 1.2 = Р±С…РѕРї РІРєР»СЋС‡С‘РЅ)
+            // Р Р€Р В±Р ВµР С–Р В°Р ВµР С Р С•РЎвЂљ Р Р†РЎР‚Р В°Р С–Р В° РЎРѓ Р Р…Р В°Р Р†Р С‘Р С–Р В°РЎвЂ Р С‘Р ВµР в„– (РЎРѓР С”Р С•РЎР‚Р С•РЎРѓРЎвЂљРЎРЉ 1.2 = Р В±РЎвЂ¦Р С•Р С— Р Р†Р С”Р В»РЎР‹РЎвЂЎРЎвЂР Р…)
             BotNavigation.lookAway(bot, target);
             BotNavigation.moveAway(bot, target, 1.2);
             return;
         } else if (isEating) {
-            // Р‘РѕС‚ РµСЃС‚ РќРћ retreat РІС‹РєР»СЋС‡РµРЅ - РїСЂРѕСЃС‚Рѕ РЅРµ РїРµСЂРµРєР»СЋС‡Р°РµРј СЃР»РѕС‚С‹, РїСЂРѕРґРѕР»Р¶Р°РµРј РґСЂР°С‚СЊСЃСЏ
+            // Р вЂР С•РЎвЂљ Р ВµРЎРѓРЎвЂљ Р СњР С› retreat Р Р†РЎвЂ№Р С”Р В»РЎР‹РЎвЂЎР ВµР Р… - Р С—РЎР‚Р С•РЎРѓРЎвЂљР С• Р Р…Р Вµ Р С—Р ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР С РЎРѓР В»Р С•РЎвЂљРЎвЂ№, Р С—РЎР‚Р С•Р Т‘Р С•Р В»Р В¶Р В°Р ВµР С Р Т‘РЎР‚Р В°РЎвЂљРЎРЉРЎРѓРЎРЏ
             if (state.isDrawingBow) {
                 stopUsingBow(bot, state);
             }
-            // РќРµ РѕС‚СЃС‚СѓРїР°РµРј, РїСЂРѕРґРѕР»Р¶Р°РµРј Р±РѕР№
+            // Р СњР Вµ Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°Р ВµР С, Р С—РЎР‚Р С•Р Т‘Р С•Р В»Р В¶Р В°Р ВµР С Р В±Р С•Р в„–
         }
         
-        // РџСЂРѕР±СѓРµРј РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р·РµР»СЊРµ РёСЃС†РµР»РµРЅРёСЏ РµСЃР»Рё РЅРёР·РєРѕРµ HP
+        // Р СџРЎР‚Р С•Р В±РЎС“Р ВµР С Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·Р С•Р Р†Р В°РЎвЂљРЎРЉ Р В·Р ВµР В»РЎРЉР Вµ Р С‘РЎРѓРЎвЂ Р ВµР В»Р ВµР Р…Р С‘РЎРЏ Р ВµРЎРѓР В»Р С‘ Р Р…Р С‘Р В·Р С”Р С•Р Вµ HP
         if (lowHealth && settings.isAutoPotionEnabled()) {
             if (BotUtils.tryUseHealingPotion(bot, server)) {
-                // РСЃРїРѕР»СЊР·СѓРµРј Р·РµР»СЊРµ - РЅРµ РѕС‚СЃС‚СѓРїР°РµРј РїРѕРєР° РїСЊС‘Рј
+                // Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С Р В·Р ВµР В»РЎРЉР Вµ - Р Р…Р Вµ Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°Р ВµР С Р С—Р С•Р С”Р В° Р С—РЎРЉРЎвЂР С
                 return;
             }
         }
         
-        // Р›РѕРіРёРєР° РѕС‚СЃС‚СѓРїР»РµРЅРёСЏ:
-        // 1. Р•СЃР»Рё HP РєСЂРёС‚РёС‡РµСЃРєРѕРµ (< 15%) - Р’РЎР•Р“Р”Рђ РѕС‚СЃС‚СѓРїР°РµРј, РґР°Р¶Рµ РµСЃР»Рё С‰РёС‚ СЃР±РёС‚
-        // 2. Р•СЃР»Рё HP РЅРёР·РєРѕРµ (< 30%) Р С‰РёС‚ РќР• СЃР±РёС‚ - РѕС‚СЃС‚СѓРїР°РµРј
-        // 3. Р•СЃР»Рё С‰РёС‚ СЃР±РёС‚ - РїСЂРѕРґРѕР»Р¶Р°РµРј РґСЂР°С‚СЊСЃСЏ РїРѕРєР° HP РЅРµ СЃС‚Р°РЅРµС‚ РєСЂРёС‚РёС‡РµСЃРєРёРј
+        // Р вЂєР С•Р С–Р С‘Р С”Р В° Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В»Р ВµР Р…Р С‘РЎРЏ:
+        // 1. Р вЂўРЎРѓР В»Р С‘ HP Р С”РЎР‚Р С‘РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С•Р Вµ (< 15%) - Р вЂ™Р РЋР вЂўР вЂњР вЂќР С’ Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°Р ВµР С, Р Т‘Р В°Р В¶Р Вµ Р ВµРЎРѓР В»Р С‘ РЎвЂ°Р С‘РЎвЂљ РЎРѓР В±Р С‘РЎвЂљ
+        // 2. Р вЂўРЎРѓР В»Р С‘ HP Р Р…Р С‘Р В·Р С”Р С•Р Вµ (< 30%) Р В РЎвЂ°Р С‘РЎвЂљ Р СњР вЂў РЎРѓР В±Р С‘РЎвЂљ - Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°Р ВµР С
+        // 3. Р вЂўРЎРѓР В»Р С‘ РЎвЂ°Р С‘РЎвЂљ РЎРѓР В±Р С‘РЎвЂљ - Р С—РЎР‚Р С•Р Т‘Р С•Р В»Р В¶Р В°Р ВµР С Р Т‘РЎР‚Р В°РЎвЂљРЎРЉРЎРѓРЎРЏ Р С—Р С•Р С”Р В° HP Р Р…Р Вµ РЎРѓРЎвЂљР В°Р Р…Р ВµРЎвЂљ Р С”РЎР‚Р С‘РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С‘Р С
         boolean shouldRetreat = settings.isRetreatEnabled() && hasFood && 
                                (criticalHealth || (lowHealth && !state.shieldBroken));
         
-        // РћС‚СЃС‚СѓРїР°РµРј РµСЃР»Рё РЅРёР·РєРѕРµ HP, РІРєР»СЋС‡РµРЅРѕ РѕС‚СЃС‚СѓРїР»РµРЅРёРµ Р РµСЃС‚СЊ РµРґР°
-        // Р•СЃР»Рё РµРґС‹ РЅРµС‚ - РЅРµС‚ СЃРјС‹СЃР»Р° РѕС‚СЃС‚СѓРїР°С‚СЊ, Р»СѓС‡С€Рµ РґСЂР°С‚СЊСЃСЏ РґРѕ РєРѕРЅС†Р°
+        // Р С›РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°Р ВµР С Р ВµРЎРѓР В»Р С‘ Р Р…Р С‘Р В·Р С”Р С•Р Вµ HP, Р Р†Р С”Р В»РЎР‹РЎвЂЎР ВµР Р…Р С• Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В»Р ВµР Р…Р С‘Р Вµ Р В Р ВµРЎРѓРЎвЂљРЎРЉ Р ВµР Т‘Р В°
+        // Р вЂўРЎРѓР В»Р С‘ Р ВµР Т‘РЎвЂ№ Р Р…Р ВµРЎвЂљ - Р Р…Р ВµРЎвЂљ РЎРѓР СРЎвЂ№РЎРѓР В»Р В° Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В°РЎвЂљРЎРЉ, Р В»РЎС“РЎвЂЎРЎв‚¬Р Вµ Р Т‘РЎР‚Р В°РЎвЂљРЎРЉРЎРѓРЎРЏ Р Т‘Р С• Р С”Р С•Р Р…РЎвЂ Р В°
         if (shouldRetreat) {
             state.isRetreating = true;
             
-            // РСЃРїРѕР»СЊР·СѓРµРј С‰РёС‚ РїСЂРё РѕС‚СЃС‚СѓРїР»РµРЅРёРё РґР»СЏ Р·Р°С‰РёС‚С‹
+            // Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р С—РЎР‚Р С‘ Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В»Р ВµР Р…Р С‘Р С‘ Р Т‘Р В»РЎРЏ Р В·Р В°РЎвЂ°Р С‘РЎвЂљРЎвЂ№
             if (settings.isAutoShieldEnabled()) {
                 var inventory = bot.getInventory();
-                // Р­РєРёРїРёСЂСѓРµРј С‰РёС‚ РІ offhand РµСЃР»Рё РµРіРѕ С‚Р°Рј РЅРµС‚
+                // Р В­Р С”Р С‘Р С—Р С‘РЎР‚РЎС“Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р Р† offhand Р ВµРЎРѓР В»Р С‘ Р ВµР С–Р С• РЎвЂљР В°Р С Р Р…Р ВµРЎвЂљ
                 ItemStack offhandItem = bot.getOffHandStack();
                 if (offhandItem.isEmpty() || !offhandItem.getItem().toString().contains("shield")) {
                     int shieldSlot = findShield(inventory);
                     if (shieldSlot >= 0) {
-                        // РџРµСЂРµРјРµС‰Р°РµРј С‰РёС‚ РІ offhand (СЃР»РѕС‚ 40)
+                        // Р СџР ВµРЎР‚Р ВµР СР ВµРЎвЂ°Р В°Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р Р† offhand (РЎРѓР В»Р С•РЎвЂљ 40)
                         ItemStack shield = inventory.getStack(shieldSlot);
                         inventory.setStack(40, shield);
                         inventory.setStack(shieldSlot, ItemStack.EMPTY);
                     }
                 }
                 
-                // РџРѕРґРЅРёРјР°РµРј С‰РёС‚ РїСЂРё РѕС‚СЃС‚СѓРїР»РµРЅРёРё
+                // Р СџР С•Р Т‘Р Р…Р С‘Р СР В°Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р С—РЎР‚Р С‘ Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В»Р ВµР Р…Р С‘Р С‘
                 if (!state.isUsingShield && state.shieldToggleCooldown <= 0) {
                     startUsingShield(bot, server);
                     state.isUsingShield = true;
                 }
             }
             
-            // РЈР±РµРіР°РµРј РїРѕРєР° РІСЂР°Рі Р±Р»РёР¶Рµ 25 Р±Р»РѕРєРѕРІ (СЃРєРѕСЂРѕСЃС‚СЊ 1.5 = РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ Р±С…РѕРї)
+            // Р Р€Р В±Р ВµР С–Р В°Р ВµР С Р С—Р С•Р С”Р В° Р Р†РЎР‚Р В°Р С– Р В±Р В»Р С‘Р В¶Р Вµ 25 Р В±Р В»Р С•Р С”Р С•Р Р† (РЎРѓР С”Р С•РЎР‚Р С•РЎРѓРЎвЂљРЎРЉ 1.5 = Р СР В°Р С”РЎРѓР С‘Р СР В°Р В»РЎРЉР Р…РЎвЂ№Р в„– Р В±РЎвЂ¦Р С•Р С—)
             if (distance < 25.0) {
-                // РџСЂРѕР±СѓРµРј РїРѕСЃС‚Р°РІРёС‚СЊ РїР°СѓС‚РёРЅСѓ РїРѕРґ РІСЂР°РіР° РїСЂРё РѕС‚СЃС‚СѓРїР»РµРЅРёРё
+                // Р СџРЎР‚Р С•Р В±РЎС“Р ВµР С Р С—Р С•РЎРѓРЎвЂљР В°Р Р†Р С‘РЎвЂљРЎРЉ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎС“ Р С—Р С•Р Т‘ Р Р†РЎР‚Р В°Р С–Р В° Р С—РЎР‚Р С‘ Р С•РЎвЂљРЎРѓРЎвЂљРЎС“Р С—Р В»Р ВµР Р…Р С‘Р С‘
                 if (settings.isCobwebEnabled() && distance < 8.0 && state.cobwebCooldown <= 0 && !state.isPlacingCobweb) {
                     tryPlaceCobweb(bot, target, server);
                 }
                 BotNavigation.lookAway(bot, target);
                 BotNavigation.moveAway(bot, target, 1.5);
             }
-            // РќРµ Р°С‚Р°РєСѓРµРј РїРѕРєР° HP РЅРёР·РєРѕРµ
+            // Р СњР Вµ Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С Р С—Р С•Р С”Р В° HP Р Р…Р С‘Р В·Р С”Р С•Р Вµ
             return;
         }
         state.isRetreating = false;
         
-        // РџСЂРѕРІРµСЂСЏРµРј С‡РёРЅРёС‚СЃСЏ Р»Рё Р±РѕС‚ - РµСЃР»Рё РґР°, РЅРµ С‚СЂРѕРіР°РµРј РµРіРѕ
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С РЎвЂЎР С‘Р Р…Р С‘РЎвЂљРЎРѓРЎРЏ Р В»Р С‘ Р В±Р С•РЎвЂљ - Р ВµРЎРѓР В»Р С‘ Р Т‘Р В°, Р Р…Р Вµ РЎвЂљРЎР‚Р С•Р С–Р В°Р ВµР С Р ВµР С–Р С•
         if (utilsState.isMending) {
-            return; // Р‘РѕС‚ С‡РёРЅРёС‚СЃСЏ - РЅРµ РјРµС€Р°РµРј РµРјСѓ
+            return; // Р вЂР С•РЎвЂљ РЎвЂЎР С‘Р Р…Р С‘РЎвЂљРЎРѓРЎРЏ - Р Р…Р Вµ Р СР ВµРЎв‚¬Р В°Р ВµР С Р ВµР СРЎС“
         }
         
-        // Р’С‹Р±РёСЂР°РµРј СЂРµР¶РёРј Р±РѕСЏ
+        // === COMBAT STRATEGIES INTEGRATION ===
+        // РџСЂРѕРІРµСЂСЏРµРј РРСЂРµРіРёСЃССЂРёСЂРѕРІРРЅРЅСРµ СЃССЂРСРµРіРёРё РїРµСЂРµРґ СЃСРРЅРґРСЂСРЅРѕР№ РРѕРіРёРєРѕР№ РРѕСЏ
+        try {
+            var strategies = org.stepan1411.pvp_bot.api.combat.CombatStrategyRegistry.getInstance().getStrategies();
+            for (var strategy : strategies) {
+                if (strategy.canUse(bot, target, settings)) {
+                    boolean executed = strategy.execute(bot, target, settings, server);
+                    if (executed) {
+                        // РЎССЂРСРµРіРёСЏ СѓСЃРїРµСРЅРѕ РІСРїРѕРРЅРµРЅР - РїСЂРµРєСЂРСРРµРј РѕРСЂРРРѕСРєСѓ
+                        return;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[PVP_BOT] Error executing combat strategy: " + e.getMessage());
+            e.printStackTrace();
+        }
+        // === END COMBAT STRATEGIES ===
+
+        // Р вЂ™РЎвЂ№Р В±Р С‘РЎР‚Р В°Р ВµР С РЎР‚Р ВµР В¶Р С‘Р С Р В±Р С•РЎРЏ
         selectWeaponMode(bot, state, distance, settings);
         
-        // РџРѕРІРѕСЂР°С‡РёРІР°РµРјСЃСЏ Рє С†РµР»Рё (РµСЃР»Рё РЅРµ Р±СЂРѕСЃР°РµРј Р·РµР»СЊРµ)
+        // Р СџР С•Р Р†Р С•РЎР‚Р В°РЎвЂЎР С‘Р Р†Р В°Р ВµР СРЎРѓРЎРЏ Р С” РЎвЂ Р ВµР В»Р С‘ (Р ВµРЎРѓР В»Р С‘ Р Р…Р Вµ Р В±РЎР‚Р С•РЎРѓР В°Р ВµР С Р В·Р ВµР В»РЎРЉР Вµ)
         if (!utilsState.isThrowingPotion) {
             BotNavigation.lookAt(bot, target);
         }
         
-        // Р•СЃР»Рё РІСЂР°Рі СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РґР»СЏ С‚РµРєСѓС‰РµРіРѕ СЂРµР¶РёРјР° - РёРґС‘Рј Рє РЅРµРјСѓ
+        // Р вЂўРЎРѓР В»Р С‘ Р Р†РЎР‚Р В°Р С– РЎРѓР В»Р С‘РЎв‚¬Р С”Р С•Р С Р Т‘Р В°Р В»Р ВµР С”Р С• Р Т‘Р В»РЎРЏ РЎвЂљР ВµР С”РЎС“РЎвЂ°Р ВµР С–Р С• РЎР‚Р ВµР В¶Р С‘Р СР В° - Р С‘Р Т‘РЎвЂР С Р С” Р Р…Р ВµР СРЎС“
         double maxRange = switch (state.currentMode) {
             case MELEE -> settings.getMeleeRange() * 2;
             case RANGED -> settings.getRangedOptimalRange() + 15;
             case MACE -> settings.getMaceRange() * 2;
             case SPEAR -> settings.getSpearChargeRange();
-            case CRYSTAL -> 10.0; // Crystal PVP СЌС„С„РµРєС‚РёРІРµРЅ РґРѕ 10 Р±Р»РѕРєРѕРІ
-            case ANCHOR -> 10.0;  // Anchor PVP СЌС„С„РµРєС‚РёРІРµРЅ РґРѕ 10 Р±Р»РѕРєРѕРІ (increased)
+            case CRYSTAL -> 10.0; // Crystal PVP РЎРЊРЎвЂћРЎвЂћР ВµР С”РЎвЂљР С‘Р Р†Р ВµР Р… Р Т‘Р С• 10 Р В±Р В»Р С•Р С”Р С•Р Р†
+            case ANCHOR -> 10.0;  // Anchor PVP РЎРЊРЎвЂћРЎвЂћР ВµР С”РЎвЂљР С‘Р Р†Р ВµР Р… Р Т‘Р С• 10 Р В±Р В»Р С•Р С”Р С•Р Р† (increased)
         };
         
         if (distance > maxRange) {
-            // Р’СЂР°Рі РґР°Р»РµРєРѕ - РёРґС‘Рј Рє РЅРµРјСѓ
+            // Р вЂ™РЎР‚Р В°Р С– Р Т‘Р В°Р В»Р ВµР С”Р С• - Р С‘Р Т‘РЎвЂР С Р С” Р Р…Р ВµР СРЎС“
             BotNavigation.moveToward(bot, target, settings.getMoveSpeed());
             return;
         }
         
-        // Р’С‹РїРѕР»РЅСЏРµРј РґРµР№СЃС‚РІРёРµ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂРµР¶РёРјР°
+        // Р вЂ™РЎвЂ№Р С—Р С•Р В»Р Р…РЎРЏР ВµР С Р Т‘Р ВµР в„–РЎРѓРЎвЂљР Р†Р С‘Р Вµ Р Р† Р В·Р В°Р Р†Р С‘РЎРѓР С‘Р СР С•РЎРѓРЎвЂљР С‘ Р С•РЎвЂљ РЎР‚Р ВµР В¶Р С‘Р СР В°
         switch (state.currentMode) {
             case MELEE -> handleMeleeCombat(bot, target, state, distance, settings, server);
             case RANGED -> handleRangedCombat(bot, target, state, distance, settings, server);
             case MACE -> handleMaceCombat(bot, target, state, distance, settings, server);
             case SPEAR -> handleSpearCombat(bot, target, state, distance, settings, server);
             case CRYSTAL -> {
-                // РСЃРїРѕР»СЊР·СѓРµРј РѕС‚РґРµР»СЊРЅС‹Р№ РєР»Р°СЃСЃ РґР»СЏ Crystal PVP СЃ РїРѕР»РЅС‹Рј РєРѕРЅС‚СЂРѕР»РµРј
+                // Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С Р С•РЎвЂљР Т‘Р ВµР В»РЎРЉР Р…РЎвЂ№Р в„– Р С”Р В»Р В°РЎРѓРЎРѓ Р Т‘Р В»РЎРЏ Crystal PVP РЎРѓ Р С—Р С•Р В»Р Р…РЎвЂ№Р С Р С”Р С•Р Р…РЎвЂљРЎР‚Р С•Р В»Р ВµР С
                 boolean handled = BotCrystalPvp.doCrystalPvp(bot, target, settings, server);
                 if (!handled) {
-                    // Р•СЃР»Рё Crystal PVP РЅРµ РјРѕР¶РµС‚ СЂР°Р±РѕС‚Р°С‚СЊ - РїРµСЂРµРєР»СЋС‡Р°РµРјСЃСЏ РЅР° Р±Р»РёР¶РЅРёР№ Р±РѕР№
+                    // Р вЂўРЎРѓР В»Р С‘ Crystal PVP Р Р…Р Вµ Р СР С•Р В¶Р ВµРЎвЂљ РЎР‚Р В°Р В±Р С•РЎвЂљР В°РЎвЂљРЎРЉ - Р С—Р ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР СРЎРѓРЎРЏ Р Р…Р В° Р В±Р В»Р С‘Р В¶Р Р…Р С‘Р в„– Р В±Р С•Р в„–
                     state.currentMode = CombatState.WeaponMode.MELEE;
                     handleMeleeCombat(bot, target, state, distance, settings, server);
                 }
             }
             case ANCHOR -> {
-                // РСЃРїРѕР»СЊР·СѓРµРј РѕС‚РґРµР»СЊРЅС‹Р№ РєР»Р°СЃСЃ РґР»СЏ Anchor PVP СЃ РїРѕР»РЅС‹Рј РєРѕРЅС‚СЂРѕР»РµРј
+                // Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С Р С•РЎвЂљР Т‘Р ВµР В»РЎРЉР Р…РЎвЂ№Р в„– Р С”Р В»Р В°РЎРѓРЎРѓ Р Т‘Р В»РЎРЏ Anchor PVP РЎРѓ Р С—Р С•Р В»Р Р…РЎвЂ№Р С Р С”Р С•Р Р…РЎвЂљРЎР‚Р С•Р В»Р ВµР С
                 boolean handled = BotAnchorPvp.doAnchorPvp(bot, target, settings, server);
                 if (!handled) {
-                    // Р•СЃР»Рё Anchor PVP РЅРµ РјРѕР¶РµС‚ СЂР°Р±РѕС‚Р°С‚СЊ - РїРµСЂРµРєР»СЋС‡Р°РµРјСЃСЏ РЅР° Р±Р»РёР¶РЅРёР№ Р±РѕР№
+                    // Р вЂўРЎРѓР В»Р С‘ Anchor PVP Р Р…Р Вµ Р СР С•Р В¶Р ВµРЎвЂљ РЎР‚Р В°Р В±Р С•РЎвЂљР В°РЎвЂљРЎРЉ - Р С—Р ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР СРЎРѓРЎРЏ Р Р…Р В° Р В±Р В»Р С‘Р В¶Р Р…Р С‘Р в„– Р В±Р С•Р в„–
                     state.currentMode = CombatState.WeaponMode.MELEE;
                     handleMeleeCombat(bot, target, state, distance, settings, server);
                 }
@@ -290,10 +309,10 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕРёСЃРє С†РµР»Рё
+     * Р СџР С•Р С‘РЎРѓР С” РЎвЂ Р ВµР В»Р С‘
      */
     private static Entity findTarget(ServerPlayerEntity bot, CombatState state, BotSettings settings, net.minecraft.server.MinecraftServer server) {
-        // РџСЂРёРѕСЂРёС‚РµС‚ 1: РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅР°СЏ С†РµР»СЊ РїРѕ РєРѕРјР°РЅРґРµ (Р’РЎР•Р“Р”Рђ СЂР°Р±РѕС‚Р°РµС‚)
+        // Р СџРЎР‚Р С‘Р С•РЎР‚Р С‘РЎвЂљР ВµРЎвЂљ 1: Р СџРЎР‚Р С‘Р Р…РЎС“Р Т‘Р С‘РЎвЂљР ВµР В»РЎРЉР Р…Р В°РЎРЏ РЎвЂ Р ВµР В»РЎРЉ Р С—Р С• Р С”Р С•Р СР В°Р Р…Р Т‘Р Вµ (Р вЂ™Р РЋР вЂўР вЂњР вЂќР С’ РЎР‚Р В°Р В±Р С•РЎвЂљР В°Р ВµРЎвЂљ)
         if (state.forcedTargetName != null) {
             Entity forced = findEntityByName(bot, state.forcedTargetName, server);
             if (forced != null && forced.isAlive()) {
@@ -302,26 +321,26 @@ public class BotCombat {
                     return forced;
                 }
             }
-            // РќР• СЃР±СЂР°СЃС‹РІР°РµРј С†РµР»СЊ РµСЃР»Рё РѕРЅР° РІСЂРµРјРµРЅРЅРѕ РґР°Р»РµРєРѕ - РїСѓСЃС‚СЊ Р±РѕС‚ РёРґС‘С‚ Рє РЅРµР№
+            // Р СњР вЂў РЎРѓР В±РЎР‚Р В°РЎРѓРЎвЂ№Р Р†Р В°Р ВµР С РЎвЂ Р ВµР В»РЎРЉ Р ВµРЎРѓР В»Р С‘ Р С•Р Р…Р В° Р Р†РЎР‚Р ВµР СР ВµР Р…Р Р…Р С• Р Т‘Р В°Р В»Р ВµР С”Р С• - Р С—РЎС“РЎРѓРЎвЂљРЎРЉ Р В±Р С•РЎвЂљ Р С‘Р Т‘РЎвЂРЎвЂљ Р С” Р Р…Р ВµР в„–
             // state.forcedTargetName = null;
         }
         
-        // РџСЂРёРѕСЂРёС‚РµС‚ 2: РўРѕС‚ РєС‚Рѕ РЅР°СЃ Р°С‚Р°РєРѕРІР°Р» (СЂРµРІР°РЅС€) - РґРµСЂР¶РёРј С†РµР»СЊ РїРѕРєР° РІСЂР°Рі Р¶РёРІ
+        // Р СџРЎР‚Р С‘Р С•РЎР‚Р С‘РЎвЂљР ВµРЎвЂљ 2: Р СћР С•РЎвЂљ Р С”РЎвЂљР С• Р Р…Р В°РЎРѓ Р В°РЎвЂљР В°Р С”Р С•Р Р†Р В°Р В» (РЎР‚Р ВµР Р†Р В°Р Р…РЎв‚¬) - Р Т‘Р ВµРЎР‚Р В¶Р С‘Р С РЎвЂ Р ВµР В»РЎРЉ Р С—Р С•Р С”Р В° Р Р†РЎР‚Р В°Р С– Р В¶Р С‘Р Р†
         if (settings.isRevengeEnabled() && state.lastAttacker != null) {
-            // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ Р°С‚Р°РєСѓСЋС‰РёР№ РµС‰С‘ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Рё Р¶РёРІ
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С РЎвЂЎРЎвЂљР С• Р В°РЎвЂљР В°Р С”РЎС“РЎР‹РЎвЂ°Р С‘Р в„– Р ВµРЎвЂ°РЎвЂ РЎРѓРЎС“РЎвЂ°Р ВµРЎРѓРЎвЂљР Р†РЎС“Р ВµРЎвЂљ Р С‘ Р В¶Р С‘Р Р†
             if (!state.lastAttacker.isRemoved() && state.lastAttacker.isAlive()) {
-                // РџСЂРѕРІРµСЂСЏРµРј friendlyfire - РЅРµ Р°С‚Р°РєСѓРµРј СЃРѕСЋР·РЅРёРєРѕРІ РґР°Р¶Рµ РІ СЂРµРІР°РЅР¶Рµ
+                // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С friendlyfire - Р Р…Р Вµ Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С РЎРѓР С•РЎР‹Р В·Р Р…Р С‘Р С”Р С•Р Р† Р Т‘Р В°Р В¶Р Вµ Р Р† РЎР‚Р ВµР Р†Р В°Р Р…Р В¶Р Вµ
                 if (!settings.isFriendlyFireEnabled() && state.lastAttacker instanceof PlayerEntity) {
                     String attackerName = state.lastAttacker.getName().getString();
                     if (BotFaction.areAllies(bot.getName().getString(), attackerName)) {
-                        state.lastAttacker = null; // РЎР±СЂР°СЃС‹РІР°РµРј - СЌС‚Рѕ СЃРѕСЋР·РЅРёРє
+                        state.lastAttacker = null; // Р РЋР В±РЎР‚Р В°РЎРѓРЎвЂ№Р Р†Р В°Р ВµР С - РЎРЊРЎвЂљР С• РЎРѓР С•РЎР‹Р В·Р Р…Р С‘Р С”
                     }
                 }
                 
                 if (state.lastAttacker != null) {
                     double dist = bot.distanceTo(state.lastAttacker);
                     if (dist <= settings.getMaxTargetDistance()) {
-                        // РћР±РЅРѕРІР»СЏРµРј РІСЂРµРјСЏ РµСЃР»Рё РІСЂР°Рі Р±Р»РёР·РєРѕ (РЅРµ СЃР±СЂР°СЃС‹РІР°РµРј РїРѕРєР° РІСЂР°Рі СЂСЏРґРѕРј)
+                        // Р С›Р В±Р Р…Р С•Р Р†Р В»РЎРЏР ВµР С Р Р†РЎР‚Р ВµР СРЎРЏ Р ВµРЎРѓР В»Р С‘ Р Р†РЎР‚Р В°Р С– Р В±Р В»Р С‘Р В·Р С”Р С• (Р Р…Р Вµ РЎРѓР В±РЎР‚Р В°РЎРѓРЎвЂ№Р Р†Р В°Р ВµР С Р С—Р С•Р С”Р В° Р Р†РЎР‚Р В°Р С– РЎР‚РЎРЏР Т‘Р С•Р С)
                         if (dist <= 10.0) {
                             state.lastAttackTime = System.currentTimeMillis();
                         }
@@ -329,14 +348,14 @@ public class BotCombat {
                     }
                 }
             }
-            // РЎР±СЂР°СЃС‹РІР°РµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё С†РµР»СЊ РјРµСЂС‚РІР° РёР»Рё РґР°Р»РµРєРѕ Р±РѕР»СЊС€Рµ 30 СЃРµРєСѓРЅРґ
+            // Р РЋР В±РЎР‚Р В°РЎРѓРЎвЂ№Р Р†Р В°Р ВµР С РЎвЂљР С•Р В»РЎРЉР С”Р С• Р ВµРЎРѓР В»Р С‘ РЎвЂ Р ВµР В»РЎРЉ Р СР ВµРЎР‚РЎвЂљР Р†Р В° Р С‘Р В»Р С‘ Р Т‘Р В°Р В»Р ВµР С”Р С• Р В±Р С•Р В»РЎРЉРЎв‚¬Р Вµ 30 РЎРѓР ВµР С”РЎС“Р Р…Р Т‘
             if (state.lastAttacker == null || state.lastAttacker.isRemoved() || !state.lastAttacker.isAlive() || 
                 System.currentTimeMillis() - state.lastAttackTime >= 30000) {
                 state.lastAttacker = null;
             }
         }
         
-        // РџСЂРёРѕСЂРёС‚РµС‚ 3: Р’СЂР°РіРё РїРѕ С„СЂР°РєС†РёСЏРј (РІСЃРµРіРґР° РµСЃР»Рё С„СЂР°РєС†РёРё РІРєР»СЋС‡РµРЅС‹)
+        // Р СџРЎР‚Р С‘Р С•РЎР‚Р С‘РЎвЂљР ВµРЎвЂљ 3: Р вЂ™РЎР‚Р В°Р С–Р С‘ Р С—Р С• РЎвЂћРЎР‚Р В°Р С”РЎвЂ Р С‘РЎРЏР С (Р Р†РЎРѓР ВµР С–Р Т‘Р В° Р ВµРЎРѓР В»Р С‘ РЎвЂћРЎР‚Р В°Р С”РЎвЂ Р С‘Р С‘ Р Р†Р С”Р В»РЎР‹РЎвЂЎР ВµР Р…РЎвЂ№)
         if (settings.isFactionsEnabled()) {
             Entity factionEnemy = findFactionEnemy(bot, settings, server);
             if (factionEnemy != null) {
@@ -344,7 +363,7 @@ public class BotCombat {
             }
         }
         
-        // РџСЂРёРѕСЂРёС‚РµС‚ 4: Р‘Р»РёР¶Р°Р№С€РёР№ РІСЂР°Рі (С‚РѕР»СЊРєРѕ РµСЃР»Рё autotarget РІРєР»СЋС‡С‘РЅ)
+        // Р СџРЎР‚Р С‘Р С•РЎР‚Р С‘РЎвЂљР ВµРЎвЂљ 4: Р вЂР В»Р С‘Р В¶Р В°Р в„–РЎв‚¬Р С‘Р в„– Р Р†РЎР‚Р В°Р С– (РЎвЂљР С•Р В»РЎРЉР С”Р С• Р ВµРЎРѓР В»Р С‘ autotarget Р Р†Р С”Р В»РЎР‹РЎвЂЎРЎвЂР Р…)
         if (settings.isAutoTargetEnabled()) {
             return findNearestEnemy(bot, settings, server);
         }
@@ -353,13 +372,13 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕРёСЃРє РІСЂР°РіР° РїРѕ С„СЂР°РєС†РёСЏРј
+     * Р СџР С•Р С‘РЎРѓР С” Р Р†РЎР‚Р В°Р С–Р В° Р С—Р С• РЎвЂћРЎР‚Р В°Р С”РЎвЂ Р С‘РЎРЏР С
      */
     private static Entity findFactionEnemy(ServerPlayerEntity bot, BotSettings settings, net.minecraft.server.MinecraftServer server) {
         String botName = bot.getName().getString();
         String botFaction = BotFaction.getFaction(botName);
         
-        // Р•СЃР»Рё Р±РѕС‚ РЅРµ РІ С„СЂР°РєС†РёРё - РЅРµ РёС‰РµРј РІСЂР°РіРѕРІ РїРѕ С„СЂР°РєС†РёСЏРј
+        // Р вЂўРЎРѓР В»Р С‘ Р В±Р С•РЎвЂљ Р Р…Р Вµ Р Р† РЎвЂћРЎР‚Р В°Р С”РЎвЂ Р С‘Р С‘ - Р Р…Р Вµ Р С‘РЎвЂ°Р ВµР С Р Р†РЎР‚Р В°Р С–Р С•Р Р† Р С—Р С• РЎвЂћРЎР‚Р В°Р С”РЎвЂ Р С‘РЎРЏР С
         if (botFaction == null) return null;
         
         double maxDist = settings.getMaxTargetDistance();
@@ -374,7 +393,7 @@ public class BotCombat {
                 
                 String targetName = player.getName().getString();
                 
-                // РџСЂРѕРІРµСЂСЏРµРј РІСЂР°Р¶РґРµР±РЅРѕСЃС‚СЊ РїРѕ С„СЂР°РєС†РёСЏРј
+                // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р Р†РЎР‚Р В°Р В¶Р Т‘Р ВµР В±Р Р…Р С•РЎРѓРЎвЂљРЎРЉ Р С—Р С• РЎвЂћРЎР‚Р В°Р С”РЎвЂ Р С‘РЎРЏР С
                 if (BotFaction.areEnemies(botName, targetName)) {
                     double dist = bot.distanceTo(player);
                     if (dist < nearestDist && dist <= maxDist) {
@@ -389,13 +408,13 @@ public class BotCombat {
     }
     
     private static Entity findEntityByName(ServerPlayerEntity bot, String name, net.minecraft.server.MinecraftServer server) {
-        // РС‰РµРј РёРіСЂРѕРєР°
+        // Р ВРЎвЂ°Р ВµР С Р С‘Р С–РЎР‚Р С•Р С”Р В°
         if (server != null) {
             var player = server.getPlayerManager().getPlayer(name);
             if (player != null && player != bot) return player;
         }
         
-        // РС‰РµРј СЃСѓС‰РЅРѕСЃС‚СЊ РїРѕ РёРјРµРЅРё РІ РјРёСЂРµ Р±РѕС‚Р°
+        // Р ВРЎвЂ°Р ВµР С РЎРѓРЎС“РЎвЂ°Р Р…Р С•РЎРѓРЎвЂљРЎРЉ Р С—Р С• Р С‘Р СР ВµР Р…Р С‘ Р Р† Р СР С‘РЎР‚Р Вµ Р В±Р С•РЎвЂљР В°
         if (server != null) {
             for (var world : server.getWorlds()) {
                 for (Entity entity : world.iterateEntities()) {
@@ -415,7 +434,7 @@ public class BotCombat {
         Entity nearest = null;
         double nearestDist = maxDist + 1;
         
-        // РџРѕР»СѓС‡Р°РµРј РјРёСЂ С‡РµСЂРµР· СЃРµСЂРІРµСЂ
+        // Р СџР С•Р В»РЎС“РЎвЂЎР В°Р ВµР С Р СР С‘РЎР‚ РЎвЂЎР ВµРЎР‚Р ВµР В· РЎРѓР ВµРЎР‚Р Р†Р ВµРЎР‚
         if (server != null) {
             for (var world : server.getWorlds()) {
                 for (Entity entity : world.getOtherEntities(bot, searchBox)) {
@@ -440,25 +459,25 @@ public class BotCombat {
         
         String botName = bot.getName().getString();
         
-        // РРіСЂРѕРєРё Рё Р±РѕС‚С‹
+        // Р ВР С–РЎР‚Р С•Р С”Р С‘ Р С‘ Р В±Р С•РЎвЂљРЎвЂ№
         if (entity instanceof PlayerEntity player) {
             if (player.isSpectator() || player.isCreative()) return false;
             
             String targetName = player.getName().getString();
             
-            // РџСЂРѕРІРµСЂСЏРµРј С„СЂР°РєС†РёРё
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С РЎвЂћРЎР‚Р В°Р С”РЎвЂ Р С‘Р С‘
             if (settings.isFactionsEnabled()) {
-                // РЎРѕСЋР·РЅРёРєРё - РЅРµ Р°С‚Р°РєСѓРµРј (РµСЃР»Рё friendlyfire РІС‹РєР»СЋС‡РµРЅ)
+                // Р РЋР С•РЎР‹Р В·Р Р…Р С‘Р С”Р С‘ - Р Р…Р Вµ Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С (Р ВµРЎРѓР В»Р С‘ friendlyfire Р Р†РЎвЂ№Р С”Р В»РЎР‹РЎвЂЎР ВµР Р…)
                 if (!settings.isFriendlyFireEnabled() && BotFaction.areAllies(botName, targetName)) {
                     return false;
                 }
-                // Р’СЂР°РіРё РїРѕ С„СЂР°РєС†РёРё - Р°С‚Р°РєСѓРµРј
+                // Р вЂ™РЎР‚Р В°Р С–Р С‘ Р С—Р С• РЎвЂћРЎР‚Р В°Р С”РЎвЂ Р С‘Р С‘ - Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С
                 if (BotFaction.areEnemies(botName, targetName)) {
                     return true;
                 }
             }
             
-            // РџСЂРѕРІРµСЂСЏРµРј РЅР°СЃС‚СЂРѕР№РєРё РґР»СЏ Р±РѕС‚РѕРІ
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р Р…Р В°РЎРѓРЎвЂљРЎР‚Р С•Р в„–Р С”Р С‘ Р Т‘Р В»РЎРЏ Р В±Р С•РЎвЂљР С•Р Р†
             if (BotManager.getAllBots().contains(targetName)) {
                 if (!settings.isTargetOtherBots()) return false;
             } else {
@@ -468,12 +487,12 @@ public class BotCombat {
             return true;
         }
         
-        // Р’СЂР°Р¶РґРµР±РЅС‹Рµ РјРѕР±С‹
+        // Р вЂ™РЎР‚Р В°Р В¶Р Т‘Р ВµР В±Р Р…РЎвЂ№Р Вµ Р СР С•Р В±РЎвЂ№
         if (entity instanceof HostileEntity) {
             return settings.isTargetHostileMobs();
         }
         
-        // Р”СЂСѓРіРёРµ РјРѕР±С‹
+        // Р вЂќРЎР‚РЎС“Р С–Р С‘Р Вµ Р СР С•Р В±РЎвЂ№
         if (living instanceof net.minecraft.entity.mob.MobEntity) {
             return settings.isTargetHostileMobs();
         }
@@ -483,7 +502,7 @@ public class BotCombat {
 
     
     /**
-     * Р’С‹Р±РѕСЂ СЂРµР¶РёРјР° РѕСЂСѓР¶РёСЏ
+     * Р вЂ™РЎвЂ№Р В±Р С•РЎР‚ РЎР‚Р ВµР В¶Р С‘Р СР В° Р С•РЎР‚РЎС“Р В¶Р С‘РЎРЏ
      */
     private static void selectWeaponMode(ServerPlayerEntity bot, CombatState state, double distance, BotSettings settings) {
         var inventory = bot.getInventory();
@@ -499,30 +518,30 @@ public class BotCombat {
         double maceRange = settings.getMaceRange();
         double spearRange = settings.getSpearRange();
         
-        // Р›РѕРіРёРєР° РІС‹Р±РѕСЂР° РѕСЂСѓР¶РёСЏ
-        // РџСЂРёРѕСЂРёС‚РµС‚ 1: Crystal PVP (РµСЃР»Рё РґРѕСЃС‚СѓРїРµРЅ) - Р±С‹СЃС‚СЂРµРµ
+        // Р вЂєР С•Р С–Р С‘Р С”Р В° Р Р†РЎвЂ№Р В±Р С•РЎР‚Р В° Р С•РЎР‚РЎС“Р В¶Р С‘РЎРЏ
+        // Р СџРЎР‚Р С‘Р С•РЎР‚Р С‘РЎвЂљР ВµРЎвЂљ 1: Crystal PVP (Р ВµРЎРѓР В»Р С‘ Р Т‘Р С•РЎРѓРЎвЂљРЎС“Р С—Р ВµР Р…) - Р В±РЎвЂ№РЎРѓРЎвЂљРЎР‚Р ВµР Вµ
         if (target != null && BotCrystalPvp.canUseCrystalPvp(bot, target, settings)) {
             state.currentMode = CombatState.WeaponMode.CRYSTAL;
         } else if (target != null && BotAnchorPvp.canUseAnchorPvp(bot, target, settings)) {
-            // РџСЂРёРѕСЂРёС‚РµС‚ 2: Anchor PVP (РµСЃР»Рё РєСЂРёСЃС‚Р°Р»Р»С‹ РЅРµРґРѕСЃС‚СѓРїРЅС‹) - Р±РѕР»СЊС€Рµ СѓСЂРѕРЅР° РЅРѕ РјРµРґР»РµРЅРЅРµРµ
+            // Р СџРЎР‚Р С‘Р С•РЎР‚Р С‘РЎвЂљР ВµРЎвЂљ 2: Anchor PVP (Р ВµРЎРѓР В»Р С‘ Р С”РЎР‚Р С‘РЎРѓРЎвЂљР В°Р В»Р В»РЎвЂ№ Р Р…Р ВµР Т‘Р С•РЎРѓРЎвЂљРЎС“Р С—Р Р…РЎвЂ№) - Р В±Р С•Р В»РЎРЉРЎв‚¬Р Вµ РЎС“РЎР‚Р С•Р Р…Р В° Р Р…Р С• Р СР ВµР Т‘Р В»Р ВµР Р…Р Р…Р ВµР Вµ
             state.currentMode = CombatState.WeaponMode.ANCHOR;
         } else if (hasMace && distance <= maceRange && settings.isMaceEnabled()) {
-            // Р‘СѓР»Р°РІР° - РµСЃР»Рё РІСЂР°Рі Р±Р»РёР·РєРѕ Рё РјРѕР¶РЅРѕ РїСЂС‹РіРЅСѓС‚СЊ
+            // Р вЂРЎС“Р В»Р В°Р Р†Р В° - Р ВµРЎРѓР В»Р С‘ Р Р†РЎР‚Р В°Р С– Р В±Р В»Р С‘Р В·Р С”Р С• Р С‘ Р СР С•Р В¶Р Р…Р С• Р С—РЎР‚РЎвЂ№Р С–Р Р…РЎС“РЎвЂљРЎРЉ
             state.currentMode = CombatState.WeaponMode.MACE;
         } else if (hasSpear && distance <= spearRange && settings.isSpearEnabled()) {
-            // РљРѕРїСЊС‘ - СЃСЂРµРґРЅСЏСЏ РґРёСЃС‚Р°РЅС†РёСЏ, charge Р°С‚Р°РєР° РїСЂРё РґРІРёР¶РµРЅРёРё
+            // Р С™Р С•Р С—РЎРЉРЎвЂ - РЎРѓРЎР‚Р ВµР Т‘Р Р…РЎРЏРЎРЏ Р Т‘Р С‘РЎРѓРЎвЂљР В°Р Р…РЎвЂ Р С‘РЎРЏ, charge Р В°РЎвЂљР В°Р С”Р В° Р С—РЎР‚Р С‘ Р Т‘Р Р†Р С‘Р В¶Р ВµР Р…Р С‘Р С‘
             state.currentMode = CombatState.WeaponMode.SPEAR;
         } else if (hasRanged && distance > rangedMinRange && settings.isRangedEnabled()) {
-            // Р›СѓРє - РµСЃР»Рё РІСЂР°Рі РґР°Р»РµРєРѕ
+            // Р вЂєРЎС“Р С” - Р ВµРЎРѓР В»Р С‘ Р Р†РЎР‚Р В°Р С– Р Т‘Р В°Р В»Р ВµР С”Р С•
             state.currentMode = CombatState.WeaponMode.RANGED;
         } else if (hasMelee && distance <= meleeRange * 2) {
-            // РњРµС‡ - Р±Р»РёР¶РЅРёР№ Р±РѕР№
+            // Р СљР ВµРЎвЂЎ - Р В±Р В»Р С‘Р В¶Р Р…Р С‘Р в„– Р В±Р С•Р в„–
             state.currentMode = CombatState.WeaponMode.MELEE;
         } else if (hasSpear && settings.isSpearEnabled()) {
-            // РљРѕРїСЊС‘ РєР°Рє Р·Р°РїР°СЃРЅРѕР№ РІР°СЂРёР°РЅС‚ РґР»СЏ СЃСЂРµРґРЅРµР№ РґРёСЃС‚Р°РЅС†РёРё
+            // Р С™Р С•Р С—РЎРЉРЎвЂ Р С”Р В°Р С” Р В·Р В°Р С—Р В°РЎРѓР Р…Р С•Р в„– Р Р†Р В°РЎР‚Р С‘Р В°Р Р…РЎвЂљ Р Т‘Р В»РЎРЏ РЎРѓРЎР‚Р ВµР Т‘Р Р…Р ВµР в„– Р Т‘Р С‘РЎРѓРЎвЂљР В°Р Р…РЎвЂ Р С‘Р С‘
             state.currentMode = CombatState.WeaponMode.SPEAR;
         } else if (hasRanged && settings.isRangedEnabled()) {
-            // Р›СѓРє РєР°Рє Р·Р°РїР°СЃРЅРѕР№ РІР°СЂРёР°РЅС‚
+            // Р вЂєРЎС“Р С” Р С”Р В°Р С” Р В·Р В°Р С—Р В°РЎРѓР Р…Р С•Р в„– Р Р†Р В°РЎР‚Р С‘Р В°Р Р…РЎвЂљ
             state.currentMode = CombatState.WeaponMode.RANGED;
         } else {
             state.currentMode = CombatState.WeaponMode.MELEE;
@@ -530,93 +549,93 @@ public class BotCombat {
     }
     
     /**
-     * Р‘Р»РёР¶РЅРёР№ Р±РѕР№
+     * Р вЂР В»Р С‘Р В¶Р Р…Р С‘Р в„– Р В±Р С•Р в„–
      */
     private static void handleMeleeCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
         var inventory = bot.getInventory();
         
-        // РџСЂРµРєСЂР°С‰Р°РµРј РЅР°С‚СЏРіРёРІР°С‚СЊ Р»СѓРє РµСЃР»Рё РЅР°С‚СЏРіРёРІР°Р»Рё
+        // Р СџРЎР‚Р ВµР С”РЎР‚Р В°РЎвЂ°Р В°Р ВµР С Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°РЎвЂљРЎРЉ Р В»РЎС“Р С” Р ВµРЎРѓР В»Р С‘ Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°Р В»Р С‘
         if (state.isDrawingBow) {
             stopUsingBow(bot, state);
         }
         
         double meleeRange = settings.getMeleeRange();
         
-        // РџСЂРѕР±СѓРµРј РїРѕСЃС‚Р°РІРёС‚СЊ РїР°СѓС‚РёРЅСѓ РїРѕРґ РІСЂР°РіР° РµСЃР»Рё РѕРЅ Р±Р»РёР·РєРѕ Рё Р±РµР¶РёС‚ РЅР° РЅР°СЃ
+        // Р СџРЎР‚Р С•Р В±РЎС“Р ВµР С Р С—Р С•РЎРѓРЎвЂљР В°Р Р†Р С‘РЎвЂљРЎРЉ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎС“ Р С—Р С•Р Т‘ Р Р†РЎР‚Р В°Р С–Р В° Р ВµРЎРѓР В»Р С‘ Р С•Р Р… Р В±Р В»Р С‘Р В·Р С”Р С• Р С‘ Р В±Р ВµР В¶Р С‘РЎвЂљ Р Р…Р В° Р Р…Р В°РЎРѓ
         if (settings.isCobwebEnabled() && distance < 6.0 && distance > 2.0 && state.cobwebCooldown <= 0 && !state.isPlacingCobweb) {
-            // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ РІСЂР°Рі РґРІРёР¶РµС‚СЃСЏ Рє РЅР°Рј
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С РЎвЂЎРЎвЂљР С• Р Р†РЎР‚Р В°Р С– Р Т‘Р Р†Р С‘Р В¶Р ВµРЎвЂљРЎРѓРЎРЏ Р С” Р Р…Р В°Р С
             if (target instanceof net.minecraft.entity.LivingEntity living) {
                 Vec3d targetVel = living.getVelocity();
                 double targetSpeed = Math.sqrt(targetVel.x * targetVel.x + targetVel.z * targetVel.z);
-                if (targetSpeed > 0.08) { // Р’СЂР°Рі РґРІРёР¶РµС‚СЃСЏ
+                if (targetSpeed > 0.08) { // Р вЂ™РЎР‚Р В°Р С– Р Т‘Р Р†Р С‘Р В¶Р ВµРЎвЂљРЎРѓРЎРЏ
                     tryPlaceCobweb(bot, target, server);
                 }
             }
         }
         
-        // Р”РІРёР¶РµРЅРёРµ Рє С†РµР»Рё СЃ РЅР°РІРёРіР°С†РёРµР№
+        // Р вЂќР Р†Р С‘Р В¶Р ВµР Р…Р С‘Р Вµ Р С” РЎвЂ Р ВµР В»Р С‘ РЎРѓ Р Р…Р В°Р Р†Р С‘Р С–Р В°РЎвЂ Р С‘Р ВµР в„–
         if (distance > meleeRange) {
             BotNavigation.moveToward(bot, target, settings.getMoveSpeed());
         } else if (distance < 1.5) {
-            // РЎР»РёС€РєРѕРј Р±Р»РёР·РєРѕ - РѕС‚С…РѕРґРёРј РЅРµРјРЅРѕРіРѕ
+            // Р РЋР В»Р С‘РЎв‚¬Р С”Р С•Р С Р В±Р В»Р С‘Р В·Р С”Р С• - Р С•РЎвЂљРЎвЂ¦Р С•Р Т‘Р С‘Р С Р Р…Р ВµР СР Р…Р С•Р С–Р С•
             BotNavigation.moveAway(bot, target, 0.3);
         }
         
-        // РџСЂРѕРІРµСЂСЏРµРј HP Рё РёСЃРїРѕР»СЊР·СѓРµРј С‰РёС‚ РµСЃР»Рё РЅСѓР¶РЅРѕ
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С HP Р С‘ Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р ВµРЎРѓР В»Р С‘ Р Р…РЎС“Р В¶Р Р…Р С•
         float healthPercent = bot.getHealth() / bot.getMaxHealth();
         boolean shouldUseShield = settings.isAutoShieldEnabled() && healthPercent < settings.getShieldHealthThreshold();
         
-        // РћРїСЂРµРґРµР»СЏРµРј РЅСѓР¶РЅРѕ Р»Рё РґРµСЂР¶Р°С‚СЊ С‰РёС‚ РїРѕРґРЅСЏС‚С‹Рј
-        // РћРїСѓСЃРєР°РµРј С‰РёС‚ РўРћР›Р¬РљРћ РєРѕРіРґР° attackCooldown == 1 (Р·Р° 1 С‚РёРє РґРѕ Р°С‚Р°РєРё)
+        // Р С›Р С—РЎР‚Р ВµР Т‘Р ВµР В»РЎРЏР ВµР С Р Р…РЎС“Р В¶Р Р…Р С• Р В»Р С‘ Р Т‘Р ВµРЎР‚Р В¶Р В°РЎвЂљРЎРЉ РЎвЂ°Р С‘РЎвЂљ Р С—Р С•Р Т‘Р Р…РЎРЏРЎвЂљРЎвЂ№Р С
+        // Р С›Р С—РЎС“РЎРѓР С”Р В°Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р СћР С›Р вЂєР В¬Р С™Р С› Р С”Р С•Р С–Р Т‘Р В° attackCooldown == 1 (Р В·Р В° 1 РЎвЂљР С‘Р С” Р Т‘Р С• Р В°РЎвЂљР В°Р С”Р С‘)
         boolean willAttackSoon = distance <= meleeRange && state.attackCooldown == 1;
         boolean shouldHoldShield = shouldUseShield && !willAttackSoon;
         
         if (shouldUseShield) {
-            // Р­РєРёРїРёСЂСѓРµРј С‰РёС‚ РІ offhand РµСЃР»Рё РµРіРѕ С‚Р°Рј РЅРµС‚
+            // Р В­Р С”Р С‘Р С—Р С‘РЎР‚РЎС“Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р Р† offhand Р ВµРЎРѓР В»Р С‘ Р ВµР С–Р С• РЎвЂљР В°Р С Р Р…Р ВµРЎвЂљ
             ItemStack offhandItem = bot.getOffHandStack();
             if (offhandItem.isEmpty() || !offhandItem.getItem().toString().contains("shield")) {
                 int shieldSlot = findShield(inventory);
                 if (shieldSlot >= 0) {
-                    // РџРµСЂРµРјРµС‰Р°РµРј С‰РёС‚ РІ offhand (СЃР»РѕС‚ 40)
+                    // Р СџР ВµРЎР‚Р ВµР СР ВµРЎвЂ°Р В°Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р Р† offhand (РЎРѓР В»Р С•РЎвЂљ 40)
                     ItemStack shield = inventory.getStack(shieldSlot);
                     inventory.setStack(40, shield);
                     inventory.setStack(shieldSlot, ItemStack.EMPTY);
                 }
             }
             
-            // РЈРїСЂР°РІР»СЏРµРј С‰РёС‚РѕРј С‡РµСЂРµР· Carpet РєРѕРјР°РЅРґС‹
+            // Р Р€Р С—РЎР‚Р В°Р Р†Р В»РЎРЏР ВµР С РЎвЂ°Р С‘РЎвЂљР С•Р С РЎвЂЎР ВµРЎР‚Р ВµР В· Carpet Р С”Р С•Р СР В°Р Р…Р Т‘РЎвЂ№
             if (shouldHoldShield && !state.isUsingShield) {
-                // РќСѓР¶РЅРѕ РїРѕРґРЅСЏС‚СЊ С‰РёС‚
+                // Р СњРЎС“Р В¶Р Р…Р С• Р С—Р С•Р Т‘Р Р…РЎРЏРЎвЂљРЎРЉ РЎвЂ°Р С‘РЎвЂљ
                 startUsingShield(bot, server);
                 state.isUsingShield = true;
             } else if (!shouldHoldShield && state.isUsingShield) {
-                // РќСѓР¶РЅРѕ РѕРїСѓСЃС‚РёС‚СЊ С‰РёС‚ (Р·Р° 1 С‚РёРє РґРѕ СѓРґР°СЂР°)
+                // Р СњРЎС“Р В¶Р Р…Р С• Р С•Р С—РЎС“РЎРѓРЎвЂљР С‘РЎвЂљРЎРЉ РЎвЂ°Р С‘РЎвЂљ (Р В·Р В° 1 РЎвЂљР С‘Р С” Р Т‘Р С• РЎС“Р Т‘Р В°РЎР‚Р В°)
                 stopUsingShield(bot, server);
                 state.isUsingShield = false;
             }
         } else {
-            // HP РЅРѕСЂРјР°Р»СЊРЅРѕРµ - РѕРїСѓСЃРєР°РµРј С‰РёС‚ РµСЃР»Рё РѕРЅ РїРѕРґРЅСЏС‚
+            // HP Р Р…Р С•РЎР‚Р СР В°Р В»РЎРЉР Р…Р С•Р Вµ - Р С•Р С—РЎС“РЎРѓР С”Р В°Р ВµР С РЎвЂ°Р С‘РЎвЂљ Р ВµРЎРѓР В»Р С‘ Р С•Р Р… Р С—Р С•Р Т‘Р Р…РЎРЏРЎвЂљ
             if (state.isUsingShield && state.shieldToggleCooldown <= 0) {
                 stopUsingShield(bot, server);
                 state.isUsingShield = false;
-                state.shieldToggleCooldown = 20; // 1 СЃРµРєСѓРЅРґР° РєСѓР»РґР°СѓРЅ
+                state.shieldToggleCooldown = 20; // 1 РЎРѓР ВµР С”РЎС“Р Р…Р Т‘Р В° Р С”РЎС“Р В»Р Т‘Р В°РЎС“Р Р…
             }
         }
         
-        // РђС‚Р°РєР°
+        // Р С’РЎвЂљР В°Р С”Р В°
         if (distance <= meleeRange && state.attackCooldown <= 0) {
-            // РџСЂРѕРІРµСЂСЏРµРј РєСѓР»РґР°СѓРЅ Р°С‚Р°РєРё РёРіСЂРѕРєР° (РІР°Р¶РЅРѕ РґР»СЏ 1.9+ Р±РѕСЏ)
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р С”РЎС“Р В»Р Т‘Р В°РЎС“Р Р… Р В°РЎвЂљР В°Р С”Р С‘ Р С‘Р С–РЎР‚Р С•Р С”Р В° (Р Р†Р В°Р В¶Р Р…Р С• Р Т‘Р В»РЎРЏ 1.9+ Р В±Р С•РЎРЏ)
             if (bot.getAttackCooldownProgress(0.5f) < 1.0f) {
-                // РћСЂСѓР¶РёРµ РµС‰С‘ РЅРµ РіРѕС‚РѕРІРѕ Рє Р°С‚Р°РєРµ - Р¶РґС‘Рј
+                // Р С›РЎР‚РЎС“Р В¶Р С‘Р Вµ Р ВµРЎвЂ°РЎвЂ Р Р…Р Вµ Р С–Р С•РЎвЂљР С•Р Р†Р С• Р С” Р В°РЎвЂљР В°Р С”Р Вµ - Р В¶Р Т‘РЎвЂР С
                 return;
             }
             
-            // РџСЂРѕРІРµСЂСЏРµРј РЅСѓР¶РЅРѕ Р»Рё СЃР±РёС‚СЊ С‰РёС‚
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р Р…РЎС“Р В¶Р Р…Р С• Р В»Р С‘ РЎРѓР В±Р С‘РЎвЂљРЎРЉ РЎвЂ°Р С‘РЎвЂљ
             if (settings.isShieldBreakEnabled() && target instanceof PlayerEntity player && player.isBlocking()) {
-                // РџРµСЂРµРєР»СЋС‡Р°РµРјСЃСЏ РЅР° С‚РѕРїРѕСЂ РґР»СЏ СЃР±РёС‚РёСЏ С‰РёС‚Р°
+                // Р СџР ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР СРЎРѓРЎРЏ Р Р…Р В° РЎвЂљР С•Р С—Р С•РЎР‚ Р Т‘Р В»РЎРЏ РЎРѓР В±Р С‘РЎвЂљР С‘РЎРЏ РЎвЂ°Р С‘РЎвЂљР В°
                 int axeSlot = findAxe(inventory);
                 if (axeSlot >= 0) {
-                    // РџРµСЂРµРјРµС‰Р°РµРј С‚РѕРїРѕСЂ РІ С…РѕС‚Р±Р°СЂ РµСЃР»Рё РЅСѓР¶РЅРѕ
+                    // Р СџР ВµРЎР‚Р ВµР СР ВµРЎвЂ°Р В°Р ВµР С РЎвЂљР С•Р С—Р С•РЎР‚ Р Р† РЎвЂ¦Р С•РЎвЂљР В±Р В°РЎР‚ Р ВµРЎРѓР В»Р С‘ Р Р…РЎС“Р В¶Р Р…Р С•
                     if (axeSlot >= 9) {
                         ItemStack axe = inventory.getStack(axeSlot);
                         ItemStack current = inventory.getStack(0);
@@ -626,31 +645,31 @@ public class BotCombat {
                     }
                     org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, axeSlot);
                     
-                    // РђС‚Р°РєСѓРµРј С‚РѕРїРѕСЂРѕРј С‡С‚РѕР±С‹ СЃР±РёС‚СЊ С‰РёС‚
+                    // Р С’РЎвЂљР В°Р С”РЎС“Р ВµР С РЎвЂљР С•Р С—Р С•РЎР‚Р С•Р С РЎвЂЎРЎвЂљР С•Р В±РЎвЂ№ РЎРѓР В±Р С‘РЎвЂљРЎРЉ РЎвЂ°Р С‘РЎвЂљ
                     attackWithCarpet(bot, target, server);
                     
-                    // РћС‚РјРµС‡Р°РµРј С‡С‚Рѕ С‰РёС‚ СЃР±РёС‚ - Р±РѕС‚ РїСЂРѕРґРѕР»Р¶РёС‚ РґСЂР°С‚СЊСЃСЏ
+                    // Р С›РЎвЂљР СР ВµРЎвЂЎР В°Р ВµР С РЎвЂЎРЎвЂљР С• РЎвЂ°Р С‘РЎвЂљ РЎРѓР В±Р С‘РЎвЂљ - Р В±Р С•РЎвЂљ Р С—РЎР‚Р С•Р Т‘Р С•Р В»Р В¶Р С‘РЎвЂљ Р Т‘РЎР‚Р В°РЎвЂљРЎРЉРЎРѓРЎРЏ
                     state.shieldBroken = true;
                     state.shieldBrokenTime = System.currentTimeMillis();
                     
-                    // РЈРІРµР»РёС‡РµРЅРЅС‹Р№ РєСѓР»РґР°СѓРЅ РµСЃР»Рё РёСЃРїРѕР»СЊР·СѓРµРј С‰РёС‚ (Р±РѕР»РµРµ РѕСЃС‚РѕСЂРѕР¶РЅР°СЏ Р°С‚Р°РєР°)
+                    // Р Р€Р Р†Р ВµР В»Р С‘РЎвЂЎР ВµР Р…Р Р…РЎвЂ№Р в„– Р С”РЎС“Р В»Р Т‘Р В°РЎС“Р Р… Р ВµРЎРѓР В»Р С‘ Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С РЎвЂ°Р С‘РЎвЂљ (Р В±Р С•Р В»Р ВµР Вµ Р С•РЎРѓРЎвЂљР С•РЎР‚Р С•Р В¶Р Р…Р В°РЎРЏ Р В°РЎвЂљР В°Р С”Р В°)
                     int cooldown = shouldUseShield ? (int)(settings.getAttackCooldown() * 1.5) : settings.getAttackCooldown();
                     state.attackCooldown = cooldown;
                     
-                    // РќР• РїРµСЂРµРєР»СЋС‡Р°РµРјСЃСЏ РѕР±СЂР°С‚РЅРѕ РЅР° РјРµС‡ СЃСЂР°Р·Сѓ - СЌС‚Рѕ РїСЂРѕРёР·РѕР№РґС‘С‚ РІ СЃР»РµРґСѓСЋС‰РµРј С‚РёРєРµ
-                    // РєРѕРіРґР° С‰РёС‚ СѓР¶Рµ Р±СѓРґРµС‚ СЃР±РёС‚ Рё Р±РѕС‚ РїСЂРѕРґРѕР»Р¶РёС‚ Р°С‚Р°РєРѕРІР°С‚СЊ
+                    // Р СњР вЂў Р С—Р ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР СРЎРѓРЎРЏ Р С•Р В±РЎР‚Р В°РЎвЂљР Р…Р С• Р Р…Р В° Р СР ВµРЎвЂЎ РЎРѓРЎР‚Р В°Р В·РЎС“ - РЎРЊРЎвЂљР С• Р С—РЎР‚Р С•Р С‘Р В·Р С•Р в„–Р Т‘РЎвЂРЎвЂљ Р Р† РЎРѓР В»Р ВµР Т‘РЎС“РЎР‹РЎвЂ°Р ВµР С РЎвЂљР С‘Р С”Р Вµ
+                    // Р С”Р С•Р С–Р Т‘Р В° РЎвЂ°Р С‘РЎвЂљ РЎС“Р В¶Р Вµ Р В±РЎС“Р Т‘Р ВµРЎвЂљ РЎРѓР В±Р С‘РЎвЂљ Р С‘ Р В±Р С•РЎвЂљ Р С—РЎР‚Р С•Р Т‘Р С•Р В»Р В¶Р С‘РЎвЂљ Р В°РЎвЂљР В°Р С”Р С•Р Р†Р В°РЎвЂљРЎРЉ
                     return;
                 }
             }
             
-            // РћР±С‹С‡РЅР°СЏ Р°С‚Р°РєР° - СЌРєРёРїРёСЂСѓРµРј РјРµС‡/С‚РѕРїРѕСЂ (С‚РѕР»СЊРєРѕ РµСЃР»Рё С‚РµРєСѓС‰РµРµ РѕСЂСѓР¶РёРµ РЅРµ РїРѕРґС…РѕРґРёС‚)
+            // Р С›Р В±РЎвЂ№РЎвЂЎР Р…Р В°РЎРЏ Р В°РЎвЂљР В°Р С”Р В° - РЎРЊР С”Р С‘Р С—Р С‘РЎР‚РЎС“Р ВµР С Р СР ВµРЎвЂЎ/РЎвЂљР С•Р С—Р С•РЎР‚ (РЎвЂљР С•Р В»РЎРЉР С”Р С• Р ВµРЎРѓР В»Р С‘ РЎвЂљР ВµР С”РЎС“РЎвЂ°Р ВµР Вµ Р С•РЎР‚РЎС“Р В¶Р С‘Р Вµ Р Р…Р Вµ Р С—Р С•Р Т‘РЎвЂ¦Р С•Р Т‘Р С‘РЎвЂљ)
             int currentSlot = org.stepan1411.pvp_bot.utils.InventoryHelper.getSelectedSlot(inventory);
             ItemStack currentItem = inventory.getStack(currentSlot);
             double currentScore = getMeleeScore(currentItem.getItem(), settings.isPreferSword());
             
             int weaponSlot = findMeleeWeapon(inventory);
             if (weaponSlot >= 0 && weaponSlot < 9) {
-                // РџРµСЂРµРєР»СЋС‡Р°РµРјСЃСЏ С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅРѕРІРѕРµ РѕСЂСѓР¶РёРµ Р»СѓС‡С€Рµ С‚РµРєСѓС‰РµРіРѕ
+                // Р СџР ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР СРЎРѓРЎРЏ РЎвЂљР С•Р В»РЎРЉР С”Р С• Р ВµРЎРѓР В»Р С‘ Р Р…Р С•Р Р†Р С•Р Вµ Р С•РЎР‚РЎС“Р В¶Р С‘Р Вµ Р В»РЎС“РЎвЂЎРЎв‚¬Р Вµ РЎвЂљР ВµР С”РЎС“РЎвЂ°Р ВµР С–Р С•
                 ItemStack newWeapon = inventory.getStack(weaponSlot);
                 double newScore = getMeleeScore(newWeapon.getItem(), settings.isPreferSword());
                 
@@ -659,46 +678,46 @@ public class BotCombat {
                 }
             }
             
-            // РљСЂРёС‚РёС‡РµСЃРєРёР№ СѓРґР°СЂ - РїСЂС‹Р¶РѕРє РїРµСЂРµРґ СѓРґР°СЂРѕРј, РЅРѕ Р°С‚Р°РєСѓРµРј С‚РѕР»СЊРєРѕ РєРѕРіРґР° РїР°РґР°РµРј
+            // Р С™РЎР‚Р С‘РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С‘Р в„– РЎС“Р Т‘Р В°РЎР‚ - Р С—РЎР‚РЎвЂ№Р В¶Р С•Р С” Р С—Р ВµРЎР‚Р ВµР Т‘ РЎС“Р Т‘Р В°РЎР‚Р С•Р С, Р Р…Р С• Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С РЎвЂљР С•Р В»РЎРЉР С”Р С• Р С”Р С•Р С–Р Т‘Р В° Р С—Р В°Р Т‘Р В°Р ВµР С
             if (settings.isCriticalsEnabled()) {
                 if (bot.isOnGround()) {
-                    // РџСЂС‹РіР°РµРј РґР»СЏ РєСЂРёС‚Р°
+                    // Р СџРЎР‚РЎвЂ№Р С–Р В°Р ВµР С Р Т‘Р В»РЎРЏ Р С”РЎР‚Р С‘РЎвЂљР В°
                     bot.jump();
-                    return; // РќРµ Р°С‚Р°РєСѓРµРј СЃСЂР°Р·Сѓ, Р¶РґС‘Рј РїРѕРєР° РЅР°С‡РЅС‘Рј РїР°РґР°С‚СЊ
+                    return; // Р СњР Вµ Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С РЎРѓРЎР‚Р В°Р В·РЎС“, Р В¶Р Т‘РЎвЂР С Р С—Р С•Р С”Р В° Р Р…Р В°РЎвЂЎР Р…РЎвЂР С Р С—Р В°Р Т‘Р В°РЎвЂљРЎРЉ
                 } else {
-                    // Р’ РІРѕР·РґСѓС…Рµ - РїСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ РјС‹ РїР°РґР°РµРј Р РїСЂРѕС€Р»Рё РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РІСЂРµРјРµРЅРё РїРѕСЃР»Рµ РїСЂС‹Р¶РєР°
+                    // Р вЂ™ Р Р†Р С•Р В·Р Т‘РЎС“РЎвЂ¦Р Вµ - Р С—РЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С РЎвЂЎРЎвЂљР С• Р СРЎвЂ№ Р С—Р В°Р Т‘Р В°Р ВµР С Р В Р С—РЎР‚Р С•РЎв‚¬Р В»Р С‘ Р Т‘Р С•РЎРѓРЎвЂљР В°РЎвЂљР С•РЎвЂЎР Р…Р С• Р Р†РЎР‚Р ВµР СР ВµР Р…Р С‘ Р С—Р С•РЎРѓР В»Р Вµ Р С—РЎР‚РЎвЂ№Р В¶Р С”Р В°
                     double velocityY = bot.getVelocity().y;
                     double fallDistance = bot.fallDistance;
                     
-                    // РђС‚Р°РєСѓРµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё:
-                    // 1. РџР°РґР°РµРј РІРЅРёР· (velocity.y < 0)
-                    // 2. РџСЂРѕС€Р»Рё С…РѕС‚СЏ Р±С‹ РЅРµР±РѕР»СЊС€РѕРµ СЂР°СЃСЃС‚РѕСЏРЅРёРµ РїР°РґРµРЅРёСЏ (fallDistance > 0.1)
-                    // Р­С‚Рѕ РіР°СЂР°РЅС‚РёСЂСѓРµС‚ С‡С‚Рѕ РјС‹ СѓР¶Рµ РїСЂРѕС€Р»Рё РїРёРє РїСЂС‹Р¶РєР°
+                    // Р С’РЎвЂљР В°Р С”РЎС“Р ВµР С РЎвЂљР С•Р В»РЎРЉР С”Р С• Р ВµРЎРѓР В»Р С‘:
+                    // 1. Р СџР В°Р Т‘Р В°Р ВµР С Р Р†Р Р…Р С‘Р В· (velocity.y < 0)
+                    // 2. Р СџРЎР‚Р С•РЎв‚¬Р В»Р С‘ РЎвЂ¦Р С•РЎвЂљРЎРЏ Р В±РЎвЂ№ Р Р…Р ВµР В±Р С•Р В»РЎРЉРЎв‚¬Р С•Р Вµ РЎР‚Р В°РЎРѓРЎРѓРЎвЂљР С•РЎРЏР Р…Р С‘Р Вµ Р С—Р В°Р Т‘Р ВµР Р…Р С‘РЎРЏ (fallDistance > 0.1)
+                    // Р В­РЎвЂљР С• Р С–Р В°РЎР‚Р В°Р Р…РЎвЂљР С‘РЎР‚РЎС“Р ВµРЎвЂљ РЎвЂЎРЎвЂљР С• Р СРЎвЂ№ РЎС“Р В¶Р Вµ Р С—РЎР‚Р С•РЎв‚¬Р В»Р С‘ Р С—Р С‘Р С” Р С—РЎР‚РЎвЂ№Р В¶Р С”Р В°
                     if (velocityY < 0 && fallDistance > 0.1) {
-                        // РџР°РґР°РµРј - РґРµР»Р°РµРј РєСЂРёС‚РёС‡РµСЃРєРёР№ СѓРґР°СЂ
+                        // Р СџР В°Р Т‘Р В°Р ВµР С - Р Т‘Р ВµР В»Р В°Р ВµР С Р С”РЎР‚Р С‘РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С‘Р в„– РЎС“Р Т‘Р В°РЎР‚
                         attackWithCarpet(bot, target, server);
-                        // РЈРІРµР»РёС‡РµРЅРЅС‹Р№ РєСѓР»РґР°СѓРЅ РµСЃР»Рё РёСЃРїРѕР»СЊР·СѓРµРј С‰РёС‚ (Р±РѕР»РµРµ РѕСЃС‚РѕСЂРѕР¶РЅР°СЏ Р°С‚Р°РєР°)
+                        // Р Р€Р Р†Р ВµР В»Р С‘РЎвЂЎР ВµР Р…Р Р…РЎвЂ№Р в„– Р С”РЎС“Р В»Р Т‘Р В°РЎС“Р Р… Р ВµРЎРѓР В»Р С‘ Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С РЎвЂ°Р С‘РЎвЂљ (Р В±Р С•Р В»Р ВµР Вµ Р С•РЎРѓРЎвЂљР С•РЎР‚Р С•Р В¶Р Р…Р В°РЎРЏ Р В°РЎвЂљР В°Р С”Р В°)
                         int cooldown = shouldUseShield ? (int)(settings.getAttackCooldown() * 1.5) : settings.getAttackCooldown();
                         state.attackCooldown = cooldown;
                     }
-                    // РРЅР°С‡Рµ РїСЂРѕСЃС‚Рѕ Р¶РґС‘Рј РїРѕРєР° РЅРµ РЅР°С‡РЅС‘Рј РїР°РґР°С‚СЊ
+                    // Р ВР Р…Р В°РЎвЂЎР Вµ Р С—РЎР‚Р С•РЎРѓРЎвЂљР С• Р В¶Р Т‘РЎвЂР С Р С—Р С•Р С”Р В° Р Р…Р Вµ Р Р…Р В°РЎвЂЎР Р…РЎвЂР С Р С—Р В°Р Т‘Р В°РЎвЂљРЎРЉ
                 }
             } else {
-                // РљСЂРёС‚РёС‡РµСЃРєРёРµ СѓРґР°СЂС‹ РІС‹РєР»СЋС‡РµРЅС‹ - Р°С‚Р°РєСѓРµРј СЃСЂР°Р·Сѓ
+                // Р С™РЎР‚Р С‘РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С‘Р Вµ РЎС“Р Т‘Р В°РЎР‚РЎвЂ№ Р Р†РЎвЂ№Р С”Р В»РЎР‹РЎвЂЎР ВµР Р…РЎвЂ№ - Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С РЎРѓРЎР‚Р В°Р В·РЎС“
                 attackWithCarpet(bot, target, server);
-                // РЈРІРµР»РёС‡РµРЅРЅС‹Р№ РєСѓР»РґР°СѓРЅ РµСЃР»Рё РёСЃРїРѕР»СЊР·СѓРµРј С‰РёС‚ (Р±РѕР»РµРµ РѕСЃС‚РѕСЂРѕР¶РЅР°СЏ Р°С‚Р°РєР°)
+                // Р Р€Р Р†Р ВµР В»Р С‘РЎвЂЎР ВµР Р…Р Р…РЎвЂ№Р в„– Р С”РЎС“Р В»Р Т‘Р В°РЎС“Р Р… Р ВµРЎРѓР В»Р С‘ Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С РЎвЂ°Р С‘РЎвЂљ (Р В±Р С•Р В»Р ВµР Вµ Р С•РЎРѓРЎвЂљР С•РЎР‚Р С•Р В¶Р Р…Р В°РЎРЏ Р В°РЎвЂљР В°Р С”Р В°)
                 int cooldown = shouldUseShield ? (int)(settings.getAttackCooldown() * 1.5) : settings.getAttackCooldown();
                 state.attackCooldown = cooldown;
             }
         } else {
-            // РќРµ Р°С‚Р°РєСѓРµРј - РїСЂРѕСЃС‚Рѕ РґРµСЂР¶РёРј РѕСЂСѓР¶РёРµ РІ СЂСѓРєРµ (С‚РѕР»СЊРєРѕ РµСЃР»Рё С‚РµРєСѓС‰РµРµ РѕСЂСѓР¶РёРµ РЅРµ РїРѕРґС…РѕРґРёС‚)
+            // Р СњР Вµ Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С - Р С—РЎР‚Р С•РЎРѓРЎвЂљР С• Р Т‘Р ВµРЎР‚Р В¶Р С‘Р С Р С•РЎР‚РЎС“Р В¶Р С‘Р Вµ Р Р† РЎР‚РЎС“Р С”Р Вµ (РЎвЂљР С•Р В»РЎРЉР С”Р С• Р ВµРЎРѓР В»Р С‘ РЎвЂљР ВµР С”РЎС“РЎвЂ°Р ВµР Вµ Р С•РЎР‚РЎС“Р В¶Р С‘Р Вµ Р Р…Р Вµ Р С—Р С•Р Т‘РЎвЂ¦Р С•Р Т‘Р С‘РЎвЂљ)
             int currentSlot = org.stepan1411.pvp_bot.utils.InventoryHelper.getSelectedSlot(inventory);
             ItemStack currentItem = inventory.getStack(currentSlot);
             double currentScore = getMeleeScore(currentItem.getItem(), settings.isPreferSword());
             
             int weaponSlot = findMeleeWeapon(inventory);
             if (weaponSlot >= 0 && weaponSlot < 9) {
-                // РџРµСЂРµРєР»СЋС‡Р°РµРјСЃСЏ С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅРѕРІРѕРµ РѕСЂСѓР¶РёРµ Р»СѓС‡С€Рµ С‚РµРєСѓС‰РµРіРѕ
+                // Р СџР ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР СРЎРѓРЎРЏ РЎвЂљР С•Р В»РЎРЉР С”Р С• Р ВµРЎРѓР В»Р С‘ Р Р…Р С•Р Р†Р С•Р Вµ Р С•РЎР‚РЎС“Р В¶Р С‘Р Вµ Р В»РЎС“РЎвЂЎРЎв‚¬Р Вµ РЎвЂљР ВµР С”РЎС“РЎвЂ°Р ВµР С–Р С•
                 ItemStack newWeapon = inventory.getStack(weaponSlot);
                 double newScore = getMeleeScore(newWeapon.getItem(), settings.isPreferSword());
                 
@@ -710,20 +729,20 @@ public class BotCombat {
     }
     
     /**
-     * Р”Р°Р»СЊРЅРёР№ Р±РѕР№ (Р»СѓРє/Р°СЂР±Р°Р»РµС‚)
+     * Р вЂќР В°Р В»РЎРЉР Р…Р С‘Р в„– Р В±Р С•Р в„– (Р В»РЎС“Р С”/Р В°РЎР‚Р В±Р В°Р В»Р ВµРЎвЂљ)
      */
     private static void handleRangedCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
         var inventory = bot.getInventory();
         
-        // Р­РєРёРїРёСЂСѓРµРј Р»СѓРє
+        // Р В­Р С”Р С‘Р С—Р С‘РЎР‚РЎС“Р ВµР С Р В»РЎС“Р С”
         int bowSlot = findRangedWeapon(inventory);
         if (bowSlot >= 0 && bowSlot < 9) {
             org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, bowSlot);
         }
         
-        // РџСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё СЃС‚СЂРµР»С‹
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р ВµРЎРѓРЎвЂљРЎРЉ Р В»Р С‘ РЎРѓРЎвЂљРЎР‚Р ВµР В»РЎвЂ№
         if (!hasArrows(inventory)) {
-            // РќРµС‚ СЃС‚СЂРµР» - РїРµСЂРµРєР»СЋС‡Р°РµРјСЃСЏ РЅР° Р±Р»РёР¶РЅРёР№ Р±РѕР№
+            // Р СњР ВµРЎвЂљ РЎРѓРЎвЂљРЎР‚Р ВµР В» - Р С—Р ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР СРЎРѓРЎРЏ Р Р…Р В° Р В±Р В»Р С‘Р В¶Р Р…Р С‘Р в„– Р В±Р С•Р в„–
             state.currentMode = CombatState.WeaponMode.MELEE;
             return;
         }
@@ -737,7 +756,7 @@ public class BotCombat {
             handleBowCombat(bot, target, state, distance, settings);
         }
         
-        // Р”РµСЂР¶РёРј РґРёСЃС‚Р°РЅС†РёСЋ СЃ РЅР°РІРёРіР°С†РёРµР№
+        // Р вЂќР ВµРЎР‚Р В¶Р С‘Р С Р Т‘Р С‘РЎРѓРЎвЂљР В°Р Р…РЎвЂ Р С‘РЎР‹ РЎРѓ Р Р…Р В°Р Р†Р С‘Р С–Р В°РЎвЂ Р С‘Р ВµР в„–
         double optimalRange = settings.getRangedOptimalRange();
         if (distance < optimalRange - 5) {
             BotNavigation.moveAway(bot, target, settings.getMoveSpeed());
@@ -748,21 +767,21 @@ public class BotCombat {
     
     private static void handleBowCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings) {
         if (!state.isDrawingBow) {
-            // РќР°С‡РёРЅР°РµРј РЅР°С‚СЏРіРёРІР°С‚СЊ Р»СѓРє
+            // Р СњР В°РЎвЂЎР С‘Р Р…Р В°Р ВµР С Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°РЎвЂљРЎРЉ Р В»РЎС“Р С”
             bot.setCurrentHand(Hand.MAIN_HAND);
             state.isDrawingBow = true;
             state.bowDrawTicks = 0;
         } else {
             state.bowDrawTicks++;
             
-            // Р›СѓРє РїРѕР»РЅРѕСЃС‚СЊСЋ РЅР°С‚СЏРЅСѓС‚ РїРѕСЃР»Рµ 20 С‚РёРєРѕРІ (1 СЃРµРєСѓРЅРґР°)
+            // Р вЂєРЎС“Р С” Р С—Р С•Р В»Р Р…Р С•РЎРѓРЎвЂљРЎРЉРЎР‹ Р Р…Р В°РЎвЂљРЎРЏР Р…РЎС“РЎвЂљ Р С—Р С•РЎРѓР В»Р Вµ 20 РЎвЂљР С‘Р С”Р С•Р Р† (1 РЎРѓР ВµР С”РЎС“Р Р…Р Т‘Р В°)
             int minDrawTime = settings.getBowMinDrawTime();
             if (state.bowDrawTicks >= minDrawTime) {
-                // РЎС‚СЂРµР»СЏРµРј
+                // Р РЋРЎвЂљРЎР‚Р ВµР В»РЎРЏР ВµР С
                 bot.stopUsingItem();
                 state.isDrawingBow = false;
                 state.bowDrawTicks = 0;
-                state.attackCooldown = 5; // РќРµР±РѕР»СЊС€Р°СЏ Р·Р°РґРµСЂР¶РєР° РјРµР¶РґСѓ РІС‹СЃС‚СЂРµР»Р°РјРё
+                state.attackCooldown = 5; // Р СњР ВµР В±Р С•Р В»РЎРЉРЎв‚¬Р В°РЎРЏ Р В·Р В°Р Т‘Р ВµРЎР‚Р В¶Р С”Р В° Р СР ВµР В¶Р Т‘РЎС“ Р Р†РЎвЂ№РЎРѓРЎвЂљРЎР‚Р ВµР В»Р В°Р СР С‘
             }
         }
     }
@@ -771,18 +790,18 @@ public class BotCombat {
         ItemStack crossbow = bot.getMainHandStack();
         
         if (CrossbowItem.isCharged(crossbow)) {
-            // РђСЂР±Р°Р»РµС‚ Р·Р°СЂСЏР¶РµРЅ - СЃС‚СЂРµР»СЏРµРј С‡РµСЂРµР· stopUsingItem
+            // Р С’РЎР‚Р В±Р В°Р В»Р ВµРЎвЂљ Р В·Р В°РЎР‚РЎРЏР В¶Р ВµР Р… - РЎРѓРЎвЂљРЎР‚Р ВµР В»РЎРЏР ВµР С РЎвЂЎР ВµРЎР‚Р ВµР В· stopUsingItem
             bot.stopUsingItem();
             state.attackCooldown = 5;
             state.isDrawingBow = false;
         } else if (!state.isDrawingBow) {
-            // РќР°С‡РёРЅР°РµРј Р·Р°СЂСЏР¶Р°С‚СЊ
+            // Р СњР В°РЎвЂЎР С‘Р Р…Р В°Р ВµР С Р В·Р В°РЎР‚РЎРЏР В¶Р В°РЎвЂљРЎРЉ
             bot.setCurrentHand(Hand.MAIN_HAND);
             state.isDrawingBow = true;
             state.bowDrawTicks = 0;
         } else {
             state.bowDrawTicks++;
-            // РђСЂР±Р°Р»РµС‚ Р·Р°СЂСЏР¶Р°РµС‚СЃСЏ ~25 С‚РёРєРѕРІ
+            // Р С’РЎР‚Р В±Р В°Р В»Р ВµРЎвЂљ Р В·Р В°РЎР‚РЎРЏР В¶Р В°Р ВµРЎвЂљРЎРѓРЎРЏ ~25 РЎвЂљР С‘Р С”Р С•Р Р†
             if (state.bowDrawTicks >= 25) {
                 bot.stopUsingItem();
                 state.isDrawingBow = false;
@@ -799,7 +818,7 @@ public class BotCombat {
     }
     
     /**
-     * Р‘РѕР№ Р±СѓР»Р°РІРѕР№ - РёСЃРїРѕР»СЊР·СѓРµС‚ wind charge РґР»СЏ РІС‹СЃРѕРєРѕРіРѕ РїСЂС‹Р¶РєР°
+     * Р вЂР С•Р в„– Р В±РЎС“Р В»Р В°Р Р†Р С•Р в„– - Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљ wind charge Р Т‘Р В»РЎРЏ Р Р†РЎвЂ№РЎРѓР С•Р С”Р С•Р С–Р С• Р С—РЎР‚РЎвЂ№Р В¶Р С”Р В°
      */
     private static void handleMaceCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
         var inventory = bot.getInventory();
@@ -808,35 +827,35 @@ public class BotCombat {
             stopUsingBow(bot, state);
         }
         
-        // Р•СЃР»Рё РІ РІРѕР·РґСѓС…Рµ - СЌРєРёРїРёСЂСѓРµРј Р±СѓР»Р°РІСѓ Рё Р°С‚Р°РєСѓРµРј РїСЂРё РїР°РґРµРЅРёРё
+        // Р вЂўРЎРѓР В»Р С‘ Р Р† Р Р†Р С•Р В·Р Т‘РЎС“РЎвЂ¦Р Вµ - РЎРЊР С”Р С‘Р С—Р С‘РЎР‚РЎС“Р ВµР С Р В±РЎС“Р В»Р В°Р Р†РЎС“ Р С‘ Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С Р С—РЎР‚Р С‘ Р С—Р В°Р Т‘Р ВµР Р…Р С‘Р С‘
         if (!bot.isOnGround()) {
             int maceSlot = findMace(inventory);
             if (maceSlot >= 0 && maceSlot < 9) {
                 org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, maceSlot);
             }
             
-            // РђС‚Р°РєСѓРµРј РїСЂРё РїР°РґРµРЅРёРё - СЂР°РЅСЊС€Рµ РґР»СЏ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ СѓСЂРѕРЅР°
-            // РђС‚Р°РєСѓРµРј РєРѕРіРґР° РЅР°С‡РёРЅР°РµРј РїР°РґР°С‚СЊ (velocity.y < 0) Рё Р±Р»РёР·РєРѕ Рє С†РµР»Рё
+            // Р С’РЎвЂљР В°Р С”РЎС“Р ВµР С Р С—РЎР‚Р С‘ Р С—Р В°Р Т‘Р ВµР Р…Р С‘Р С‘ - РЎР‚Р В°Р Р…РЎРЉРЎв‚¬Р Вµ Р Т‘Р В»РЎРЏ Р СР В°Р С”РЎРѓР С‘Р СР В°Р В»РЎРЉР Р…Р С•Р С–Р С• РЎС“РЎР‚Р С•Р Р…Р В°
+            // Р С’РЎвЂљР В°Р С”РЎС“Р ВµР С Р С”Р С•Р С–Р Т‘Р В° Р Р…Р В°РЎвЂЎР С‘Р Р…Р В°Р ВµР С Р С—Р В°Р Т‘Р В°РЎвЂљРЎРЉ (velocity.y < 0) Р С‘ Р В±Р В»Р С‘Р В·Р С”Р С• Р С” РЎвЂ Р ВµР В»Р С‘
             double verticalSpeed = bot.getVelocity().y;
             if (verticalSpeed < 0 && distance <= 5.0 && state.attackCooldown <= 0) {
-                // РђС‚Р°РєСѓРµРј СЃСЂР°Р·Сѓ РєР°Рє РЅР°С‡РёРЅР°РµРј РїР°РґР°С‚СЊ
+                // Р С’РЎвЂљР В°Р С”РЎС“Р ВµР С РЎРѓРЎР‚Р В°Р В·РЎС“ Р С”Р В°Р С” Р Р…Р В°РЎвЂЎР С‘Р Р…Р В°Р ВµР С Р С—Р В°Р Т‘Р В°РЎвЂљРЎРЉ
                 attackWithCarpet(bot, target, server);
-                state.attackCooldown = 5; // РљРѕСЂРѕС‚РєРёР№ РєСѓР»РґР°СѓРЅ РґР»СЏ РїРѕРІС‚РѕСЂРЅРѕР№ Р°С‚Р°РєРё
+                state.attackCooldown = 5; // Р С™Р С•РЎР‚Р С•РЎвЂљР С”Р С‘Р в„– Р С”РЎС“Р В»Р Т‘Р В°РЎС“Р Р… Р Т‘Р В»РЎРЏ Р С—Р С•Р Р†РЎвЂљР С•РЎР‚Р Р…Р С•Р в„– Р В°РЎвЂљР В°Р С”Р С‘
             }
             return;
         }
         
-        // РќР° Р·РµРјР»Рµ - РёСЃРїРѕР»СЊР·СѓРµРј wind charge РґР»СЏ РїСЂС‹Р¶РєР°
+        // Р СњР В° Р В·Р ВµР СР В»Р Вµ - Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С wind charge Р Т‘Р В»РЎРЏ Р С—РЎР‚РЎвЂ№Р В¶Р С”Р В°
         if (bot.isOnGround() && distance <= settings.getMaceRange()) {
-            // РС‰РµРј wind charge
+            // Р ВРЎвЂ°Р ВµР С wind charge
             int windChargeSlot = findWindCharge(inventory);
             
             if (windChargeSlot >= 0) {
-                // РСЃРїРѕР»СЊР·СѓРµРј wind charge С‡РµСЂРµР· BotUtils
+                // Р ВРЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С wind charge РЎвЂЎР ВµРЎР‚Р ВµР В· BotUtils
                 BotUtils.useWindCharge(bot, server);
                 bot.jump();
             } else {
-                // РќРµС‚ wind charge - РѕР±С‹С‡РЅС‹Р№ РїСЂС‹Р¶РѕРє СЃ Р±СѓР»Р°РІРѕР№
+                // Р СњР ВµРЎвЂљ wind charge - Р С•Р В±РЎвЂ№РЎвЂЎР Р…РЎвЂ№Р в„– Р С—РЎР‚РЎвЂ№Р В¶Р С•Р С” РЎРѓ Р В±РЎС“Р В»Р В°Р Р†Р С•Р в„–
                 int maceSlot = findMace(inventory);
                 if (maceSlot >= 0 && maceSlot < 9) {
                     org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, maceSlot);
@@ -854,7 +873,7 @@ public class BotCombat {
             }
         }
         
-        // РђС‚Р°РєСѓРµРј РЅР° Р·РµРјР»Рµ РµСЃР»Рё Р±Р»РёР·РєРѕ
+        // Р С’РЎвЂљР В°Р С”РЎС“Р ВµР С Р Р…Р В° Р В·Р ВµР СР В»Р Вµ Р ВµРЎРѓР В»Р С‘ Р В±Р В»Р С‘Р В·Р С”Р С•
         if (bot.isOnGround() && distance <= 3.5 && state.attackCooldown <= 0) {
             int maceSlot = findMace(inventory);
             if (maceSlot >= 0 && maceSlot < 9) {
@@ -864,46 +883,46 @@ public class BotCombat {
             state.attackCooldown = settings.getAttackCooldown();
         }
         
-        // Р”РІРёР¶РµРЅРёРµ Рє С†РµР»Рё СЃ РЅР°РІРёРіР°С†РёРµР№
+        // Р вЂќР Р†Р С‘Р В¶Р ВµР Р…Р С‘Р Вµ Р С” РЎвЂ Р ВµР В»Р С‘ РЎРѓ Р Р…Р В°Р Р†Р С‘Р С–Р В°РЎвЂ Р С‘Р ВµР в„–
         if (distance > settings.getMaceRange()) {
             BotNavigation.moveToward(bot, target, settings.getMoveSpeed());
         }
     }
     
     /**
-     * Р‘РѕР№ РєРѕРїСЊС‘Рј (Spear) - 1.21.11
-     * Р”РІР° СЂРµР¶РёРјР° Р°С‚Р°РєРё:
-     * - РЈРґР°СЂ СЃ СЂР°Р·Р±РµРіР° (charge): РґРµСЂР¶Р°С‚СЊ РџРљРњ Рё РІСЂРµР·Р°С‚СЊСЃСЏ РІ С†РµР»СЊ - СѓСЂРѕРЅ РЅР°РЅРѕСЃРёС‚СЃСЏ РїСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё
-     * - РЈРєРѕР» (jab): РѕР±С‹С‡РЅР°СЏ Р°С‚Р°РєР° Р›РљРњ (С‚СЂРµР±СѓРµС‚ 100% Р·Р°СЂСЏРґР° РјРµР¶РґСѓ СѓРєРѕР»Р°РјРё)
+     * Р вЂР С•Р в„– Р С”Р С•Р С—РЎРЉРЎвЂР С (Spear) - 1.21.11
+     * Р вЂќР Р†Р В° РЎР‚Р ВµР В¶Р С‘Р СР В° Р В°РЎвЂљР В°Р С”Р С‘:
+     * - Р Р€Р Т‘Р В°РЎР‚ РЎРѓ РЎР‚Р В°Р В·Р В±Р ВµР С–Р В° (charge): Р Т‘Р ВµРЎР‚Р В¶Р В°РЎвЂљРЎРЉ Р СџР С™Р Сљ Р С‘ Р Р†РЎР‚Р ВµР В·Р В°РЎвЂљРЎРЉРЎРѓРЎРЏ Р Р† РЎвЂ Р ВµР В»РЎРЉ - РЎС“РЎР‚Р С•Р Р… Р Р…Р В°Р Р…Р С•РЎРѓР С‘РЎвЂљРЎРѓРЎРЏ Р С—РЎР‚Р С‘ РЎРѓРЎвЂљР С•Р В»Р С”Р Р…Р С•Р Р†Р ВµР Р…Р С‘Р С‘
+     * - Р Р€Р С”Р С•Р В» (jab): Р С•Р В±РЎвЂ№РЎвЂЎР Р…Р В°РЎРЏ Р В°РЎвЂљР В°Р С”Р В° Р вЂєР С™Р Сљ (РЎвЂљРЎР‚Р ВµР В±РЎС“Р ВµРЎвЂљ 100% Р В·Р В°РЎР‚РЎРЏР Т‘Р В° Р СР ВµР В¶Р Т‘РЎС“ РЎС“Р С”Р С•Р В»Р В°Р СР С‘)
      * 
-     * Р’РђР–РќРћ: РќРµР»СЊР·СЏ РґРµР»Р°С‚СЊ РѕР±С‹С‡РЅСѓСЋ Р°С‚Р°РєСѓ РїРѕРєР° charge Р°РєС‚РёРІРµРЅ - СЌС‚Рѕ СЃР±СЂРѕСЃРёС‚ РµРіРѕ!
-     * РЈРґР°СЂ СЃ СЂР°Р·Р±РµРіР° РЅР°РЅРѕСЃРёС‚ СѓСЂРѕРЅ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё СЃ С†РµР»СЊСЋ.
+     * Р вЂ™Р С’Р вЂ“Р СњР С›: Р СњР ВµР В»РЎРЉР В·РЎРЏ Р Т‘Р ВµР В»Р В°РЎвЂљРЎРЉ Р С•Р В±РЎвЂ№РЎвЂЎР Р…РЎС“РЎР‹ Р В°РЎвЂљР В°Р С”РЎС“ Р С—Р С•Р С”Р В° charge Р В°Р С”РЎвЂљР С‘Р Р†Р ВµР Р… - РЎРЊРЎвЂљР С• РЎРѓР В±РЎР‚Р С•РЎРѓР С‘РЎвЂљ Р ВµР С–Р С•!
+     * Р Р€Р Т‘Р В°РЎР‚ РЎРѓ РЎР‚Р В°Р В·Р В±Р ВµР С–Р В° Р Р…Р В°Р Р…Р С•РЎРѓР С‘РЎвЂљ РЎС“РЎР‚Р С•Р Р… Р В°Р Р†РЎвЂљР С•Р СР В°РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С‘ Р С—РЎР‚Р С‘ РЎРѓРЎвЂљР С•Р В»Р С”Р Р…Р С•Р Р†Р ВµР Р…Р С‘Р С‘ РЎРѓ РЎвЂ Р ВµР В»РЎРЉРЎР‹.
      */
     private static void handleSpearCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
         var inventory = bot.getInventory();
         
-        // РџСЂРµРєСЂР°С‰Р°РµРј РЅР°С‚СЏРіРёРІР°С‚СЊ Р»СѓРє РµСЃР»Рё РЅР°С‚СЏРіРёРІР°Р»Рё
+        // Р СџРЎР‚Р ВµР С”РЎР‚Р В°РЎвЂ°Р В°Р ВµР С Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°РЎвЂљРЎРЉ Р В»РЎС“Р С” Р ВµРЎРѓР В»Р С‘ Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°Р В»Р С‘
         if (state.isDrawingBow) {
             stopUsingBow(bot, state);
         }
         
-        // Р­РєРёРїРёСЂСѓРµРј РєРѕРїСЊС‘
+        // Р В­Р С”Р С‘Р С—Р С‘РЎР‚РЎС“Р ВµР С Р С”Р С•Р С—РЎРЉРЎвЂ
         int spearSlot = findSpear(inventory);
         if (spearSlot >= 0 && spearSlot < 9) {
             org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, spearSlot);
         }
         
-        double chargeStartDistance = 10.0; // РќР°С‡РёРЅР°РµРј charge Р·Р° 5 Р±Р»РѕРєРѕРІ
-        double chargeHitDistance = 0.1;   // Р”РёСЃС‚Р°РЅС†РёСЏ СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ РґР»СЏ charge (РІРїР»РѕС‚РЅСѓСЋ)
+        double chargeStartDistance = 10.0; // Р СњР В°РЎвЂЎР С‘Р Р…Р В°Р ВµР С charge Р В·Р В° 5 Р В±Р В»Р С•Р С”Р С•Р Р†
+        double chargeHitDistance = 0.1;   // Р вЂќР С‘РЎРѓРЎвЂљР В°Р Р…РЎвЂ Р С‘РЎРЏ РЎРѓРЎвЂљР С•Р В»Р С”Р Р…Р С•Р Р†Р ВµР Р…Р С‘РЎРЏ Р Т‘Р В»РЎРЏ charge (Р Р†Р С—Р В»Р С•РЎвЂљР Р…РЎС“РЎР‹)
         
-        // Р›РѕРіРёРєР° Р±РѕСЏ РєРѕРїСЊС‘Рј:
-        // 1. Р”Р°Р»РµРєРѕ (> 5 Р±Р»РѕРєРѕРІ) - Р±РµР¶РёРј Рє РІСЂР°РіСѓ Р‘Р•Р— charge
-        // 2. Р—Р° 5 Р±Р»РѕРєРѕРІ - РЅР°С‡РёРЅР°РµРј charge (РґРµСЂР¶РёРј РџРљРњ) Рё Р±РµР¶РёРј Рє РІСЂР°РіСѓ
-        // 3. РџСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё (< 1.5 Р±Р»РѕРєР°) - СѓСЂРѕРЅ РЅР°РЅРѕСЃРёС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё, РѕС‚РїСѓСЃРєР°РµРј charge
-        // 4. РџРѕСЃР»Рµ charge РјРѕР¶РЅРѕ СЃСЂР°Р·Сѓ РґРµР»Р°С‚СЊ jab, Рё РЅР°РѕР±РѕСЂРѕС‚
+        // Р вЂєР С•Р С–Р С‘Р С”Р В° Р В±Р С•РЎРЏ Р С”Р С•Р С—РЎРЉРЎвЂР С:
+        // 1. Р вЂќР В°Р В»Р ВµР С”Р С• (> 5 Р В±Р В»Р С•Р С”Р С•Р Р†) - Р В±Р ВµР В¶Р С‘Р С Р С” Р Р†РЎР‚Р В°Р С–РЎС“ Р вЂР вЂўР вЂ” charge
+        // 2. Р вЂ”Р В° 5 Р В±Р В»Р С•Р С”Р С•Р Р† - Р Р…Р В°РЎвЂЎР С‘Р Р…Р В°Р ВµР С charge (Р Т‘Р ВµРЎР‚Р В¶Р С‘Р С Р СџР С™Р Сљ) Р С‘ Р В±Р ВµР В¶Р С‘Р С Р С” Р Р†РЎР‚Р В°Р С–РЎС“
+        // 3. Р СџРЎР‚Р С‘ РЎРѓРЎвЂљР С•Р В»Р С”Р Р…Р С•Р Р†Р ВµР Р…Р С‘Р С‘ (< 1.5 Р В±Р В»Р С•Р С”Р В°) - РЎС“РЎР‚Р С•Р Р… Р Р…Р В°Р Р…Р С•РЎРѓР С‘РЎвЂљРЎРѓРЎРЏ Р В°Р Р†РЎвЂљР С•Р СР В°РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С‘, Р С•РЎвЂљР С—РЎС“РЎРѓР С”Р В°Р ВµР С charge
+        // 4. Р СџР С•РЎРѓР В»Р Вµ charge Р СР С•Р В¶Р Р…Р С• РЎРѓРЎР‚Р В°Р В·РЎС“ Р Т‘Р ВµР В»Р В°РЎвЂљРЎРЉ jab, Р С‘ Р Р…Р В°Р С•Р В±Р С•РЎР‚Р С•РЎвЂљ
         
         if (distance > chargeStartDistance) {
-            // Р”Р°Р»РµРєРѕ - Р±РµР¶РёРј Рє РІСЂР°РіСѓ Р‘Р•Р— charge
+            // Р вЂќР В°Р В»Р ВµР С”Р С• - Р В±Р ВµР В¶Р С‘Р С Р С” Р Р†РЎР‚Р В°Р С–РЎС“ Р вЂР вЂўР вЂ” charge
             if (state.isChargingSpear) {
                 bot.stopUsingItem();
                 state.isChargingSpear = false;
@@ -912,9 +931,9 @@ public class BotCombat {
             BotNavigation.moveToward(bot, target, settings.getMoveSpeed());
             
         } else if (distance > chargeHitDistance) {
-            // РЎСЂРµРґРЅСЏСЏ РґРёСЃС‚Р°РЅС†РёСЏ - charge Р°С‚Р°РєР° (РґРµСЂР¶РёРј РџРљРњ Рё Р±РµР¶РёРј)
+            // Р РЋРЎР‚Р ВµР Т‘Р Р…РЎРЏРЎРЏ Р Т‘Р С‘РЎРѓРЎвЂљР В°Р Р…РЎвЂ Р С‘РЎРЏ - charge Р В°РЎвЂљР В°Р С”Р В° (Р Т‘Р ВµРЎР‚Р В¶Р С‘Р С Р СџР С™Р Сљ Р С‘ Р В±Р ВµР В¶Р С‘Р С)
             if (!state.isChargingSpear) {
-                // РќР°С‡РёРЅР°РµРј charge - РІС‹СЃС‚Р°РІР»СЏРµРј РєРѕРїСЊС‘ РІРїРµСЂС‘Рґ
+                // Р СњР В°РЎвЂЎР С‘Р Р…Р В°Р ВµР С charge - Р Р†РЎвЂ№РЎРѓРЎвЂљР В°Р Р†Р В»РЎРЏР ВµР С Р С”Р С•Р С—РЎРЉРЎвЂ Р Р†Р С—Р ВµРЎР‚РЎвЂР Т‘
                 bot.setCurrentHand(Hand.MAIN_HAND);
                 state.isChargingSpear = true;
                 state.spearChargeTicks = 0;
@@ -922,29 +941,29 @@ public class BotCombat {
             
             state.spearChargeTicks++;
             
-            // Р‘РµР¶РёРј Рє РІСЂР°РіСѓ СЃ charge - СѓСЂРѕРЅ РЅР°РЅРµСЃС‘С‚СЃСЏ РїСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё
+            // Р вЂР ВµР В¶Р С‘Р С Р С” Р Р†РЎР‚Р В°Р С–РЎС“ РЎРѓ charge - РЎС“РЎР‚Р С•Р Р… Р Р…Р В°Р Р…Р ВµРЎРѓРЎвЂРЎвЂљРЎРѓРЎРЏ Р С—РЎР‚Р С‘ РЎРѓРЎвЂљР С•Р В»Р С”Р Р…Р С•Р Р†Р ВµР Р…Р С‘Р С‘
             BotNavigation.moveToward(bot, target, settings.getMoveSpeed() * 1.3);
             
-            // РџСЂРѕРІРµСЂСЏРµРј СЃС‚Р°РґРёРё charge (СѓСЃС‚Р°Р»РѕСЃС‚СЊ РїРѕСЃР»Рµ ~40 С‚РёРєРѕРІ, СЂР°Р·СЂСЏРґРєР° РїРѕСЃР»Рµ ~60)
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С РЎРѓРЎвЂљР В°Р Т‘Р С‘Р С‘ charge (РЎС“РЎРѓРЎвЂљР В°Р В»Р С•РЎРѓРЎвЂљРЎРЉ Р С—Р С•РЎРѓР В»Р Вµ ~40 РЎвЂљР С‘Р С”Р С•Р Р†, РЎР‚Р В°Р В·РЎР‚РЎРЏР Т‘Р С”Р В° Р С—Р С•РЎРѓР В»Р Вµ ~60)
             if (state.spearChargeTicks > 60) {
-                // РЎС‚Р°РґРёСЏ СЂР°Р·СЂСЏРґРєРё - Р»СѓС‡С€Рµ РѕС‚РїСѓСЃС‚РёС‚СЊ Рё РЅР°С‡Р°С‚СЊ Р·Р°РЅРѕРІРѕ
+                // Р РЋРЎвЂљР В°Р Т‘Р С‘РЎРЏ РЎР‚Р В°Р В·РЎР‚РЎРЏР Т‘Р С”Р С‘ - Р В»РЎС“РЎвЂЎРЎв‚¬Р Вµ Р С•РЎвЂљР С—РЎС“РЎРѓРЎвЂљР С‘РЎвЂљРЎРЉ Р С‘ Р Р…Р В°РЎвЂЎР В°РЎвЂљРЎРЉ Р В·Р В°Р Р…Р С•Р Р†Р С•
                 bot.stopUsingItem();
                 state.isChargingSpear = false;
                 state.spearChargeTicks = 0;
             }
             
         } else {
-            // РћС‡РµРЅСЊ Р±Р»РёР·РєРѕ (СЃС‚РѕР»РєРЅРѕРІРµРЅРёРµ) - СѓСЂРѕРЅ РѕС‚ charge СѓР¶Рµ РЅР°РЅРµСЃС‘РЅ
+            // Р С›РЎвЂЎР ВµР Р…РЎРЉ Р В±Р В»Р С‘Р В·Р С”Р С• (РЎРѓРЎвЂљР С•Р В»Р С”Р Р…Р С•Р Р†Р ВµР Р…Р С‘Р Вµ) - РЎС“РЎР‚Р С•Р Р… Р С•РЎвЂљ charge РЎС“Р В¶Р Вµ Р Р…Р В°Р Р…Р ВµРЎРѓРЎвЂР Р…
             if (state.isChargingSpear) {
-                // РћС‚РїСѓСЃРєР°РµРј charge РїРѕСЃР»Рµ СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ
+                // Р С›РЎвЂљР С—РЎС“РЎРѓР С”Р В°Р ВµР С charge Р С—Р С•РЎРѓР В»Р Вµ РЎРѓРЎвЂљР С•Р В»Р С”Р Р…Р С•Р Р†Р ВµР Р…Р С‘РЎРЏ
                 bot.stopUsingItem();
                 state.isChargingSpear = false;
                 state.spearChargeTicks = 0;
-                // РџРѕСЃР»Рµ charge РјРѕР¶РЅРѕ СЃСЂР°Р·Сѓ РґРµР»Р°С‚СЊ jab
+                // Р СџР С•РЎРѓР В»Р Вµ charge Р СР С•Р В¶Р Р…Р С• РЎРѓРЎР‚Р В°Р В·РЎС“ Р Т‘Р ВµР В»Р В°РЎвЂљРЎРЉ jab
                 state.attackCooldown = 0;
             }
             
-            // РћС‚С…РѕРґРёРј РЅР°Р·Р°Рґ С‡С‚РѕР±С‹ СЃРЅРѕРІР° СЂР°Р·Р±РµР¶Р°С‚СЊСЃСЏ РґР»СЏ charge
+            // Р С›РЎвЂљРЎвЂ¦Р С•Р Т‘Р С‘Р С Р Р…Р В°Р В·Р В°Р Т‘ РЎвЂЎРЎвЂљР С•Р В±РЎвЂ№ РЎРѓР Р…Р С•Р Р†Р В° РЎР‚Р В°Р В·Р В±Р ВµР В¶Р В°РЎвЂљРЎРЉРЎРѓРЎРЏ Р Т‘Р В»РЎРЏ charge
             BotNavigation.moveAway(bot, target, settings.getMoveSpeed());
         }
     }
@@ -953,7 +972,7 @@ public class BotCombat {
     private static final java.util.Random random = new java.util.Random();
     
     /**
-     * РђС‚Р°РєР° С†РµР»Рё
+     * Р С’РЎвЂљР В°Р С”Р В° РЎвЂ Р ВµР В»Р С‘
      */
     private static void attack(ServerPlayerEntity bot, Entity target) {
         BotSettings settings = BotSettings.get();
@@ -968,9 +987,9 @@ public class BotCombat {
             System.err.println("[PVP_BOT_API] Error firing attack event: " + e.getMessage());
         }
         
-        // РЁР°РЅСЃ РїСЂРѕРјР°С…Р°
+        // Р РЃР В°Р Р…РЎРѓ Р С—РЎР‚Р С•Р СР В°РЎвЂ¦Р В°
         if (random.nextInt(100) < settings.getMissChance()) {
-            // РџСЂРѕРјР°С… - РїСЂРѕСЃС‚Рѕ РјР°С€РµРј СЂСѓРєРѕР№
+            // Р СџРЎР‚Р С•Р СР В°РЎвЂ¦ - Р С—РЎР‚Р С•РЎРѓРЎвЂљР С• Р СР В°РЎв‚¬Р ВµР С РЎР‚РЎС“Р С”Р С•Р в„–
             bot.swingHand(Hand.MAIN_HAND);
             return;
         }
@@ -980,25 +999,34 @@ public class BotCombat {
     }
     
     /**
-     * РђС‚Р°РєР° С‡РµСЂРµР· РєРѕРјР°РЅРґСѓ Carpet (Р±РѕР»РµРµ РЅР°РґС‘Р¶РЅРѕ)
+     * Р С’РЎвЂљР В°Р С”Р В° РЎвЂЎР ВµРЎР‚Р ВµР В· Р С”Р С•Р СР В°Р Р…Р Т‘РЎС“ Carpet (Р В±Р С•Р В»Р ВµР Вµ Р Р…Р В°Р Т‘РЎвЂР В¶Р Р…Р С•)
      */
     private static void attackWithCarpet(ServerPlayerEntity bot, Entity target, net.minecraft.server.MinecraftServer server) {
         BotSettings settings = BotSettings.get();
         
-        // РџСЂРѕРІРµСЂРєР° friendlyfire - РЅРµ Р°С‚Р°РєСѓРµРј СЃРѕСЋР·РЅРёРєРѕРІ
+        // === FIRE ATTACK EVENT - ALLOW CANCELLATION ===
+        boolean cancelled = org.stepan1411.pvp_bot.api.BotAPIIntegration.fireAttackEvent(bot, target);
+        if (cancelled) {
+            // Р С’РЎвЂљР В°Р С”Р В° Р С•РЎвЂљР СР ВµР Р…Р ВµР Р…Р В° Р С•Р В±РЎР‚Р В°Р В±Р С•РЎвЂљРЎвЂЎР С‘Р С”Р С•Р С - Р С—РЎР‚Р С•РЎРѓРЎвЂљР С• Р СР В°РЎв‚¬Р ВµР С РЎР‚РЎС“Р С”Р С•Р в„–
+            bot.swingHand(Hand.MAIN_HAND);
+            return;
+        }
+        // === END ATTACK EVENT ===
+        
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚Р С”Р В° friendlyfire - Р Р…Р Вµ Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С РЎРѓР С•РЎР‹Р В·Р Р…Р С‘Р С”Р С•Р Р†
         if (!settings.isFriendlyFireEnabled() && target instanceof PlayerEntity) {
             String botName = bot.getName().getString();
             String targetName = target.getName().getString();
             if (BotFaction.areAllies(botName, targetName)) {
-                // РЎРѕСЋР·РЅРёРє - РЅРµ Р°С‚Р°РєСѓРµРј, РїСЂРѕСЃС‚Рѕ РјР°С€РµРј СЂСѓРєРѕР№
+                // Р РЋР С•РЎР‹Р В·Р Р…Р С‘Р С” - Р Р…Р Вµ Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С, Р С—РЎР‚Р С•РЎРѓРЎвЂљР С• Р СР В°РЎв‚¬Р ВµР С РЎР‚РЎС“Р С”Р С•Р в„–
                 bot.swingHand(Hand.MAIN_HAND);
                 return;
             }
         }
         
-        // РЁР°РЅСЃ РїСЂРѕРјР°С…Р°
+        // Р РЃР В°Р Р…РЎРѓ Р С—РЎР‚Р С•Р СР В°РЎвЂ¦Р В°
         if (random.nextInt(100) < settings.getMissChance()) {
-            // РџСЂРѕРјР°С… - РїСЂРѕСЃС‚Рѕ РјР°С€РµРј СЂСѓРєРѕР№
+            // Р СџРЎР‚Р С•Р СР В°РЎвЂ¦ - Р С—РЎР‚Р С•РЎРѓРЎвЂљР С• Р СР В°РЎв‚¬Р ВµР С РЎР‚РЎС“Р С”Р С•Р в„–
             try {
                 server.getCommandManager().getDispatcher().execute(
                     "player " + bot.getName().getString() + " swinghand", 
@@ -1010,10 +1038,10 @@ public class BotCombat {
             return;
         }
         
-        // РЁР°РЅСЃ РѕС€РёР±РєРё - Р°С‚Р°РєСѓРµРј РЅРµ С‚СѓРґР°
+        // Р РЃР В°Р Р…РЎРѓ Р С•РЎв‚¬Р С‘Р В±Р С”Р С‘ - Р В°РЎвЂљР В°Р С”РЎС“Р ВµР С Р Р…Р Вµ РЎвЂљРЎС“Р Т‘Р В°
         if (random.nextInt(100) < settings.getMistakeChance()) {
-            // РџРѕРІРѕСЂР°С‡РёРІР°РµРјСЃСЏ РЅРµРјРЅРѕРіРѕ РІ СЃС‚РѕСЂРѕРЅСѓ
-            float yawOffset = (random.nextFloat() - 0.5f) * 60; // В±30 РіСЂР°РґСѓСЃРѕРІ
+            // Р СџР С•Р Р†Р С•РЎР‚Р В°РЎвЂЎР С‘Р Р†Р В°Р ВµР СРЎРѓРЎРЏ Р Р…Р ВµР СР Р…Р С•Р С–Р С• Р Р† РЎРѓРЎвЂљР С•РЎР‚Р С•Р Р…РЎС“
+            float yawOffset = (random.nextFloat() - 0.5f) * 60; // Р’В±30 Р С–РЎР‚Р В°Р Т‘РЎС“РЎРѓР С•Р Р†
             bot.setYaw(bot.getYaw() + yawOffset);
         }
         
@@ -1028,7 +1056,7 @@ public class BotCombat {
     }
     
     /**
-     * РќР°С‡Р°С‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ С‰РёС‚Р° С‡РµСЂРµР· Carpet РєРѕРјР°РЅРґСѓ
+     * Р СњР В°РЎвЂЎР В°РЎвЂљРЎРЉ Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·Р С•Р Р†Р В°Р Р…Р С‘Р Вµ РЎвЂ°Р С‘РЎвЂљР В° РЎвЂЎР ВµРЎР‚Р ВµР В· Carpet Р С”Р С•Р СР В°Р Р…Р Т‘РЎС“
      */
     private static void startUsingShield(ServerPlayerEntity bot, net.minecraft.server.MinecraftServer server) {
         try {
@@ -1037,13 +1065,13 @@ public class BotCombat {
                 server.getCommandSource()
             );
         } catch (Exception e) {
-            // Fallback - РёСЃРїРѕР»СЊР·СѓРµРј РѕР±С‹С‡РЅС‹Р№ СЃРїРѕСЃРѕР±
+            // Fallback - Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С Р С•Р В±РЎвЂ№РЎвЂЎР Р…РЎвЂ№Р в„– РЎРѓР С—Р С•РЎРѓР С•Р В±
             bot.setCurrentHand(Hand.OFF_HAND);
         }
     }
     
     /**
-     * РџСЂРµРєСЂР°С‚РёС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ С‰РёС‚Р° С‡РµСЂРµР· Carpet РєРѕРјР°РЅРґСѓ
+     * Р СџРЎР‚Р ВµР С”РЎР‚Р В°РЎвЂљР С‘РЎвЂљРЎРЉ Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·Р С•Р Р†Р В°Р Р…Р С‘Р Вµ РЎвЂ°Р С‘РЎвЂљР В° РЎвЂЎР ВµРЎР‚Р ВµР В· Carpet Р С”Р С•Р СР В°Р Р…Р Т‘РЎС“
      */
     private static void stopUsingShield(ServerPlayerEntity bot, net.minecraft.server.MinecraftServer server) {
         try {
@@ -1052,13 +1080,13 @@ public class BotCombat {
                 server.getCommandSource()
             );
         } catch (Exception e) {
-            // Fallback - РёСЃРїРѕР»СЊР·СѓРµРј РѕР±С‹С‡РЅС‹Р№ СЃРїРѕСЃРѕР±
+            // Fallback - Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµР С Р С•Р В±РЎвЂ№РЎвЂЎР Р…РЎвЂ№Р в„– РЎРѓР С—Р С•РЎРѓР С•Р В±
             bot.clearActiveItem();
         }
     }
     
     /**
-     * РџРѕРІРѕСЂРѕС‚ Рє С†РµР»Рё
+     * Р СџР С•Р Р†Р С•РЎР‚Р С•РЎвЂљ Р С” РЎвЂ Р ВµР В»Р С‘
      */
     private static void lookAtTarget(ServerPlayerEntity bot, Entity target) {
         Vec3d targetPos = target.getEyePos();
@@ -1079,13 +1107,13 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕРІРѕСЂРѕС‚ РћРў С†РµР»Рё (РґР»СЏ СѓР±РµРіР°РЅРёСЏ)
+     * Р СџР С•Р Р†Р С•РЎР‚Р С•РЎвЂљ Р С›Р Сћ РЎвЂ Р ВµР В»Р С‘ (Р Т‘Р В»РЎРЏ РЎС“Р В±Р ВµР С–Р В°Р Р…Р С‘РЎРЏ)
      */
     private static void lookAwayFromTarget(ServerPlayerEntity bot, Entity target) {
         Vec3d targetPos = target.getEyePos();
         Vec3d botPos = bot.getEyePos();
         
-        // РќР°РїСЂР°РІР»РµРЅРёРµ РћРў С†РµР»Рё (РїСЂРѕС‚РёРІРѕРїРѕР»РѕР¶РЅРѕРµ)
+        // Р СњР В°Р С—РЎР‚Р В°Р Р†Р В»Р ВµР Р…Р С‘Р Вµ Р С›Р Сћ РЎвЂ Р ВµР В»Р С‘ (Р С—РЎР‚Р С•РЎвЂљР С‘Р Р†Р С•Р С—Р С•Р В»Р С•Р В¶Р Р…Р С•Р Вµ)
         double dx = botPos.x - targetPos.x;
         double dz = botPos.z - targetPos.z;
         
@@ -1094,12 +1122,12 @@ public class BotCombat {
         float yaw = (float) (MathHelper.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0f;
         
         bot.setYaw(yaw);
-        bot.setPitch(0); // РЎРјРѕС‚СЂРёРј РїСЂСЏРјРѕ
+        bot.setPitch(0); // Р РЋР СР С•РЎвЂљРЎР‚Р С‘Р С Р С—РЎР‚РЎРЏР СР С•
         bot.setHeadYaw(yaw);
     }
     
     /**
-     * Р”РІРёР¶РµРЅРёРµ Рє С†РµР»Рё
+     * Р вЂќР Р†Р С‘Р В¶Р ВµР Р…Р С‘Р Вµ Р С” РЎвЂ Р ВµР В»Р С‘
      */
     private static void moveToward(ServerPlayerEntity bot, Entity target, double speed) {
         double botX = bot.getX(), botY = bot.getY(), botZ = bot.getZ();
@@ -1116,14 +1144,14 @@ public class BotCombat {
         bot.forwardSpeed = (float) speed;
         bot.sidewaysSpeed = 0;
         
-        // Р”РѕР±Р°РІР»СЏРµРј РёРјРїСѓР»СЊСЃ РґРІРёР¶РµРЅРёСЏ
+        // Р вЂќР С•Р В±Р В°Р Р†Р В»РЎРЏР ВµР С Р С‘Р СР С—РЎС“Р В»РЎРЉРЎРѓ Р Т‘Р Р†Р С‘Р В¶Р ВµР Р…Р С‘РЎРЏ
         if (bot.isOnGround()) {
             bot.addVelocity(dx * speed * 0.1, 0, dz * speed * 0.1);
         }
     }
     
     /**
-     * Р”РІРёР¶РµРЅРёРµ РѕС‚ С†РµР»Рё (СѓР±РµРіР°РЅРёРµ)
+     * Р вЂќР Р†Р С‘Р В¶Р ВµР Р…Р С‘Р Вµ Р С•РЎвЂљ РЎвЂ Р ВµР В»Р С‘ (РЎС“Р В±Р ВµР С–Р В°Р Р…Р С‘Р Вµ)
      */
     private static void moveAway(ServerPlayerEntity bot, Entity target, double speed) {
         double botX = bot.getX(), botY = bot.getY(), botZ = bot.getZ();
@@ -1136,7 +1164,7 @@ public class BotCombat {
             dz /= dist;
         }
         
-        // Р‘РµР¶РёРј Р’РџР•Р РЃР” (РІ РЅР°РїСЂР°РІР»РµРЅРёРё РѕС‚ РІСЂР°РіР°)
+        // Р вЂР ВµР В¶Р С‘Р С Р вЂ™Р СџР вЂўР В Р РѓР вЂќ (Р Р† Р Р…Р В°Р С—РЎР‚Р В°Р Р†Р В»Р ВµР Р…Р С‘Р С‘ Р С•РЎвЂљ Р Р†РЎР‚Р В°Р С–Р В°)
         bot.setSprinting(true);
         bot.forwardSpeed = (float) speed;
         
@@ -1145,7 +1173,7 @@ public class BotCombat {
         }
     }
     
-    // ============ РџРѕРёСЃРє РѕСЂСѓР¶РёСЏ РІ РёРЅРІРµРЅС‚Р°СЂРµ ============
+    // ============ Р СџР С•Р С‘РЎРѓР С” Р С•РЎР‚РЎС“Р В¶Р С‘РЎРЏ Р Р† Р С‘Р Р…Р Р†Р ВµР Р…РЎвЂљР В°РЎР‚Р Вµ ============
     
     private static int findMeleeWeapon(net.minecraft.entity.player.PlayerInventory inventory) {
         BotSettings settings = BotSettings.get();
@@ -1171,7 +1199,7 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕРёСЃРє С‚РѕРїРѕСЂР° РґР»СЏ СЃР±РёС‚РёСЏ С‰РёС‚Р°
+     * Р СџР С•Р С‘РЎРѓР С” РЎвЂљР С•Р С—Р С•РЎР‚Р В° Р Т‘Р В»РЎРЏ РЎРѓР В±Р С‘РЎвЂљР С‘РЎРЏ РЎвЂ°Р С‘РЎвЂљР В°
      */
     private static int findAxe(net.minecraft.entity.player.PlayerInventory inventory) {
         int bestSlot = -1;
@@ -1195,14 +1223,14 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕРёСЃРє С‰РёС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ
+     * Р СџР С•Р С‘РЎРѓР С” РЎвЂ°Р С‘РЎвЂљР В° Р Р† Р С‘Р Р…Р Р†Р ВµР Р…РЎвЂљР В°РЎР‚Р Вµ
      */
     private static int findShield(net.minecraft.entity.player.PlayerInventory inventory) {
         for (int i = 0; i < 36; i++) {
             ItemStack stack = inventory.getStack(i);
             if (stack.isEmpty()) continue;
             
-            // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ СЌС‚Рѕ С‰РёС‚
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С РЎвЂЎРЎвЂљР С• РЎРЊРЎвЂљР С• РЎвЂ°Р С‘РЎвЂљ
             if (stack.getItem().toString().contains("shield")) {
                 return i;
             }
@@ -1221,23 +1249,23 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕР»СѓС‡РёС‚СЊ "РѕС‡РєРё" РѕСЂСѓР¶РёСЏ СЃ СѓС‡С‘С‚РѕРј preferSword
-     * Р•СЃР»Рё preferSword = true, РјРµС‡Рё РїРѕР»СѓС‡Р°СЋС‚ Р±РѕРЅСѓСЃ +5 Рє РѕС‡РєР°Рј
+     * Р СџР С•Р В»РЎС“РЎвЂЎР С‘РЎвЂљРЎРЉ "Р С•РЎвЂЎР С”Р С‘" Р С•РЎР‚РЎС“Р В¶Р С‘РЎРЏ РЎРѓ РЎС“РЎвЂЎРЎвЂРЎвЂљР С•Р С preferSword
+     * Р вЂўРЎРѓР В»Р С‘ preferSword = true, Р СР ВµРЎвЂЎР С‘ Р С—Р С•Р В»РЎС“РЎвЂЎР В°РЎР‹РЎвЂљ Р В±Р С•Р Р…РЎС“РЎРѓ +5 Р С” Р С•РЎвЂЎР С”Р В°Р С
      */
     private static double getMeleeScore(Item item, boolean preferSword) {
         double baseDamage = getMeleeDamage(item);
         if (baseDamage == 0) return 0;
         
-        // Р•СЃР»Рё РїСЂРµРґРїРѕС‡РёС‚Р°РµРј РјРµС‡ - РґР°С‘Рј РјРµС‡Р°Рј Р±РѕРЅСѓСЃ
+        // Р вЂўРЎРѓР В»Р С‘ Р С—РЎР‚Р ВµР Т‘Р С—Р С•РЎвЂЎР С‘РЎвЂљР В°Р ВµР С Р СР ВµРЎвЂЎ - Р Т‘Р В°РЎвЂР С Р СР ВµРЎвЂЎР В°Р С Р В±Р С•Р Р…РЎС“РЎРѓ
         if (preferSword && isSword(item)) {
-            return baseDamage + 5; // РњРµС‡ РІСЃРµРіРґР° Р±СѓРґРµС‚ РІС‹Р±СЂР°РЅ РµСЃР»Рё РµСЃС‚СЊ
+            return baseDamage + 5; // Р СљР ВµРЎвЂЎ Р Р†РЎРѓР ВµР С–Р Т‘Р В° Р В±РЎС“Р Т‘Р ВµРЎвЂљ Р Р†РЎвЂ№Р В±РЎР‚Р В°Р Р… Р ВµРЎРѓР В»Р С‘ Р ВµРЎРѓРЎвЂљРЎРЉ
         }
         
         return baseDamage;
     }
     
     /**
-     * РџСЂРѕРІРµСЂСЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїСЂРµРґРјРµС‚ РјРµС‡РѕРј
+     * Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµРЎвЂљ, РЎРЏР Р†Р В»РЎРЏР ВµРЎвЂљРЎРѓРЎРЏ Р В»Р С‘ Р С—РЎР‚Р ВµР Т‘Р СР ВµРЎвЂљ Р СР ВµРЎвЂЎР С•Р С
      */
     private static boolean isSword(Item item) {
         return item == Items.NETHERITE_SWORD || 
@@ -1266,7 +1294,7 @@ public class BotCombat {
     }
     
     private static int findRangedWeapon(net.minecraft.entity.player.PlayerInventory inventory) {
-        // РџСЂРёРѕСЂРёС‚РµС‚: Р°СЂР±Р°Р»РµС‚ > Р»СѓРє
+        // Р СџРЎР‚Р С‘Р С•РЎР‚Р С‘РЎвЂљР ВµРЎвЂљ: Р В°РЎР‚Р В±Р В°Р В»Р ВµРЎвЂљ > Р В»РЎС“Р С”
         for (int i = 0; i < 36; i++) {
             ItemStack stack = inventory.getStack(i);
             if (stack.getItem() instanceof CrossbowItem) return i;
@@ -1295,13 +1323,13 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕРёСЃРє РєРѕРїСЊСЏ (Spear) РІ РёРЅРІРµРЅС‚Р°СЂРµ - 1.21.11
-     * РљРѕРїСЊС‘ - РЅРѕРІРѕРµ РѕСЂСѓР¶РёРµ СЃ charge Р°С‚Р°РєРѕР№
+     * Р СџР С•Р С‘РЎРѓР С” Р С”Р С•Р С—РЎРЉРЎРЏ (Spear) Р Р† Р С‘Р Р…Р Р†Р ВµР Р…РЎвЂљР В°РЎР‚Р Вµ - 1.21.11
+     * Р С™Р С•Р С—РЎРЉРЎвЂ - Р Р…Р С•Р Р†Р С•Р Вµ Р С•РЎР‚РЎС“Р В¶Р С‘Р Вµ РЎРѓ charge Р В°РЎвЂљР В°Р С”Р С•Р в„–
      */
     private static int findSpear(net.minecraft.entity.player.PlayerInventory inventory) {
         for (int i = 0; i < 36; i++) {
             ItemStack stack = inventory.getStack(i);
-            // РџСЂРѕРІРµСЂСЏРµРј РїРѕ РёРјРµРЅРё РїСЂРµРґРјРµС‚Р°, С‚Р°Рє РєР°Рє Items.SPEAR РјРѕР¶РµС‚ РЅРµ СЃСѓС‰РµСЃС‚РІРѕРІР°С‚СЊ РІ С‚РµРєСѓС‰РµР№ РІРµСЂСЃРёРё
+            // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С Р С—Р С• Р С‘Р СР ВµР Р…Р С‘ Р С—РЎР‚Р ВµР Т‘Р СР ВµРЎвЂљР В°, РЎвЂљР В°Р С” Р С”Р В°Р С” Items.SPEAR Р СР С•Р В¶Р ВµРЎвЂљ Р Р…Р Вµ РЎРѓРЎС“РЎвЂ°Р ВµРЎРѓРЎвЂљР Р†Р С•Р Р†Р В°РЎвЂљРЎРЉ Р Р† РЎвЂљР ВµР С”РЎС“РЎвЂ°Р ВµР в„– Р Р†Р ВµРЎР‚РЎРѓР С‘Р С‘
             String itemName = stack.getItem().toString().toLowerCase();
             if (itemName.contains("spear")) return i;
         }
@@ -1309,7 +1337,7 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕРёСЃРє РїР°СѓС‚РёРЅС‹ РІ РёРЅРІРµРЅС‚Р°СЂРµ
+     * Р СџР С•Р С‘РЎРѓР С” Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎвЂ№ Р Р† Р С‘Р Р…Р Р†Р ВµР Р…РЎвЂљР В°РЎР‚Р Вµ
      */
     private static int findCobweb(net.minecraft.entity.player.PlayerInventory inventory) {
         for (int i = 0; i < 36; i++) {
@@ -1320,27 +1348,27 @@ public class BotCombat {
     }
     
     /**
-     * РќР°С‡РёРЅР°РµС‚ РїСЂРѕС†РµСЃСЃ СЂР°Р·РјРµС‰РµРЅРёСЏ РїР°СѓС‚РёРЅС‹ РїРѕРґ РІСЂР°РіР°
-     * Р‘РѕС‚ Р±РµСЂС‘С‚ РїР°СѓС‚РёРЅСѓ РІ СЂСѓРєСѓ, СЃРјРѕС‚СЂРёС‚ РЅР° РІСЂР°РіР° Рё РєР»РёРєР°РµС‚ РџРљРњ
+     * Р СњР В°РЎвЂЎР С‘Р Р…Р В°Р ВµРЎвЂљ Р С—РЎР‚Р С•РЎвЂ Р ВµРЎРѓРЎРѓ РЎР‚Р В°Р В·Р СР ВµРЎвЂ°Р ВµР Р…Р С‘РЎРЏ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎвЂ№ Р С—Р С•Р Т‘ Р Р†РЎР‚Р В°Р С–Р В°
+     * Р вЂР С•РЎвЂљ Р В±Р ВµРЎР‚РЎвЂРЎвЂљ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎС“ Р Р† РЎР‚РЎС“Р С”РЎС“, РЎРѓР СР С•РЎвЂљРЎР‚Р С‘РЎвЂљ Р Р…Р В° Р Р†РЎР‚Р В°Р С–Р В° Р С‘ Р С”Р В»Р С‘Р С”Р В°Р ВµРЎвЂљ Р СџР С™Р Сљ
      */
     private static boolean tryPlaceCobweb(ServerPlayerEntity bot, Entity target, net.minecraft.server.MinecraftServer server) {
         CombatState state = getState(bot.getName().getString());
         
-        // РЈР¶Рµ СЂР°Р·РјРµС‰Р°РµРј РїР°СѓС‚РёРЅСѓ
+        // Р Р€Р В¶Р Вµ РЎР‚Р В°Р В·Р СР ВµРЎвЂ°Р В°Р ВµР С Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎС“
         if (state.isPlacingCobweb) return false;
         
         var inventory = bot.getInventory();
         int cobwebSlot = findCobweb(inventory);
         if (cobwebSlot < 0) return false;
         
-        // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ РІСЂР°Рі РЅРµ РІ РїР°СѓС‚РёРЅРµ СѓР¶Рµ
+        // Р СџРЎР‚Р С•Р Р†Р ВµРЎР‚РЎРЏР ВµР С РЎвЂЎРЎвЂљР С• Р Р†РЎР‚Р В°Р С– Р Р…Р Вµ Р Р† Р С—Р В°РЎС“РЎвЂљР С‘Р Р…Р Вµ РЎС“Р В¶Р Вµ
         var world = bot.getEntityWorld();
         net.minecraft.util.math.BlockPos targetPos = target.getBlockPos();
         if (world.getBlockState(targetPos).getBlock() == net.minecraft.block.Blocks.COBWEB) {
-            return false; // РЈР¶Рµ РІ РїР°СѓС‚РёРЅРµ
+            return false; // Р Р€Р В¶Р Вµ Р Р† Р С—Р В°РЎС“РЎвЂљР С‘Р Р…Р Вµ
         }
         
-        // РџРµСЂРµРјРµС‰Р°РµРј РїР°СѓС‚РёРЅСѓ РІ С…РѕС‚Р±Р°СЂ РµСЃР»Рё РЅСѓР¶РЅРѕ
+        // Р СџР ВµРЎР‚Р ВµР СР ВµРЎвЂ°Р В°Р ВµР С Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎС“ Р Р† РЎвЂ¦Р С•РЎвЂљР В±Р В°РЎР‚ Р ВµРЎРѓР В»Р С‘ Р Р…РЎС“Р В¶Р Р…Р С•
         if (cobwebSlot >= 9) {
             ItemStack cobweb = inventory.getStack(cobwebSlot);
             ItemStack current = inventory.getStack(0);
@@ -1349,10 +1377,10 @@ public class BotCombat {
             cobwebSlot = 0;
         }
         
-        // РџРµСЂРµРєР»СЋС‡Р°РµРј РЅР° РїР°СѓС‚РёРЅСѓ
+        // Р СџР ВµРЎР‚Р ВµР С”Р В»РЎР‹РЎвЂЎР В°Р ВµР С Р Р…Р В° Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎС“
         org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, cobwebSlot);
         
-        // РќР°С‡РёРЅР°РµРј РїСЂРѕС†РµСЃСЃ СЂР°Р·РјРµС‰РµРЅРёСЏ
+        // Р СњР В°РЎвЂЎР С‘Р Р…Р В°Р ВµР С Р С—РЎР‚Р С•РЎвЂ Р ВµРЎРѓРЎРѓ РЎР‚Р В°Р В·Р СР ВµРЎвЂ°Р ВµР Р…Р С‘РЎРЏ
         state.isPlacingCobweb = true;
         state.cobwebPlaceTicks = 0;
         
@@ -1360,13 +1388,13 @@ public class BotCombat {
     }
     
     /**
-     * РћР±СЂР°Р±РѕС‚РєР° РїСЂРѕС†РµСЃСЃР° СЂР°Р·РјРµС‰РµРЅРёСЏ РїР°СѓС‚РёРЅС‹
-     * Р’С‹Р·С‹РІР°РµС‚СЃСЏ РєР°Р¶РґС‹Р№ С‚РёРє РєРѕРіРґР° isPlacingCobweb = true
+     * Р С›Р В±РЎР‚Р В°Р В±Р С•РЎвЂљР С”Р В° Р С—РЎР‚Р С•РЎвЂ Р ВµРЎРѓРЎРѓР В° РЎР‚Р В°Р В·Р СР ВµРЎвЂ°Р ВµР Р…Р С‘РЎРЏ Р С—Р В°РЎС“РЎвЂљР С‘Р Р…РЎвЂ№
+     * Р вЂ™РЎвЂ№Р В·РЎвЂ№Р Р†Р В°Р ВµРЎвЂљРЎРѓРЎРЏ Р С”Р В°Р В¶Р Т‘РЎвЂ№Р в„– РЎвЂљР С‘Р С” Р С”Р С•Р С–Р Т‘Р В° isPlacingCobweb = true
      */
     private static void handleCobwebPlacement(ServerPlayerEntity bot, Entity target, CombatState state, net.minecraft.server.MinecraftServer server) {
         state.cobwebPlaceTicks++;
         
-        // РЎРјРѕС‚СЂРёРј РЅР° РїРѕР·РёС†РёСЋ РІСЂР°РіР° (РїРѕРґ РЅРѕРіРё)
+        // Р РЋР СР С•РЎвЂљРЎР‚Р С‘Р С Р Р…Р В° Р С—Р С•Р В·Р С‘РЎвЂ Р С‘РЎР‹ Р Р†РЎР‚Р В°Р С–Р В° (Р С—Р С•Р Т‘ Р Р…Р С•Р С–Р С‘)
         Vec3d targetFeet = new Vec3d(target.getX(), target.getY() - 0.5, target.getZ());
         Vec3d botPos = bot.getEyePos();
         
@@ -1383,7 +1411,7 @@ public class BotCombat {
         bot.setPitch(pitch);
         bot.setHeadYaw(yaw);
         
-        // РљР»РёРєР°РµРј РџРљРњ РЅРµСЃРєРѕР»СЊРєРѕ СЂР°Р· РґР»СЏ РЅР°РґС‘Р¶РЅРѕСЃС‚Рё
+        // Р С™Р В»Р С‘Р С”Р В°Р ВµР С Р СџР С™Р Сљ Р Р…Р ВµРЎРѓР С”Р С•Р В»РЎРЉР С”Р С• РЎР‚Р В°Р В· Р Т‘Р В»РЎРЏ Р Р…Р В°Р Т‘РЎвЂР В¶Р Р…Р С•РЎРѓРЎвЂљР С‘
         if (state.cobwebPlaceTicks % 2 == 0 && state.cobwebPlaceTicks <= 6) {
             try {
                 server.getCommandManager().getDispatcher().execute(
@@ -1391,15 +1419,15 @@ public class BotCombat {
                     server.getCommandSource()
                 );
             } catch (Exception e) {
-                // РРіРЅРѕСЂРёСЂСѓРµРј
+                // Р ВР С–Р Р…Р С•РЎР‚Р С‘РЎР‚РЎС“Р ВµР С
             }
         }
         
-        // Р—Р°РєР°РЅС‡РёРІР°РµРј С‡РµСЂРµР· 8 С‚РёРєРѕРІ
+        // Р вЂ”Р В°Р С”Р В°Р Р…РЎвЂЎР С‘Р Р†Р В°Р ВµР С РЎвЂЎР ВµРЎР‚Р ВµР В· 8 РЎвЂљР С‘Р С”Р С•Р Р†
         if (state.cobwebPlaceTicks >= 8) {
             state.isPlacingCobweb = false;
             state.cobwebPlaceTicks = 0;
-            state.cobwebCooldown = 20; // 1 СЃРµРєСѓРЅРґР° РєСѓР»РґР°СѓРЅ
+            state.cobwebCooldown = 20; // 1 РЎРѓР ВµР С”РЎС“Р Р…Р Т‘Р В° Р С”РЎС“Р В»Р Т‘Р В°РЎС“Р Р…
         }
     }
     
@@ -1411,10 +1439,10 @@ public class BotCombat {
         return false;
     }
     
-    // ============ РџСѓР±Р»РёС‡РЅС‹Рµ РјРµС‚РѕРґС‹ РґР»СЏ РєРѕРјР°РЅРґ ============
+    // ============ Р СџРЎС“Р В±Р В»Р С‘РЎвЂЎР Р…РЎвЂ№Р Вµ Р СР ВµРЎвЂљР С•Р Т‘РЎвЂ№ Р Т‘Р В»РЎРЏ Р С”Р С•Р СР В°Р Р…Р Т‘ ============
     
     /**
-     * РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅСѓСЋ С†РµР»СЊ
+     * Р Р€РЎРѓРЎвЂљР В°Р Р…Р С•Р Р†Р С‘РЎвЂљРЎРЉ Р С—РЎР‚Р С‘Р Р…РЎС“Р Т‘Р С‘РЎвЂљР ВµР В»РЎРЉР Р…РЎС“РЎР‹ РЎвЂ Р ВµР В»РЎРЉ
      */
     public static void setTarget(String botName, String targetName) {
         CombatState state = getState(botName);
@@ -1422,29 +1450,29 @@ public class BotCombat {
     }
     
     /**
-     * РЎР±СЂРѕСЃРёС‚СЊ С†РµР»СЊ (РїРѕР»РЅРѕСЃС‚СЊСЋ РѕСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ Р±РѕР№)
+     * Р РЋР В±РЎР‚Р С•РЎРѓР С‘РЎвЂљРЎРЉ РЎвЂ Р ВµР В»РЎРЉ (Р С—Р С•Р В»Р Р…Р С•РЎРѓРЎвЂљРЎРЉРЎР‹ Р С•РЎРѓРЎвЂљР В°Р Р…Р В°Р Р†Р В»Р С‘Р Р†Р В°Р ВµРЎвЂљ Р В±Р С•Р в„–)
      */
     public static void clearTarget(String botName) {
         CombatState state = getState(botName);
         state.forcedTargetName = null;
         state.target = null;
-        state.lastAttacker = null; // РЎР±СЂР°СЃС‹РІР°РµРј revenge
+        state.lastAttacker = null; // Р РЋР В±РЎР‚Р В°РЎРѓРЎвЂ№Р Р†Р В°Р ВµР С revenge
         state.lastAttackTime = 0;
         state.isRetreating = false;
     }
     
     /**
-     * Р’С‹Р·С‹РІР°РµС‚СЃСЏ РєРѕРіРґР° Р±РѕС‚Р° Р°С‚Р°РєСѓСЋС‚
+     * Р вЂ™РЎвЂ№Р В·РЎвЂ№Р Р†Р В°Р ВµРЎвЂљРЎРѓРЎРЏ Р С”Р С•Р С–Р Т‘Р В° Р В±Р С•РЎвЂљР В° Р В°РЎвЂљР В°Р С”РЎС“РЎР‹РЎвЂљ
      */
     public static void onBotDamaged(ServerPlayerEntity bot, DamageSource source) {
-        // РџСЂРѕР±СѓРµРј РїРѕР»СѓС‡РёС‚СЊ Р°С‚Р°РєСѓСЋС‰РµРіРѕ СЂР°Р·РЅС‹РјРё СЃРїРѕСЃРѕР±Р°РјРё
+        // Р СџРЎР‚Р С•Р В±РЎС“Р ВµР С Р С—Р С•Р В»РЎС“РЎвЂЎР С‘РЎвЂљРЎРЉ Р В°РЎвЂљР В°Р С”РЎС“РЎР‹РЎвЂ°Р ВµР С–Р С• РЎР‚Р В°Р В·Р Р…РЎвЂ№Р СР С‘ РЎРѓР С—Р С•РЎРѓР С•Р В±Р В°Р СР С‘
         Entity attacker = source.getAttacker();
         if (attacker == null) {
             attacker = source.getSource();
         }
         if (attacker == null || attacker == bot) return;
         
-        // РќРµ СЂРµР°РіРёСЂСѓРµРј РЅР° СѓСЂРѕРЅ РѕС‚ СЃРµР±СЏ РёР»Рё РѕС‚ РѕРєСЂСѓР¶РµРЅРёСЏ
+        // Р СњР Вµ РЎР‚Р ВµР В°Р С–Р С‘РЎР‚РЎС“Р ВµР С Р Р…Р В° РЎС“РЎР‚Р С•Р Р… Р С•РЎвЂљ РЎРѓР ВµР В±РЎРЏ Р С‘Р В»Р С‘ Р С•РЎвЂљ Р С•Р С”РЎР‚РЎС“Р В¶Р ВµР Р…Р С‘РЎРЏ
         if (!(attacker instanceof LivingEntity)) return;
         
         CombatState state = getState(bot.getName().getString());
@@ -1453,7 +1481,7 @@ public class BotCombat {
     }
     
     /**
-     * РџРѕР»СѓС‡РёС‚СЊ С‚РµРєСѓС‰СѓСЋ С†РµР»СЊ Р±РѕС‚Р°
+     * Р СџР С•Р В»РЎС“РЎвЂЎР С‘РЎвЂљРЎРЉ РЎвЂљР ВµР С”РЎС“РЎвЂ°РЎС“РЎР‹ РЎвЂ Р ВµР В»РЎРЉ Р В±Р С•РЎвЂљР В°
      */
     public static Entity getTarget(String botName) {
         return getState(botName).target;

@@ -96,8 +96,11 @@ public class FireballStrategy implements CombatStrategy {
         // Create fireball
         Vec3d direction = target.getPos().subtract(bot.getPos()).normalize();
         
+        // Use server parameter passed to execute() method
+        ServerWorld world = (ServerWorld) bot.getEntityWorld();
+        
         FireballEntity fireball = new FireballEntity(
-            bot.getWorld(), 
+            world, 
             bot, 
             direction.x, 
             direction.y, 
@@ -106,7 +109,7 @@ public class FireballStrategy implements CombatStrategy {
         );
         
         fireball.setPosition(bot.getEyePos());
-        bot.getWorld().spawnEntity(fireball);
+        world.spawnEntity(fireball);
         
         return true;
     }

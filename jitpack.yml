@@ -1,0 +1,12 @@
+jdk:
+  - openjdk21
+before_install:
+  - sdk install java 21.0.2-open
+  - sdk use java 21.0.2-open
+  - echo "Gradle wrapper files:"
+  - ls -la gradle/wrapper/
+  - echo "Root directory:"
+  - ls -la
+install:
+  - chmod +x gradlew
+  - ./gradlew clean build publishToMavenLocal -x test --no-daemon --stacktrace
