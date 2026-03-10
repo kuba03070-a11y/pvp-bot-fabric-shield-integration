@@ -21,17 +21,18 @@ public class BotTicker {
         
         int interval = BotSettings.get().getCheckInterval();
         
-        // Автосохранение данных ботов каждые 60 секунд
-        if (autoSaveCounter >= AUTO_SAVE_INTERVAL) {
-            BotManager.updateBotData(server);
-            BotManager.saveBots();
-            autoSaveCounter = 0;
-        }
-        
         // Очищаем мёртвых ботов каждые 20 тиков (1 секунда)
         if (tickCounter % 20 == 0) {
             BotManager.cleanupDeadBots(server);
             // УБРАЛ автоматическую синхронизацию - теперь только по команде /pvpbot sync
+        }
+        
+        // Автосохранение данных ботов каждые 60 секунд
+        // ВАЖНО: cleanup должен быть ДО updateBotData!
+        if (autoSaveCounter >= AUTO_SAVE_INTERVAL) {
+            BotManager.updateBotData(server);
+            BotManager.saveBots();
+            autoSaveCounter = 0;
         }
         
         // Визуализация путей

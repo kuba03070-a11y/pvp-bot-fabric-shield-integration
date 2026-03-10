@@ -261,7 +261,24 @@ public class BotCombat {
         selectWeaponMode(bot, state, distance, settings);
         
         // Р СџР С•Р Р†Р С•РЎР‚Р В°РЎвЂЎР С‘Р Р†Р В°Р ВµР СРЎРѓРЎРЏ Р С” РЎвЂ Р ВµР В»Р С‘ (Р ВµРЎРѓР В»Р С‘ Р Р…Р Вµ Р В±РЎР‚Р С•РЎРѓР В°Р ВµР С Р В·Р ВµР В»РЎРЉР Вµ)
-        if (!utilsState.isThrowingPotion) {
+        // Determine when to use direct lookAt based on weapon and distance
+        boolean shouldLookAt = !utilsState.isThrowingPotion;
+        
+        if (shouldLookAt && settings.isUseBaritone()) {
+            // Check if using mace
+            var mainHandStack = bot.getMainHandStack();
+            boolean usingMace = mainHandStack.getItem().toString().toLowerCase().contains("mace");
+            
+            if (usingMace) {
+                // Mace: always lookAt when in air or within 5 blocks on ground
+                shouldLookAt = !bot.isOnGround() || distance <= 5.0;
+            } else {
+                // Other weapons: lookAt within 3.5 blocks
+                shouldLookAt = distance <= 3.5;
+            }
+        }
+        
+        if (shouldLookAt) {
             BotNavigation.lookAt(bot, target);
         }
         
@@ -552,6 +569,12 @@ public class BotCombat {
      * Р вЂР В»Р С‘Р В¶Р Р…Р С‘Р в„– Р В±Р С•Р в„–
      */
     private static void handleMeleeCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
+        // DO NOT ATTACK OR SWITCH WEAPONS WHILE EATING!
+        var utilsState = BotUtils.getState(bot.getName().getString());
+        if (utilsState.isEating) {
+            return;
+        }
+        
         var inventory = bot.getInventory();
         
         // Р СџРЎР‚Р ВµР С”РЎР‚Р В°РЎвЂ°Р В°Р ВµР С Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°РЎвЂљРЎРЉ Р В»РЎС“Р С” Р ВµРЎРѓР В»Р С‘ Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°Р В»Р С‘
@@ -732,6 +755,12 @@ public class BotCombat {
      * Р вЂќР В°Р В»РЎРЉР Р…Р С‘Р в„– Р В±Р С•Р в„– (Р В»РЎС“Р С”/Р В°РЎР‚Р В±Р В°Р В»Р ВµРЎвЂљ)
      */
     private static void handleRangedCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
+        // DO NOT ATTACK OR SWITCH WEAPONS WHILE EATING!
+        var utilsState = BotUtils.getState(bot.getName().getString());
+        if (utilsState.isEating) {
+            return;
+        }
+        
         var inventory = bot.getInventory();
         
         // Р В­Р С”Р С‘Р С—Р С‘РЎР‚РЎС“Р ВµР С Р В»РЎС“Р С”
@@ -830,6 +859,12 @@ public class BotCombat {
      * Р вЂР С•Р в„– Р В±РЎС“Р В»Р В°Р Р†Р С•Р в„– - Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљ wind charge Р Т‘Р В»РЎРЏ Р Р†РЎвЂ№РЎРѓР С•Р С”Р С•Р С–Р С• Р С—РЎР‚РЎвЂ№Р В¶Р С”Р В°
      */
     private static void handleMaceCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
+        // DO NOT ATTACK OR SWITCH WEAPONS WHILE EATING!
+        var utilsState = BotUtils.getState(bot.getName().getString());
+        if (utilsState.isEating) {
+            return;
+        }
+        
         var inventory = bot.getInventory();
         
         if (state.isDrawingBow) {
@@ -908,6 +943,12 @@ public class BotCombat {
      * Р Р€Р Т‘Р В°РЎР‚ РЎРѓ РЎР‚Р В°Р В·Р В±Р ВµР С–Р В° Р Р…Р В°Р Р…Р С•РЎРѓР С‘РЎвЂљ РЎС“РЎР‚Р С•Р Р… Р В°Р Р†РЎвЂљР С•Р СР В°РЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С‘ Р С—РЎР‚Р С‘ РЎРѓРЎвЂљР С•Р В»Р С”Р Р…Р С•Р Р†Р ВµР Р…Р С‘Р С‘ РЎРѓ РЎвЂ Р ВµР В»РЎРЉРЎР‹.
      */
     private static void handleSpearCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
+        // DO NOT ATTACK OR SWITCH WEAPONS WHILE EATING!
+        var utilsState = BotUtils.getState(bot.getName().getString());
+        if (utilsState.isEating) {
+            return;
+        }
+        
         var inventory = bot.getInventory();
         
         // Р СџРЎР‚Р ВµР С”РЎР‚Р В°РЎвЂ°Р В°Р ВµР С Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°РЎвЂљРЎРЉ Р В»РЎС“Р С” Р ВµРЎРѓР В»Р С‘ Р Р…Р В°РЎвЂљРЎРЏР С–Р С‘Р Р†Р В°Р В»Р С‘

@@ -306,15 +306,15 @@ public class BotManager {
             return false;
         }
 
-        // Execute Carpet's /player command - spawn in survival mode
+        // Execute HeroBot's /playerspawn command - spawn in survival mode
         var dispatcher = server.getCommandManager().getDispatcher();
         try {
-            // Spawn bot in survival mode using Carpet syntax
-            dispatcher.execute("player " + name + " spawn in survival", source);
+            // Spawn bot in survival mode using HeroBot syntax
+            dispatcher.execute("playerspawn " + name + " at ~ ~ ~ facing 0 0 in survival", source);
         } catch (Exception e) {
             // Try alternative method if first fails
             try {
-                dispatcher.execute("player " + name + " spawn", source);
+                dispatcher.execute("playerspawn " + name, source);
                 // Force gamemode change after spawn
                 dispatcher.execute("gamemode survival " + name, server.getCommandSource());
             } catch (Exception e2) {
@@ -394,10 +394,11 @@ public class BotManager {
         botDataMap.remove(name); // РЈРґР°Р»СЏРµРј РґР°РЅРЅС‹Рµ Р±РѕС‚Р°
         saveBots();
         
-        // РћС‡РёС‰Р°РµРј РІСЃРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ Р±РѕС‚Р°
+        // Clean all bot states
         BotCombat.removeState(name);
         BotUtils.removeState(name);
         BotNavigation.resetIdle(name);
+        BotBaritone.removeBaritone(name);
 
         String command = "player " + name + " kill";
         var dispatcher = server.getCommandManager().getDispatcher();
@@ -419,10 +420,11 @@ public class BotManager {
     public static void removeAllBots(MinecraftServer server, ServerCommandSource source) {
         var dispatcher = server.getCommandManager().getDispatcher();
         for (String name : new HashSet<>(bots)) {
-            // РћС‡РёС‰Р°РµРј РІСЃРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ Р±РѕС‚Р°
+            // Clean all bot states
             BotCombat.removeState(name);
             BotUtils.removeState(name);
             BotNavigation.resetIdle(name);
+            BotBaritone.removeBaritone(name);
             
             String command = "player " + name + " kill";
             try {
@@ -477,7 +479,8 @@ public class BotManager {
                 BotCombat.removeState(name);
                 BotUtils.removeState(name);
                 BotNavigation.resetIdle(name);
-                incrementBotsKilled(); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє СѓР±РёС‚С‹С…
+                BotBaritone.removeBaritone(name);
+                incrementBotsKilled(); // Increment killed counter
                 changed = true;
                 System.out.println("[PVP_BOT] Removed dead bot: " + name);
             }

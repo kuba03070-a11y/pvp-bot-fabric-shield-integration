@@ -5,3 +5,7 @@
 src/count_lines.py
 /build/tmp
 /build/tmp/compileJava
+/.gradle
+/build/classes
+/build/loom-cache
+/HeRoBot-master

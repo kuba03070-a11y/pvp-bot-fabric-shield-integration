@@ -32,8 +32,16 @@ public class BotCommand {
     private static final boolean HAS_INVVIEW = FabricLoader.getInstance().isModLoaded("invview");
     
     // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ РёРјС‘РЅ Р±РѕС‚РѕРІ
-    private static final SuggestionProvider<ServerCommandSource> BOT_SUGGESTIONS = (ctx, builder) -> 
-        CommandSource.suggestMatching(BotManager.getAllBots(), builder);
+    private static final SuggestionProvider<ServerCommandSource> BOT_SUGGESTIONS = (ctx, builder) -> {
+        var server = ctx.getSource().getServer();
+        var aliveBots = BotManager.getAllBots().stream()
+            .filter(name -> {
+                var bot = server.getPlayerManager().getPlayer(name);
+                return bot != null && bot.isAlive();
+            })
+            .collect(Collectors.toList());
+        return CommandSource.suggestMatching(aliveBots, builder);
+    };
     
     // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ С†РµР»РµР№ (РІСЃРµ РёРіСЂРѕРєРё РЅР° СЃРµСЂРІРµСЂРµ)
     private static final SuggestionProvider<ServerCommandSource> TARGET_SUGGESTIONS = (ctx, builder) -> 
@@ -413,6 +421,16 @@ public class BotCommand {
                             .executes(ctx -> {
                                 BotSettings.get().setIdleWanderEnabled(BoolArgumentType.getBool(ctx, "value"));
                                 ctx.getSource().sendFeedback(() -> Text.literal("Idle wander: " + BotSettings.get().isIdleWanderEnabled()), true);
+                                return 1;
+                            })
+                        )
+                    )
+                    .then(CommandManager.literal("usebaritone")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("usebaritone: " + BotSettings.get().isUseBaritone()), false); return 1; })
+                        .then(CommandManager.argument("value", BoolArgumentType.bool())
+                            .executes(ctx -> {
+                                BotSettings.get().setUseBaritone(BoolArgumentType.getBool(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("Use Baritone: " + BotSettings.get().isUseBaritone()), true);
                                 return 1;
                             })
                         )
@@ -1107,7 +1125,7 @@ public class BotCommand {
             source.sendFeedback(() -> Text.literal(name + " is already in bot list!"), false);
             return 0;
         } else {
-            source.sendFeedback(() -> Text.literal(name + " is not a fake player (Carpet bot)!"), false);
+            source.sendFeedback(() -> Text.literal(name + " is not a fake player (HeroBot bot)!"), false);
             return 0;
         }
     }

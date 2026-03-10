@@ -11,6 +11,7 @@ Welcome to the PVP Bot Fabric API documentation! This API allows you to create a
 - [🏗️API Structure] - architecture overview
 - [📖API Reference] - complete method documentation
 - [⚡Events] - event system
+- [🗺️ Pathfinding] - bot navigation and pathfinding
 - [⚔️ Combat Strategies] - custom combat logic
 - [💡Examples] - ready-to-use code examples
 - [🔌Mod Integration] - working with other mods

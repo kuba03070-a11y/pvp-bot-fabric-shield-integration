@@ -353,9 +353,8 @@ public class BotUtils {
     private static void handleAutoEat(ServerPlayerEntity bot, BotState state, BotSettings settings, MinecraftServer server) {
         // РџСЂРѕРІРµСЂСЏРµРј РІРєР»СЋС‡РµРЅР° Р»Рё Р°РІС‚Рѕ-РµРґР°
         if (!settings.isAutoEatEnabled()) {
-            // Р•СЃР»Рё Р°РІС‚Рѕ-РµРґР° РІС‹РєР»СЋС‡РµРЅР°, РѕСЃС‚Р°РЅР°РІР»РёРІР°РµРј РµРґСѓ РµСЃР»Рё Р±РѕС‚ РµСЃС‚
             if (state.isEating) {
-                bot.stopUsingItem();
+                executeCommand(server, bot, "player " + bot.getName().getString() + " stop");
                 state.isEating = false;
                 state.eatingTicks = 0;
                 state.eatingSlot = -1;
@@ -392,7 +391,7 @@ public class BotUtils {
             
             // Р•РґР° Р·Р°РЅРёРјР°РµС‚ ~32 С‚РёРєР°, РЅРѕ СЃ СѓС‡С‘С‚РѕРј Р·Р°РґРµСЂР¶РµРє Р¶РґС‘Рј 80 С‚РёРєРѕРІ (4 СЃРµРє)
             if (state.eatingTicks >= 80) {
-                bot.stopUsingItem();
+                executeCommand(server, bot, "player " + bot.getName().getString() + " stop");
                 state.isEating = false;
                 state.eatingTicks = 0;
                 state.eatingSlot = -1;
@@ -435,11 +434,11 @@ public class BotUtils {
                     
                     state.eatingSlot = foodSlot;
                     
-                    // РџРµСЂРµРєР»СЋС‡Р°РµРј СЃР»РѕС‚ РЅР°РїСЂСЏРјСѓСЋ
+                    // Switch to food slot
                     org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, foodSlot);
                     
-                    // РќР°С‡РёРЅР°РµРј РµСЃС‚СЊ РЅР°РїСЂСЏРјСѓСЋ
-                    bot.setCurrentHand(Hand.MAIN_HAND);
+                    // Start eating using HeroBot command for proper slowdown
+                    executeCommand(server, bot, "player " + bot.getName().getString() + " use continuous");
                     state.isEating = true;
                     state.eatingTicks = 0;
                 }

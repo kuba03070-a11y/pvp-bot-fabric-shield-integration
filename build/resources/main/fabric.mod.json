@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "pvp_bot",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "name": "PVP Bot",
   "description": "Advanced PvP bot with combat AI, factions, auto-equip, navigation and more!",
   "authors": ["Stepan1411"],
@@ -28,12 +28,15 @@
     "fabricloader": ">=0.16.0",
     "minecraft": ">=1.21.10",
     "fabric": "*",
-    "carpet": "*",
-    "capet_mace_fix": "*"
+    "herobot": "*"
   },
   "suggests": {
-    "modmenu": "*",
-    "invview": "*"
+    "modmenu": "*"
+  },
+  "breaks": {
+    "carpet": "*",
+    "capet_mace_fix": "*",
+    "carpet_crit_attack_fix": "*"
   },
   "custom": {
     "modmenu": {

@@ -15,90 +15,91 @@ public class BotSettings {
     private static BotSettings INSTANCE;
     private static Path configPath;
     
-    // РќР°СЃС‚СЂРѕР№РєРё СЌРєРёРїРёСЂРѕРІРєРё
+    // Equipment settings
     private boolean autoEquipArmor = true;
     private boolean autoEquipWeapon = true;
     
-    // РќР°СЃС‚СЂРѕР№РєРё РІС‹Р±СЂР°СЃС‹РІР°РЅРёСЏ
+    // Drop settings
     private boolean dropWorseArmor = false;
     private boolean dropWorseWeapons = false;
     private double dropDistance = 3.0;
     private int dropDelay = 20;
     
-    // РРЅС‚РµСЂРІР°Р» РїСЂРѕРІРµСЂРєРё
+    // Check interval
     private int checkInterval = 20;
     
-    // РњРёРЅРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ Р±СЂРѕРЅРё
+    // Minimum armor level
     private int minArmorLevel = 0;
     
-    // ============ РќР°СЃС‚СЂРѕР№РєРё Р±РѕСЏ ============
+    // ============ Combat Settings ============
     private boolean combatEnabled = true;
-    private boolean revengeEnabled = true;        // РђС‚Р°РєРѕРІР°С‚СЊ С‚РѕРіРѕ РєС‚Рѕ Р°С‚Р°РєРѕРІР°Р» Р±РѕС‚Р°
-    private boolean autoTargetEnabled = false;    // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РёСЃРєР°С‚СЊ РІСЂР°РіРѕРІ
-    private boolean targetPlayers = true;         // РђС‚Р°РєРѕРІР°С‚СЊ РёРіСЂРѕРєРѕРІ
-    private boolean targetHostileMobs = false;    // РђС‚Р°РєРѕРІР°С‚СЊ РІСЂР°Р¶РґРµР±РЅС‹С… РјРѕР±РѕРІ
-    private boolean targetOtherBots = false;      // РђС‚Р°РєРѕРІР°С‚СЊ РґСЂСѓРіРёС… Р±РѕС‚РѕРІ
+    private boolean revengeEnabled = true;
+    private boolean autoTargetEnabled = false;
+    private boolean targetPlayers = true;
+    private boolean targetHostileMobs = false;
+    private boolean targetOtherBots = false;
     
-    // Р”РёСЃС‚Р°РЅС†РёРё
-    private double maxTargetDistance = 64.0;      // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ РїРѕРёСЃРєР° С†РµР»Рё (СѓРІРµР»РёС‡РµРЅРѕ)
-    private double meleeRange = 3.5;              // Р”РёСЃС‚Р°РЅС†РёСЏ Р±Р»РёР¶РЅРµРіРѕ Р±РѕСЏ
-    private double rangedMinRange = 8.0;          // РњРёРЅРёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ РґР»СЏ Р»СѓРєР°
-    private double rangedOptimalRange = 20.0;     // РћРїС‚РёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ РґР»СЏ Р»СѓРєР°
-    private double maceRange = 6.0;               // Р”РёСЃС‚Р°РЅС†РёСЏ РґР»СЏ Р±СѓР»Р°РІС‹
+    // Distances
+    private double maxTargetDistance = 64.0;
+    private double meleeRange = 3.5;
+    private double rangedMinRange = 8.0;
+    private double rangedOptimalRange = 20.0;
+    private double maceRange = 6.0;
     
-    // РџР°СЂР°РјРµС‚СЂС‹ Р±РѕСЏ
-    private int attackCooldown = 10;              // РљСѓР»РґР°СѓРЅ Р°С‚Р°РєРё РІ С‚РёРєР°С…
-    private double moveSpeed = 1.0;               // РЎРєРѕСЂРѕСЃС‚СЊ РґРІРёР¶РµРЅРёСЏ
-    private boolean criticalsEnabled = true;      // РљСЂРёС‚РёС‡РµСЃРєРёРµ СѓРґР°СЂС‹
-    private int bowMinDrawTime = 15;              // РњРёРЅРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ РЅР°С‚СЏР¶РµРЅРёСЏ Р»СѓРєР°
+    // Combat parameters
+    private int attackCooldown = 10;
+    private double moveSpeed = 1.0;
+    private boolean criticalsEnabled = true;
+    private int bowMinDrawTime = 15;
     
-    // Р’РєР»СЋС‡РµРЅРёРµ С‚РёРїРѕРІ РѕСЂСѓР¶РёСЏ
-    private boolean rangedEnabled = true;         // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р»СѓРє/Р°СЂР±Р°Р»РµС‚
-    private boolean maceEnabled = true;           // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±СѓР»Р°РІСѓ
-    private boolean spearEnabled = false;         // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РєРѕРїСЊС‘ (1.21.11) - Р’Р«РљР›Р®Р§Р•РќРћ РёР·-Р·Р° Р±Р°РіР° Carpet
-    private boolean crystalPvpEnabled = true;     // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Crystal PVP (РѕР±СЃРёРґРёР°РЅ + РєСЂРёСЃС‚Р°Р»Р»)
-    private boolean anchorPvpEnabled = true;      // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Anchor PVP (СЏРєРѕСЂСЊ + glowstone)
+    // Weapon types
+    private boolean rangedEnabled = true;
+    private boolean maceEnabled = true;
+    private boolean spearEnabled = false;
+    private boolean crystalPvpEnabled = true;
+    private boolean anchorPvpEnabled = true;
     
-    // РќР°СЃС‚СЂРѕР№РєРё РєРѕРїСЊСЏ (Spear) - 1.21.11
-    private double spearRange = 4.5;              // Р”РёСЃС‚Р°РЅС†РёСЏ РґР»СЏ jab Р°С‚Р°РєРё
-    private double spearChargeRange = 12.0;       // Р”РёСЃС‚Р°РЅС†РёСЏ РґР»СЏ charge Р°С‚Р°РєРё
-    private int spearMinChargeTime = 15;          // РњРёРЅРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ Р·Р°СЂСЏРґР°
-    private int spearMaxChargeTime = 40;          // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ Р·Р°СЂСЏРґР°
+    // Spear settings (1.21.11)
+    private double spearRange = 4.5;
+    private double spearChargeRange = 12.0;
+    private int spearMinChargeTime = 15;
+    private int spearMaxChargeTime = 40;
     
-    // ============ РЈС‚РёР»РёС‚С‹ ============
-    private boolean autoTotemEnabled = true;      // РђРІС‚Рѕ-С‚РѕС‚РµРј РІ offhand
-    private boolean totemPriority = true;         // РџСЂРёРѕСЂРёС‚РµС‚ С‚РѕС‚РµРјР° (РЅРµ Р·Р°РјРµРЅСЏС‚СЊ РЅР° С‰РёС‚)
-    private boolean autoEatEnabled = true;        // РђРІС‚Рѕ-РµРґР°
-    private boolean autoShieldEnabled = true;     // РђРІС‚Рѕ-С‰РёС‚
-    private boolean autoMendEnabled = true;       // РђРІС‚Рѕ-СЂРµРјРѕРЅС‚ Р±СЂРѕРЅРё СЃ Mending С‡РµСЂРµР· XP Р±СѓС‚С‹Р»РєРё
-    private double mendDurabilityThreshold = 0.25; // РџРѕСЂРѕРі РїСЂРѕС‡РЅРѕСЃС‚Рё РґР»СЏ СЂРµРјРѕРЅС‚Р° (0.25 = 25%)
-    private double shieldHealthThreshold = 0.5;   // РџРѕСЂРѕРі HP РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ С‰РёС‚Р° (0.5 = 50%)
-    private boolean shieldBreakEnabled = true;    // РЎР±РёРІР°С‚СЊ С‰РёС‚ С‚РѕРїРѕСЂРѕРј
-    private boolean preferSword = true;           // РџСЂРµРґРїРѕС‡РёС‚Р°С‚СЊ РјРµС‡ РІРјРµСЃС‚Рѕ С‚РѕРїРѕСЂР°
-    private int minHungerToEat = 14;              // РњРёРЅРёРјР°Р»СЊРЅС‹Р№ РіРѕР»РѕРґ РґР»СЏ РµРґС‹
-    private boolean autoPotionEnabled = true;     // РђРІС‚Рѕ-Р·РµР»СЊСЏ РёСЃС†РµР»РµРЅРёСЏ
-    private boolean cobwebEnabled = true;         // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїР°СѓС‚РёРЅСѓ
+    // ============ Utilities ============
+    private boolean autoTotemEnabled = true;
+    private boolean totemPriority = true;
+    private boolean autoEatEnabled = true;
+    private boolean autoShieldEnabled = true;
+    private boolean autoMendEnabled = true;
+    private double mendDurabilityThreshold = 0.25;
+    private double shieldHealthThreshold = 0.5;
+    private boolean shieldBreakEnabled = true;
+    private boolean preferSword = true;
+    private int minHungerToEat = 14;
+    private boolean autoPotionEnabled = true;
+    private boolean cobwebEnabled = true;
     
-    // ============ РќР°РІРёРіР°С†РёСЏ Рё РґРІРёР¶РµРЅРёРµ ============
-    private boolean retreatEnabled = false;       // РћС‚СЃС‚СѓРїР°С‚СЊ РїСЂРё РЅРёР·РєРѕРј HP (Р’Р«РљР›Р®Р§Р•РќРћ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ)
-    private double retreatHealthPercent = 0.3;    // РџСЂРѕС†РµРЅС‚ HP РґР»СЏ РѕС‚СЃС‚СѓРїР»РµРЅРёСЏ (0.3 = 30%)
-    private double criticalHealthPercent = 0.15;  // РљСЂРёС‚РёС‡РµСЃРєРёР№ HP РґР»СЏ РѕС‚СЃС‚СѓРїР»РµРЅРёСЏ РґР°Р¶Рµ СЃРѕ СЃР±РёС‚С‹Рј С‰РёС‚РѕРј (0.15 = 15%)
-    private boolean bhopEnabled = true;           // Bunny hop (РїСЂС‹Р¶РєРё РїСЂРё Р±РµРіРµ)
-    private int bhopCooldown = 12;                // РљСѓР»РґР°СѓРЅ РјРµР¶РґСѓ РїСЂС‹Р¶РєР°РјРё (С‚РёРєРё)
-    private double jumpBoost = 0.0;               // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° РїСЂС‹Р¶РєР° (0.0 - 0.5)
-    private boolean idleWanderEnabled = false;     // Р‘СЂРѕРґРёС‚СЊ РєРѕРіРґР° РЅРµС‚ С†РµР»Рё
-    private double idleWanderRadius = 10.0;       // Р Р°РґРёСѓСЃ Р±Р»СѓР¶РґР°РЅРёСЏ
+    // ============ Navigation and Movement ============
+    private boolean useBaritone = true;           // Use Baritone for navigation (enabled by default)
+    private boolean retreatEnabled = true;
+    private double retreatHealthPercent = 0.3;
+    private double criticalHealthPercent = 0.15;
+    private boolean bhopEnabled = true;
+    private int bhopCooldown = 12;
+    private double jumpBoost = 0.0;
+    private boolean idleWanderEnabled = false;
+    private double idleWanderRadius = 10.0;
     
-    // ============ Р¤СЂР°РєС†РёРё Рё РѕС€РёР±РєРё ============
-    private boolean factionsEnabled = true;       // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃРёСЃС‚РµРјСѓ С„СЂР°РєС†РёР№
-    private boolean friendlyFireEnabled = false;  // РЈСЂРѕРЅ РїРѕ СЃРѕСЋР·РЅРёРєР°Рј (false = РЅРµР»СЊР·СЏ Р±РёС‚СЊ СЃРѕСЋР·РЅРёРєРѕРІ)
-    private int missChance = 10;                  // РЁР°РЅСЃ РїСЂРѕРјР°С…Р° (0-100%)
-    private int mistakeChance = 5;                // РЁР°РЅСЃ РѕС€РёР±РєРё (0-100%)
-    private int reactionDelay = 0;                // Р—Р°РґРµСЂР¶РєР° СЂРµР°РєС†РёРё РІ С‚РёРєР°С… (0-20)
-    private boolean botsRelogs = true;            // Р‘РѕС‚С‹ СЂРµСЃРїР°РІРЅСЏС‚СЃСЏ РїРѕСЃР»Рµ СЂРµСЃС‚Р°СЂС‚Р° СЃРµСЂРІРµСЂР°
+    // ============ Factions and Mistakes ============
+    private boolean factionsEnabled = true;
+    private boolean friendlyFireEnabled = false;
+    private int missChance = 10;
+    private int mistakeChance = 5;
+    private int reactionDelay = 0;
+    private boolean botsRelogs = true;
     
-    // ============ РЎС‚Р°С‚РёСЃС‚РёРєР° ============
-    private boolean sendStats = true;             // РћС‚РїСЂР°РІР»СЏС‚СЊ Р°РЅРѕРЅРёРјРЅСѓСЋ СЃС‚Р°С‚РёСЃС‚РёРєСѓ
+    // ============ Statistics ============
+    private boolean sendStats = true;
     
     private BotSettings() {}
     
@@ -110,12 +111,11 @@ public class BotSettings {
     }
     
     public static void load() {
-        // РЎРѕР·РґР°С‘Рј РїР°РїРєСѓ config/pvpbot РµСЃР»Рё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve("pvpbot");
         try {
             Files.createDirectories(configDir);
         } catch (Exception e) {
-            // РРіРЅРѕСЂРёСЂСѓРµРј
+            // Ignore
         }
         
         configPath = WorldConfigHelper.getWorldConfigDir().resolve("settings.json");
@@ -197,6 +197,7 @@ public class BotSettings {
     public boolean isCobwebEnabled() { return cobwebEnabled; }
     
     // Getters - Navigation
+    public boolean isUseBaritone() { return useBaritone; }
     public boolean isRetreatEnabled() { return retreatEnabled; }
     public double getRetreatHealthPercent() { return retreatHealthPercent; }
     public double getCriticalHealthPercent() { return criticalHealthPercent; }
@@ -217,7 +218,7 @@ public class BotSettings {
     // Getters - Stats
     public boolean isSendStats() { return sendStats; }
     
-    // Setters (СЃ Р°РІС‚РѕСЃРѕС…СЂР°РЅРµРЅРёРµРј)
+    // Setters (with auto-save)
     public void setAutoEquipArmor(boolean value) { 
         this.autoEquipArmor = value; 
         save();
@@ -338,6 +339,7 @@ public class BotSettings {
     public void setCobwebEnabled(boolean value) { this.cobwebEnabled = value; save(); }
     
     // Setters - Navigation
+    public void setUseBaritone(boolean value) { this.useBaritone = value; save(); }
     public void setRetreatEnabled(boolean value) { this.retreatEnabled = value; save(); }
     public void setRetreatHealthPercent(double value) { 
         this.retreatHealthPercent = Math.max(0.1, Math.min(0.9, value)); 
