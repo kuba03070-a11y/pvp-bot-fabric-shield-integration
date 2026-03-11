@@ -29,8 +29,8 @@ public class BotPath {
     public static class PathData {
         public String name;
         public List<Vec3d> points = new ArrayList<>();
-        public boolean loop = false; // Зациклить путь (по умолчанию false - идти по кругу)
-        public boolean attack = true; // Атаковать врагов (по умолчанию true)
+        public boolean loop = false;
+        public boolean attack = true;
         
         public PathData(String name) {
             this.name = name;
@@ -40,18 +40,16 @@ public class BotPath {
     public static class PathFollower {
         public String pathName;
         public int currentPoint = 0;
-        public boolean reverse = false; // Идём в обратном направлении
-        public Vec3d pausedAtPoint = null; // Точка где остановились для боя
-        public boolean inCombat = false; // В бою
+        public boolean reverse = false;
+        public Vec3d pausedAtPoint = null;
+        public boolean inCombat = false;
         
         public PathFollower(String pathName) {
             this.pathName = pathName;
         }
     }
     
-    /**
-     * Создать новый путь
-     */
+    
     public static boolean createPath(String name) {
         if (paths.containsKey(name)) {
             return false;
@@ -61,23 +59,19 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Удалить путь
-     */
+    
     public static boolean deletePath(String name) {
         if (!paths.containsKey(name)) {
             return false;
         }
         paths.remove(name);
-        // Останавливаем всех ботов на этом пути
+
         followers.entrySet().removeIf(entry -> entry.getValue().pathName.equals(name));
         save();
         return true;
     }
     
-    /**
-     * Добавить точку в путь
-     */
+    
     public static boolean addPoint(String pathName, Vec3d point) {
         PathData path = paths.get(pathName);
         if (path == null) {
@@ -88,9 +82,7 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Удалить последнюю точку из пути
-     */
+    
     public static boolean removeLastPoint(String pathName) {
         PathData path = paths.get(pathName);
         if (path == null || path.points.isEmpty()) {
@@ -101,9 +93,7 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Удалить точку по индексу
-     */
+    
     public static boolean removePoint(String pathName, int index) {
         PathData path = paths.get(pathName);
         if (path == null || index < 0 || index >= path.points.size()) {
@@ -114,9 +104,7 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Очистить все точки пути
-     */
+    
     public static boolean clearPath(String pathName) {
         PathData path = paths.get(pathName);
         if (path == null) {
@@ -127,9 +115,7 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Установить зацикливание пути
-     */
+    
     public static boolean setLoop(String pathName, boolean loop) {
         PathData path = paths.get(pathName);
         if (path == null) {
@@ -140,9 +126,7 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Установить атаку врагов во время следования по пути
-     */
+    
     public static boolean setAttack(String pathName, boolean attack) {
         PathData path = paths.get(pathName);
         if (path == null) {
@@ -153,9 +137,7 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Начать следование бота по пути
-     */
+    
     public static boolean startFollowing(String botName, String pathName) {
         PathData path = paths.get(pathName);
         if (path == null || path.points.isEmpty()) {
@@ -165,16 +147,12 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Остановить следование бота по пути
-     */
+    
     public static boolean stopFollowing(String botName) {
         return followers.remove(botName) != null;
     }
     
-    /**
-     * Получить следующую точку для бота
-     */
+    
     public static Vec3d getNextPoint(String botName) {
         PathFollower follower = followers.get(botName);
         if (follower == null) {
@@ -189,9 +167,7 @@ public class BotPath {
         return path.points.get(follower.currentPoint);
     }
     
-    /**
-     * Перейти к следующей точке пути
-     */
+    
     public static void advanceToNextPoint(String botName) {
         PathFollower follower = followers.get(botName);
         if (follower == null) {
@@ -204,7 +180,7 @@ public class BotPath {
         }
         
         if (path.loop) {
-            // Зацикленный путь
+
             if (follower.reverse) {
                 follower.currentPoint--;
                 if (follower.currentPoint < 0) {
@@ -219,29 +195,23 @@ public class BotPath {
                 }
             }
         } else {
-            // Незацикленный путь - просто по кругу
+
             follower.currentPoint = (follower.currentPoint + 1) % path.points.size();
         }
     }
     
-    /**
-     * Проверить следует ли бот по пути
-     */
+    
     public static boolean isFollowing(String botName) {
         return followers.containsKey(botName);
     }
     
-    /**
-     * Check if bot is following specific path
-     */
+    
     public static boolean isFollowing(String botName, String pathName) {
         PathFollower follower = followers.get(botName);
         return follower != null && follower.pathName.equals(pathName);
     }
     
-    /**
-     * Set bot's current index on path (for distribution)
-     */
+    
     public static boolean setBotPathIndex(String botName, int index) {
         PathFollower follower = followers.get(botName);
         if (follower == null) {
@@ -257,30 +227,22 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Получить путь по имени
-     */
+    
     public static PathData getPath(String name) {
         return paths.get(name);
     }
     
-    /**
-     * Получить все пути
-     */
+    
     public static Map<String, PathData> getAllPaths() {
         return paths;
     }
     
-    /**
-     * Получить информацию о следовании бота
-     */
+    
     public static PathFollower getFollower(String botName) {
         return followers.get(botName);
     }
     
-    /**
-     * Включить/выключить визуализацию пути
-     */
+    
     public static boolean setPathVisible(String pathName, boolean visible) {
         PathData path = paths.get(pathName);
         if (path == null) {
@@ -295,23 +257,17 @@ public class BotPath {
         return true;
     }
     
-    /**
-     * Проверить видим ли путь
-     */
+    
     public static boolean isPathVisible(String pathName) {
         return visiblePaths.contains(pathName);
     }
     
-    /**
-     * Получить все видимые пути
-     */
+    
     public static Set<String> getVisiblePaths() {
         return visiblePaths;
     }
     
-    /**
-     * Начать бой - остановить следование и запомнить точку
-     */
+    
     public static void startCombat(String botName, Vec3d currentTarget) {
         PathFollower follower = followers.get(botName);
         if (follower != null && !follower.inCombat) {
@@ -320,36 +276,28 @@ public class BotPath {
         }
     }
     
-    /**
-     * Закончить бой - вернуться к следованию по пути
-     */
+    
     public static void endCombat(String botName) {
         PathFollower follower = followers.get(botName);
         if (follower != null) {
             follower.inCombat = false;
-            // pausedAtPoint остаётся для возврата к точке
+
         }
     }
     
-    /**
-     * Проверить в бою ли бот
-     */
+    
     public static boolean isInCombat(String botName) {
         PathFollower follower = followers.get(botName);
         return follower != null && follower.inCombat;
     }
     
-    /**
-     * Получить точку где остановились для боя
-     */
+    
     public static Vec3d getPausedPoint(String botName) {
         PathFollower follower = followers.get(botName);
         return follower != null ? follower.pausedAtPoint : null;
     }
     
-    /**
-     * Очистить точку паузы (достигли её)
-     */
+    
     public static void clearPausedPoint(String botName) {
         PathFollower follower = followers.get(botName);
         if (follower != null) {
@@ -357,22 +305,18 @@ public class BotPath {
         }
     }
     
-    /**
-     * Проверить должен ли бот атаковать во время следования по пути
-     */
+    
     public static boolean shouldAttack(String botName) {
         PathFollower follower = followers.get(botName);
         if (follower == null) {
-            return true; // По умолчанию атакуем
+            return true;
         }
         
         PathData path = paths.get(follower.pathName);
         return path != null && path.attack;
     }
     
-    /**
-     * Инициализация - создание папки и загрузка путей
-     */
+    
     public static void init() {
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve("pvpbot");
         
@@ -386,9 +330,7 @@ public class BotPath {
         load();
     }
     
-    /**
-     * Сохранить пути в файл
-     */
+    
     public static void save() {
         if (configPath == null) return;
         
@@ -399,9 +341,7 @@ public class BotPath {
         }
     }
     
-    /**
-     * Загрузить пути из файла
-     */
+    
     private static void load() {
         if (configPath == null || !Files.exists(configPath)) {
             return;

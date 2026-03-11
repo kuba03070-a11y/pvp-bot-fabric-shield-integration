@@ -12,30 +12,27 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Р“РµРЅРµСЂР°С‚РѕСЂ СѓРЅРёРєР°Р»СЊРЅС‹С… РёРјС‘РЅ РґР»СЏ Р±РѕС‚РѕРІ
- * Р Р°Р·Р±РёРІР°РµС‚ РёРјРµРЅР° С‚РёРїР° "AetherClaw" РЅР° С‡Р°СЃС‚Рё Рё РєРѕРјР±РёРЅРёСЂСѓРµС‚ РёС…
- */
+
 public class BotNameGenerator {
     
     private static final List<String> PREFIXES = new ArrayList<>();
     private static final List<String> SUFFIXES = new ArrayList<>();
     private static final Random random = new Random();
     
-    // URL РґР»СЏ Р·Р°РіСЂСѓР·РєРё РѕСЃРѕР±С‹С… РЅРёРєРѕРІ (GitHub Pages)
+
     private static final String SPECIAL_NAMES_URL = "https://stepan1411.github.io/pvp-bot-fabric/special_names.json";
     
-    // РћСЃРѕР±С‹Рµ РЅРёРєРё (Р·Р°РіСЂСѓР¶Р°СЋС‚СЃСЏ РёР· JSON)
+
     private static List<String> specialNames = new ArrayList<>();
-    private static int spawnChance = 10; // РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ 10%
+    private static int spawnChance = 10;
     private static boolean specialNamesLoaded = false;
-    private static long lastLoadTime = 0; // Р’СЂРµРјСЏ РїРѕСЃР»РµРґРЅРµР№ Р·Р°РіСЂСѓР·РєРё
-    private static final long RELOAD_INTERVAL = 60000; // 1 РјРёРЅСѓС‚Р° РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С…
+    private static long lastLoadTime = 0;
+    private static final long RELOAD_INTERVAL = 60000;
     
-    // РџР°С‚С‚РµСЂРЅ РґР»СЏ СЂР°Р·РґРµР»РµРЅРёСЏ CamelCase (AetherClaw -> Aether, Claw)
+
     private static final Pattern CAMEL_CASE = Pattern.compile("([A-Z][a-z0-9]+)");
     
-    // Р‘Р°Р·РѕРІС‹Рµ РёРјРµРЅР° РґР»СЏ СЂР°Р·Р±РѕСЂР°
+
     private static final String[] BASE_NAMES = {
         "AetherClaw", "BlazeRunner", "NetherScribe", "VoidCarver", "StoneVigil",
         "HexaStrike", "CinderBlade", "FrostShard", "NightRavager", "WarpedSentinel",
@@ -141,17 +138,15 @@ public class BotNameGenerator {
         loadSpecialNames();
     }
     
-    /**
-     * Р—Р°РіСЂСѓР¶Р°РµС‚ РѕСЃРѕР±С‹Рµ РЅРёРєРё РёР· JSON (СЃРЅР°С‡Р°Р»Р° РїС‹С‚Р°РµС‚СЃСЏ СЃ URL, РїРѕС‚РѕРј РёР· resources)
-     */
+    
     private static void loadSpecialNames() {
-        // РџСЂРѕРІРµСЂСЏРµРј РЅСѓР¶РЅРѕ Р»Рё РїРµСЂРµР·Р°РіСЂСѓР¶Р°С‚СЊ (РєР°Р¶РґСѓСЋ РјРёРЅСѓС‚Сѓ)
+
         long currentTime = System.currentTimeMillis();
         if (specialNamesLoaded && (currentTime - lastLoadTime) < RELOAD_INTERVAL) {
-            return; // Р•С‰Рµ РЅРµ РїСЂРѕС€Р»Р° РјРёРЅСѓС‚Р°
+            return;
         }
         
-        // РџС‹С‚Р°РµРјСЃСЏ Р·Р°РіСЂСѓР·РёС‚СЊ СЃ URL
+
         try {
             System.out.println("[PVP Bot] Trying to load special names from URL: " + SPECIAL_NAMES_URL);
             String json = downloadJson(SPECIAL_NAMES_URL);
@@ -165,7 +160,7 @@ public class BotNameGenerator {
             System.out.println("[PVP Bot] Failed to load from URL: " + e.getMessage());
         }
         
-        // Р•СЃР»Рё РЅРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ - Р·Р°РіСЂСѓР¶Р°РµРј РёР· resources (С‚РѕР»СЊРєРѕ РїРµСЂРІС‹Р№ СЂР°Р·)
+
         if (!specialNamesLoaded) {
             try {
                 System.out.println("[PVP Bot] Loading special names from local resources");
@@ -190,7 +185,7 @@ public class BotNameGenerator {
                 System.out.println("[PVP Bot] Failed to load from resources: " + e.getMessage());
             }
             
-            // Р•СЃР»Рё РЅРёС‡РµРіРѕ РЅРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ - РёСЃРїРѕР»СЊР·СѓРµРј РґРµС„РѕР»С‚РЅС‹Рµ
+
             System.out.println("[PVP Bot] Using default special names");
             specialNames.add("nantag");
             specialNames.add("Stepan1411");
@@ -200,9 +195,7 @@ public class BotNameGenerator {
         }
     }
     
-    /**
-     * РЎРєР°С‡РёРІР°РµС‚ JSON СЃ URL
-     */
+    
     private static String downloadJson(String urlString) {
         try {
             URL url = new URL(urlString);
@@ -224,14 +217,12 @@ public class BotNameGenerator {
                 return response.toString();
             }
         } catch (Exception e) {
-            // РРіРЅРѕСЂРёСЂСѓРµРј
+
         }
         return null;
     }
     
-    /**
-     * РџР°СЂСЃРёС‚ JSON СЃ РѕСЃРѕР±С‹РјРё РЅРёРєР°РјРё
-     */
+    
     private static boolean parseSpecialNames(String json) {
         try {
             Gson gson = new Gson();
@@ -259,23 +250,17 @@ public class BotNameGenerator {
         }
     }
     
-    /**
-     * РџРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РѕСЃРѕР±С‹С… РЅРёРєРѕРІ
-     */
+    
     public static List<String> getSpecialNames() {
         return new ArrayList<>(specialNames);
     }
     
-    /**
-     * РџРѕР»СѓС‡РёС‚СЊ С€Р°РЅСЃ СЃРїР°РІРЅР° РѕСЃРѕР±РѕРіРѕ РЅРёРєР°
-     */
+    
     public static int getSpawnChance() {
         return spawnChance;
     }
     
-    /**
-     * Р Р°Р·Р±РёСЂР°РµС‚ Р±Р°Р·РѕРІС‹Рµ РёРјРµРЅР° РЅР° С‡Р°СЃС‚Рё (РїСЂРµС„РёРєСЃС‹ Рё СЃСѓС„С„РёРєСЃС‹)
-     */
+    
     private static void initializeParts() {
         Set<String> prefixSet = new HashSet<>();
         Set<String> suffixSet = new HashSet<>();
@@ -286,7 +271,7 @@ public class BotNameGenerator {
                 prefixSet.add(parts.get(0));
                 suffixSet.add(parts.get(parts.size() - 1));
             } else if (parts.size() == 1 && parts.get(0).length() > 4) {
-                // РћРґРЅРѕ СЃР»РѕРІРѕ - РёСЃРїРѕР»СЊР·СѓРµРј РєР°Рє РїСЂРµС„РёРєСЃ
+
                 prefixSet.add(parts.get(0));
             }
         }
@@ -295,9 +280,7 @@ public class BotNameGenerator {
         SUFFIXES.addAll(suffixSet);
     }
     
-    /**
-     * Р Р°Р·РґРµР»СЏРµС‚ CamelCase СЃС‚СЂРѕРєСѓ РЅР° С‡Р°СЃС‚Рё
-     */
+    
     private static List<String> splitCamelCase(String name) {
         List<String> parts = new ArrayList<>();
         Matcher matcher = CAMEL_CASE.matcher(name);
@@ -307,17 +290,14 @@ public class BotNameGenerator {
         return parts;
     }
     
-    /**
-     * Р“РµРЅРµСЂРёСЂСѓРµС‚ СѓРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ Р±РѕС‚Р° (РјР°РєСЃРёРјСѓРј 16 СЃРёРјРІРѕР»РѕРІ)
-     * РЎ С€Р°РЅСЃРѕРј РёСЃРїРѕР»СЊР·СѓРµС‚ РѕСЃРѕР±С‹Р№ РЅРёРє РёР· СЃРїРёСЃРєР°
-     */
+    
     public static String generateUniqueName() {
-        // РџСЂРѕРІРµСЂСЏРµРј РЅСѓР¶РЅРѕ Р»Рё РѕР±РЅРѕРІРёС‚СЊ СЃРїРёСЃРѕРє (РєР°Р¶РґСѓСЋ РјРёРЅСѓС‚Сѓ)
+
         loadSpecialNames();
         
         Set<String> existingBots = BotManager.getAllBots();
         
-        // РџСЂРѕРІРµСЂСЏРµРј С€Р°РЅСЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РѕСЃРѕР±РѕРіРѕ РЅРёРєР°
+
         if (!specialNames.isEmpty() && random.nextInt(100) < spawnChance) {
             String specialName = specialNames.get(random.nextInt(specialNames.size()));
             if (!existingBots.contains(specialName)) {
@@ -327,13 +307,13 @@ public class BotNameGenerator {
         
         for (int attempt = 0; attempt < 100; attempt++) {
             String name = generateName();
-            // Minecraft РѕРіСЂР°РЅРёС‡РµРЅРёРµ - РјР°РєСЃРёРјСѓРј 16 СЃРёРјРІРѕР»РѕРІ
+
             if (name.length() <= 16 && !existingBots.contains(name)) {
                 return name;
             }
         }
         
-        // Р•СЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ РЅР°Р№С‚Рё СѓРЅРёРєР°Р»СЊРЅРѕРµ - РіРµРЅРµСЂРёСЂСѓРµРј РєРѕСЂРѕС‚РєРѕРµ СЃ С‡РёСЃР»РѕРј
+
         for (int num = 1; num < 1000; num++) {
             String name = "Bot" + num;
             if (!existingBots.contains(name)) {
@@ -343,9 +323,7 @@ public class BotNameGenerator {
         return "Bot" + System.currentTimeMillis() % 10000;
     }
     
-    /**
-     * Р“РµРЅРµСЂРёСЂСѓРµС‚ СЃР»СѓС‡Р°Р№РЅРѕРµ РёРјСЏ (Prefix + Suffix), РјР°РєСЃРёРјСѓРј 16 СЃРёРјРІРѕР»РѕРІ
-     */
+    
     private static String generateName() {
         for (int i = 0; i < 20; i++) {
             String prefix = PREFIXES.get(random.nextInt(PREFIXES.size()));
@@ -355,7 +333,7 @@ public class BotNameGenerator {
                 return name;
             }
         }
-        // Fallback - РєРѕСЂРѕС‚РєРѕРµ РёРјСЏ
+
         String prefix = PREFIXES.get(random.nextInt(PREFIXES.size()));
         if (prefix.length() > 12) prefix = prefix.substring(0, 12);
         return prefix + random.nextInt(1000);

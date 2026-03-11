@@ -23,7 +23,7 @@ public class WarningScreen extends Screen {
     private final Screen parent;
     private final Path warningFile;
     private CheckboxWidget dontShowAgain;
-    private boolean textureLogged = false;  // Флаг для логирования только один раз
+    private boolean textureLogged = false;
     
     public WarningScreen(Screen parent) {
         super(Text.literal("WARNING: This mod is unstable in singleplayer!"));
@@ -44,16 +44,16 @@ public class WarningScreen extends Screen {
         
         int centerX = this.width / 2;
         
-        // Кнопки внизу экрана
-        int bottomY = this.height - 60;  // 60 пикселей от низа
+
+        int bottomY = this.height - 60;
         
-        // Checkbox
+
         this.dontShowAgain = CheckboxWidget.builder(Text.literal("Don't show again"), this.textRenderer)
                 .pos(centerX - 60, bottomY)
                 .build();
         this.addDrawableChild(dontShowAgain);
         
-        // OK button - под чекбоксом
+
         this.addDrawableChild(ButtonWidget.builder(
                 Text.literal("OK"),
                 button -> {
@@ -75,41 +75,41 @@ public class WarningScreen extends Screen {
     
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        // Не рисуем затемнение - изображение само будет фоном
+
     }
     
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        // Сначала рисуем чёрный фон
+
         context.fill(0, 0, this.width, this.height, 0xFF000000);
         
-        // Изображение занимает всю высоту экрана и сохраняет квадратные пропорции
-        int displayHeight = this.height;  // Высота = высота окна
-        int displayWidth = displayHeight;  // Ширина = высота (квадрат)
-        int imageX = (this.width - displayWidth) / 2;  // Центрируем по горизонтали
-        int imageY = 0;  // Верх изображения = верх окна
+
+        int displayHeight = this.height;
+        int displayWidth = displayHeight;
+        int imageX = (this.width - displayWidth) / 2;
+        int imageY = 0;
         
         try {
-            // Рисуем всю текстуру с растяжением
-            // Параметры: pipeline, texture, x, y, u, v, width, height, regionWidth, regionHeight, textureWidth, textureHeight
+
+
             context.drawTexture(
                 RenderPipelines.GUI_TEXTURED,
                 WARNING_TEXTURE,
-                imageX, imageY,           // позиция на экране
-                0, 0,                     // u, v (откуда брать из текстуры)
-                displayWidth, displayHeight,  // размер на экране (растянутый)
-                1024, 1024,               // размер региона в текстуре (вся текстура)
-                1024, 1024                // полный размер текстуры
+                imageX, imageY,
+                0, 0,
+                displayWidth, displayHeight,
+                1024, 1024,
+                1024, 1024
             );
         } catch (Exception e) {
             if (!textureLogged) {
                 LOGGER.error("Failed to render warning texture", e);
                 textureLogged = true;
             }
-            // Рисуем красный прямоугольник как fallback
+
             context.fill(imageX, imageY, imageX + displayWidth, imageY + displayHeight, 0xFFFF0000);
             
-            // Рисуем текст с ошибкой
+
             context.drawCenteredTextWithShadow(
                 this.textRenderer,
                 "Failed to load warning image",
@@ -119,7 +119,7 @@ public class WarningScreen extends Screen {
             );
         }
         
-        // Виджеты
+
         super.render(context, mouseX, mouseY, delta);
     }
     

@@ -15,23 +15,23 @@ public class BotSettings {
     private static BotSettings INSTANCE;
     private static Path configPath;
     
-    // Equipment settings
+
     private boolean autoEquipArmor = true;
     private boolean autoEquipWeapon = true;
     
-    // Drop settings
+
     private boolean dropWorseArmor = false;
     private boolean dropWorseWeapons = false;
     private double dropDistance = 3.0;
     private int dropDelay = 20;
     
-    // Check interval
+
     private int checkInterval = 20;
     
-    // Minimum armor level
+
     private int minArmorLevel = 0;
     
-    // ============ Combat Settings ============
+
     private boolean combatEnabled = true;
     private boolean revengeEnabled = true;
     private boolean autoTargetEnabled = false;
@@ -39,33 +39,33 @@ public class BotSettings {
     private boolean targetHostileMobs = false;
     private boolean targetOtherBots = false;
     
-    // Distances
+
     private double maxTargetDistance = 64.0;
     private double meleeRange = 3.5;
     private double rangedMinRange = 8.0;
     private double rangedOptimalRange = 20.0;
     private double maceRange = 6.0;
     
-    // Combat parameters
+
     private int attackCooldown = 10;
     private double moveSpeed = 1.0;
     private boolean criticalsEnabled = true;
     private int bowMinDrawTime = 15;
     
-    // Weapon types
+
     private boolean rangedEnabled = true;
     private boolean maceEnabled = true;
     private boolean spearEnabled = false;
     private boolean crystalPvpEnabled = true;
     private boolean anchorPvpEnabled = true;
     
-    // Spear settings (1.21.11)
+
     private double spearRange = 4.5;
     private double spearChargeRange = 12.0;
     private int spearMinChargeTime = 15;
     private int spearMaxChargeTime = 40;
     
-    // ============ Utilities ============
+
     private boolean autoTotemEnabled = true;
     private boolean totemPriority = true;
     private boolean autoEatEnabled = true;
@@ -79,8 +79,8 @@ public class BotSettings {
     private boolean autoPotionEnabled = true;
     private boolean cobwebEnabled = true;
     
-    // ============ Navigation and Movement ============
-    private boolean useBaritone = true;           // Use Baritone for navigation (enabled by default)
+
+    private boolean useBaritone = true;
     private boolean retreatEnabled = true;
     private double retreatHealthPercent = 0.3;
     private double criticalHealthPercent = 0.15;
@@ -90,7 +90,7 @@ public class BotSettings {
     private boolean idleWanderEnabled = false;
     private double idleWanderRadius = 10.0;
     
-    // ============ Factions and Mistakes ============
+
     private boolean factionsEnabled = true;
     private boolean friendlyFireEnabled = false;
     private int missChance = 10;
@@ -98,7 +98,7 @@ public class BotSettings {
     private int reactionDelay = 0;
     private boolean botsRelogs = true;
     
-    // ============ Statistics ============
+
     private boolean sendStats = true;
     
     private BotSettings() {}
@@ -115,7 +115,7 @@ public class BotSettings {
         try {
             Files.createDirectories(configDir);
         } catch (Exception e) {
-            // Ignore
+
         }
         
         configPath = WorldConfigHelper.getWorldConfigDir().resolve("settings.json");
@@ -146,7 +146,7 @@ public class BotSettings {
         }
     }
     
-    // Getters - Equipment
+
     public boolean isAutoEquipArmor() { return autoEquipArmor; }
     public boolean isAutoEquipWeapon() { return autoEquipWeapon; }
     public boolean isDropWorseArmor() { return dropWorseArmor; }
@@ -156,7 +156,7 @@ public class BotSettings {
     public int getCheckInterval() { return checkInterval; }
     public int getMinArmorLevel() { return minArmorLevel; }
     
-    // Getters - Combat
+
     public boolean isCombatEnabled() { return combatEnabled; }
     public boolean isRevengeEnabled() { return revengeEnabled; }
     public boolean isAutoTargetEnabled() { return autoTargetEnabled; }
@@ -182,7 +182,7 @@ public class BotSettings {
     public int getSpearMinChargeTime() { return spearMinChargeTime; }
     public int getSpearMaxChargeTime() { return spearMaxChargeTime; }
     
-    // Getters - Utils
+
     public boolean isAutoTotemEnabled() { return autoTotemEnabled; }
     public boolean isTotemPriority() { return totemPriority; }
     public boolean isAutoEatEnabled() { return autoEatEnabled; }
@@ -196,7 +196,7 @@ public class BotSettings {
     public boolean isAutoPotionEnabled() { return autoPotionEnabled; }
     public boolean isCobwebEnabled() { return cobwebEnabled; }
     
-    // Getters - Navigation
+
     public boolean isUseBaritone() { return useBaritone; }
     public boolean isRetreatEnabled() { return retreatEnabled; }
     public double getRetreatHealthPercent() { return retreatHealthPercent; }
@@ -207,7 +207,7 @@ public class BotSettings {
     public boolean isIdleWanderEnabled() { return idleWanderEnabled; }
     public double getIdleWanderRadius() { return idleWanderRadius; }
     
-    // Getters - Factions & Mistakes
+
     public boolean isFactionsEnabled() { return factionsEnabled; }
     public boolean isFriendlyFireEnabled() { return friendlyFireEnabled; }
     public int getMissChance() { return missChance; }
@@ -215,10 +215,10 @@ public class BotSettings {
     public int getReactionDelay() { return reactionDelay; }
     public boolean isBotsRelogs() { return botsRelogs; }
     
-    // Getters - Stats
+
     public boolean isSendStats() { return sendStats; }
     
-    // Setters (with auto-save)
+
     public void setAutoEquipArmor(boolean value) { 
         this.autoEquipArmor = value; 
         save();
@@ -252,7 +252,7 @@ public class BotSettings {
         save();
     }
     
-    // Setters - Combat
+
     public void setCombatEnabled(boolean value) { this.combatEnabled = value; save(); }
     public void setRevengeEnabled(boolean value) { this.revengeEnabled = value; save(); }
     public void setAutoTargetEnabled(boolean value) { this.autoTargetEnabled = value; save(); }
@@ -315,7 +315,7 @@ public class BotSettings {
         save(); 
     }
     
-    // Setters - Utils
+
     public void setAutoTotemEnabled(boolean value) { this.autoTotemEnabled = value; save(); }
     public void setTotemPriority(boolean value) { this.totemPriority = value; save(); }
     public void setAutoEatEnabled(boolean value) { this.autoEatEnabled = value; save(); }
@@ -338,7 +338,7 @@ public class BotSettings {
     public void setAutoPotionEnabled(boolean value) { this.autoPotionEnabled = value; save(); }
     public void setCobwebEnabled(boolean value) { this.cobwebEnabled = value; save(); }
     
-    // Setters - Navigation
+
     public void setUseBaritone(boolean value) { this.useBaritone = value; save(); }
     public void setRetreatEnabled(boolean value) { this.retreatEnabled = value; save(); }
     public void setRetreatHealthPercent(double value) { 
@@ -364,7 +364,7 @@ public class BotSettings {
         save(); 
     }
     
-    // Setters - Factions & Mistakes
+
     public void setFactionsEnabled(boolean value) { this.factionsEnabled = value; save(); }
     public void setFriendlyFireEnabled(boolean value) { this.friendlyFireEnabled = value; save(); }
     public void setMissChance(int value) { 

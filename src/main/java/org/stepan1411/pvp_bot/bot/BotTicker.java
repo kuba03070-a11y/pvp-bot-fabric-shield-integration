@@ -9,7 +9,7 @@ public class BotTicker {
 
     private static int tickCounter = 0;
     private static int autoSaveCounter = 0;
-    private static final int AUTO_SAVE_INTERVAL = 1200; // Автосохранение каждые 60 секунд (1200 тиков)
+    private static final int AUTO_SAVE_INTERVAL = 1200;
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(BotTicker::onServerTick);
@@ -21,93 +21,93 @@ public class BotTicker {
         
         int interval = BotSettings.get().getCheckInterval();
         
-        // Очищаем мёртвых ботов каждые 20 тиков (1 секунда)
+
         if (tickCounter % 20 == 0) {
             BotManager.cleanupDeadBots(server);
-            // УБРАЛ автоматическую синхронизацию - теперь только по команде /pvpbot sync
+
         }
         
-        // Автосохранение данных ботов каждые 60 секунд
-        // ВАЖНО: cleanup должен быть ДО updateBotData!
+
+
         if (autoSaveCounter >= AUTO_SAVE_INTERVAL) {
             BotManager.updateBotData(server);
             BotManager.saveBots();
             autoSaveCounter = 0;
         }
         
-        // Визуализация путей
+
         BotPathVisualizer.update(server);
         
         for (String botName : BotManager.getAllBots()) {
             ServerPlayerEntity bot = BotManager.getBot(server, botName);
             if (bot != null && bot.isAlive()) {
-                // Fire tick event
+
                 try {
                     org.stepan1411.pvp_bot.api.PvpBotAPI.getEventManager().fireTickEvent(bot);
                 } catch (Exception e) {
                     System.err.println("[PVP_BOT_API] Error firing tick event: " + e.getMessage());
                 }
-                // Утилиты (тотем, еда, щит, плавание) - каждый тик
+
                 BotUtils.update(bot, server);
                 
-                // Боевая система - каждый тик (но не если следует по пути с attack=false)
+
                 boolean isFollowingWithoutAttack = BotPath.isFollowing(botName) && !BotPath.shouldAttack(botName);
                 if (!isFollowingWithoutAttack) {
                     BotCombat.update(bot, server);
                 }
                 
-                // Следование по пути - каждый тик
+
                 if (BotPath.isFollowing(botName)) {
                     boolean shouldAttack = BotPath.shouldAttack(botName);
                     var target = BotCombat.getTarget(botName);
                     boolean hasTarget = target != null && target.isAlive();
                     
-                    // Если должны атаковать и есть цель
+
                     if (shouldAttack && hasTarget) {
                         Vec3d nextPoint = BotPath.getNextPoint(botName);
                         
-                        // Если не в бою - начинаем бой и запоминаем точку
+
                         if (!BotPath.isInCombat(botName)) {
                             BotPath.startCombat(botName, nextPoint);
                         }
                         
-                        // В бою - боевая система управляет движением
-                        // BotCombat.update() уже вызван выше
+
+
                         
                     } else {
-                        // Нет цели или не должны атаковать
+
                         
-                        // Если были в бою - заканчиваем бой
+
                         if (BotPath.isInCombat(botName)) {
                             BotPath.endCombat(botName);
                         }
                         
-                        // Проверяем нужно ли вернуться к точке после боя
+
                         Vec3d pausedPoint = BotPath.getPausedPoint(botName);
                         if (pausedPoint != null) {
                             Vec3d botPos = new Vec3d(bot.getX(), bot.getY(), bot.getZ());
                             double distanceToPaused = botPos.distanceTo(pausedPoint);
                             
-                            // Если достигли точки где остановились - продолжаем путь
+
                             if (distanceToPaused < 1.5) {
                                 BotPath.clearPausedPoint(botName);
                             } else {
-                                // Возвращаемся к точке
+
                                 BotNavigation.lookAtPosition(bot, pausedPoint);
                                 BotNavigation.moveTowardPosition(bot, pausedPoint, 1.0);
                             }
                         } else {
-                            // Обычное следование по пути
+
                             Vec3d nextPoint = BotPath.getNextPoint(botName);
                             if (nextPoint != null) {
                                 Vec3d botPos = new Vec3d(bot.getX(), bot.getY(), bot.getZ());
                                 double distance = botPos.distanceTo(nextPoint);
                                 
-                                // Если достигли точки - переходим к следующей
+
                                 if (distance < 1.5) {
                                     BotPath.advanceToNextPoint(botName);
                                 } else {
-                                    // Смотрим на точку и двигаемся к ней
+
                                     BotNavigation.lookAtPosition(bot, nextPoint);
                                     BotNavigation.moveTowardPosition(bot, nextPoint, 1.0);
                                 }
@@ -116,7 +116,7 @@ public class BotTicker {
                     }
                 }
                 
-                // Экипировка - по интервалу (не во время еды!)
+
                 if (tickCounter >= interval) {
                     var utilsState = BotUtils.getState(botName);
                     if (!utilsState.isEating) {

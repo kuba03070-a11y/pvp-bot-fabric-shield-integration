@@ -2,18 +2,15 @@ package org.stepan1411.pvp_bot.bot.pathfinding;
 
 import net.minecraft.util.math.BlockPos;
 
-/**
- * Node for pathfinding algorithm
- * Inspired by Baritone's PathNode structure
- */
+
 public class PathNode implements Comparable<PathNode> {
     public final BlockPos pos;
     public final long hash;
     
     public PathNode parent;
-    public double cost;              // g(n) - cost from start
-    public double estimatedCost;     // h(n) - heuristic to goal
-    public double combinedCost;      // f(n) = g(n) + h(n)
+    public double cost;
+    public double estimatedCost;
+    public double combinedCost;
     
     public PathNode(BlockPos pos, PathNode parent, double cost, double estimatedCost) {
         this.pos = pos;

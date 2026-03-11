@@ -20,19 +20,19 @@ public class BotNavigation {
     public static class NavigationState {
         public int stuckTicks = 0;
         public Vec3d lastPosition = null;
-        public int avoidDirection = 0; // -1 = лево, 1 = право, 0 = прямо
+        public int avoidDirection = 0;
         public int avoidTicks = 0;
         public int jumpCooldown = 0;
         
-        // Idle wandering
-        public Vec3d spawnPosition = null;    // Начальная позиция бота
-        public Vec3d wanderTarget = null;     // Текущая цель блуждания
-        public int wanderCooldown = 0;        // Кулдаун до следующей смены цели
-        public int idleTicks = 0;             // Сколько тиков бот в idle
+
+        public Vec3d spawnPosition = null;
+        public Vec3d wanderTarget = null;
+        public int wanderCooldown = 0;
+        public int idleTicks = 0;
         
-        // История пути для отладки
+
         public java.util.LinkedList<Vec3d> pathHistory = new java.util.LinkedList<>();
-        public static final int MAX_PATH_HISTORY = 15; // Максимум 15 точек в истории
+        public static final int MAX_PATH_HISTORY = 15;
     }
     
     public static NavigationState getState(String botName) {
@@ -43,13 +43,11 @@ public class BotNavigation {
         navStates.remove(botName);
     }
     
-    /**
-     * Двигаться к цели с обходом препятствий
-     */
+    
     public static void moveToward(ServerPlayerEntity bot, Entity target, double speed) {
         NavigationState state = getState(bot.getName().getString());
         
-        // Уменьшаем кулдауны
+
         if (state.jumpCooldown > 0) state.jumpCooldown--;
         if (state.avoidTicks > 0) state.avoidTicks--;
         
@@ -57,17 +55,15 @@ public class BotNavigation {
         moveTowardPos(bot, targetPos, speed, state);
     }
     
-    /**
-     * Двигаться от цели с обходом препятствий
-     */
+    
     public static void moveAway(ServerPlayerEntity bot, Entity target, double speed) {
         NavigationState state = getState(bot.getName().getString());
         
-        // Уменьшаем кулдауны
+
         if (state.jumpCooldown > 0) state.jumpCooldown--;
         if (state.avoidTicks > 0) state.avoidTicks--;
         
-        // Вычисляем позицию в противоположном направлении от цели
+
         double dx = bot.getX() - target.getX();
         double dz = bot.getZ() - target.getZ();
         double dist = Math.sqrt(dx * dx + dz * dz);
@@ -76,18 +72,16 @@ public class BotNavigation {
             dz /= dist;
         }
         
-        // Целевая позиция - 10 блоков от врага
+
         Vec3d awayPos = new Vec3d(bot.getX() + dx * 10, bot.getY(), bot.getZ() + dz * 10);
         moveTowardPos(bot, awayPos, speed, state);
     }
 
-    /**
-     * Двигаться к указанной позиции с обходом препятствий
-     */
+    
     public static void moveTowardPosition(ServerPlayerEntity bot, Vec3d targetPos, double speed) {
         NavigationState state = getState(bot.getName().getString());
 
-        // Уменьшаем кулдауны
+
         if (state.jumpCooldown > 0) state.jumpCooldown--;
         if (state.avoidTicks > 0) state.avoidTicks--;
 
@@ -95,31 +89,29 @@ public class BotNavigation {
     }
 
     
-    /**
-     * Основная логика движения к позиции
-     */
+    
     private static void moveTowardPos(ServerPlayerEntity bot, Vec3d targetPos, double speed, NavigationState state) {
         var world = bot.getEntityWorld();
         Vec3d botPos = new Vec3d(bot.getX(), bot.getY(), bot.getZ());
         
-        // === Обновляем историю пути для отладки ===
+
         if (state.pathHistory.isEmpty() || botPos.distanceTo(state.pathHistory.getLast()) > 0.5) {
             state.pathHistory.add(botPos);
             if (state.pathHistory.size() > NavigationState.MAX_PATH_HISTORY) {
                 state.pathHistory.removeFirst();
             }
         }
-        // ==========================================
+
         
-        // === DEBUG: Показываем путь и целевой блок ===
+
         BotDebug.showPath(bot, targetPos, state.pathHistory);
         BotDebug.showTargetBlock(bot, targetPos);
-        // =============================================
+
         
-        // Проверяем застряли ли мы
+
         checkIfStuck(bot, state);
         
-        // Вычисляем базовое направление
+
         double dx = targetPos.x - botPos.x;
         double dz = targetPos.z - botPos.z;
         double horizontalDist = Math.sqrt(dx * dx + dz * dz);
@@ -129,7 +121,7 @@ public class BotNavigation {
             dz /= horizontalDist;
         }
         
-        // ВАЖНО: Проверяем воду ПЕРЕД всеми другими действиями
+
         boolean inWater = bot.isTouchingWater() || bot.isSubmergedInWater();
         if (inWater) {
             double distanceToTarget = horizontalDist;
@@ -167,22 +159,22 @@ public class BotNavigation {
             return;
         }
         
-        // Если застряли или обходим препятствие - корректируем направление
+
         if (state.avoidTicks > 0) {
-            // Поворачиваем в сторону обхода
+
             double tempDx = dx;
             if (state.avoidDirection > 0) {
-                // Поворот вправо на 90 градусов
+
                 dx = -dz;
                 dz = tempDx;
             } else {
-                // Поворот влево на 90 градусов
+
                 dx = dz;
                 dz = -tempDx;
             }
         }
         
-        // Проверяем препятствия впереди (ближе к боту)
+
         BlockPos feetPos = new BlockPos(
             (int) Math.floor(botPos.x + dx * 0.5),
             (int) Math.floor(botPos.y),
@@ -192,19 +184,19 @@ public class BotNavigation {
         BlockPos headPos = feetPos.up();
         BlockPos aboveHeadPos = feetPos.up(2);
         
-        // Блок на уровне ног - нужно прыгнуть
+
         boolean blockAtFeet = isBlockSolid(world, feetPos);
-        // Блок на уровне головы - нельзя пройти
+
         boolean blockAtHead = isBlockSolid(world, headPos);
-        // Можно запрыгнуть если блок только на уровне ног и свободно выше
+
         boolean canJumpUp = blockAtFeet && !blockAtHead && !isBlockSolid(world, aboveHeadPos);
-        // Стена - блок и на уровне ног и на уровне головы
+
         boolean isWall = blockAtFeet && blockAtHead;
         
-        // Проверяем лестницу или лиану
+
         boolean onLadder = isClimbable(world, bot.getBlockPos()) || isClimbable(world, bot.getBlockPos().up());
         
-        // Проверяем яму впереди
+
         BlockPos groundFront = new BlockPos(
             (int) Math.floor(botPos.x + dx * 1.2),
             (int) Math.floor(botPos.y - 1),
@@ -212,42 +204,42 @@ public class BotNavigation {
         );
         boolean holeAhead = !isBlockSolid(world, groundFront) && !isBlockSolid(world, groundFront.down());
         
-        // Получаем настройки
+
         BotSettings settings = BotSettings.get();
         double jumpBoost = settings.getJumpBoost();
         
-        // Прыжок
+
         if (bot.isOnGround() && state.jumpCooldown <= 0) {
             if (canJumpUp) {
-                // Прыгаем на блок
+
                 bot.jump();
                 if (jumpBoost > 0) bot.addVelocity(0, jumpBoost, 0);
-                // Добавляем импульс вперёд чтобы запрыгнуть
+
                 bot.addVelocity(dx * 0.2, 0, dz * 0.2);
                 state.jumpCooldown = 8;
             } else if (onLadder) {
-                // На лестнице - прыгаем вверх
+
                 bot.jump();
                 if (jumpBoost > 0) bot.addVelocity(0, jumpBoost, 0);
                 state.jumpCooldown = 5;
             } else if (holeAhead) {
-                // Прыгаем через яму
+
                 bot.jump();
                 if (jumpBoost > 0) bot.addVelocity(0, jumpBoost, 0);
                 bot.addVelocity(dx * 0.35, 0.05, dz * 0.35);
                 state.jumpCooldown = 12;
             } else if (isWall && state.avoidTicks <= 0) {
-                // Стена - начинаем обход
+
                 state.avoidDirection = (Math.random() > 0.5) ? 1 : -1;
                 state.avoidTicks = 25;
-                // Всё равно пробуем прыгнуть - вдруг поможет
+
                 bot.jump();
                 if (jumpBoost > 0) bot.addVelocity(0, jumpBoost, 0);
                 state.jumpCooldown = 10;
             }
         }
         
-        // Если на лестнице - карабкаемся вверх
+
         if (onLadder) {
             bot.addVelocity(0, 0.12, 0);
             bot.setSprinting(false);
@@ -256,8 +248,8 @@ public class BotNavigation {
             return;
         }
         
-        // Бхоп (bunny hop) - прыгаем во время бега для скорости
-        // Прыгаем только если включено в настройках и нет препятствий
+
+
         boolean bhopEnabled = settings.isBhopEnabled();
         int bhopCooldown = settings.getBhopCooldown();
         boolean shouldBhop = bhopEnabled && speed >= 1.0 && !canJumpUp && !isWall && !holeAhead && state.jumpCooldown <= 0;
@@ -267,23 +259,21 @@ public class BotNavigation {
             state.jumpCooldown = bhopCooldown;
         }
         
-        // Применяем движение
+
         bot.setSprinting(true);
-        bot.forwardSpeed = 1.0f; // Всегда максимальная скорость вперёд
+        bot.forwardSpeed = 1.0f;
         bot.sidewaysSpeed = 0;
         
-        // Импульс движения - сильнее когда в воздухе (бхоп эффект)
-        double moveForce = bot.isOnGround() ? 0.1 : 0.02; // В воздухе меньше контроля но сохраняем момент
+
+        double moveForce = bot.isOnGround() ? 0.1 : 0.02;
         bot.addVelocity(dx * speed * moveForce, 0, dz * speed * moveForce);
         
-        // Сохраняем позицию для проверки застревания
+
         state.lastPosition = botPos;
     }
 
     
-    /**
-     * Проверка застревания
-     */
+    
     private static void checkIfStuck(ServerPlayerEntity bot, NavigationState state) {
         Vec3d currentPos = new Vec3d(bot.getX(), bot.getY(), bot.getZ());
         
@@ -298,14 +288,14 @@ public class BotNavigation {
             state.stuckTicks++;
             
             if (state.stuckTicks > 10) {
-                // Застряли - пробуем обойти
+
                 if (state.avoidTicks <= 0) {
-                    // Меняем направление обхода
+
                     state.avoidDirection = (state.avoidDirection == 0) ? 1 : -state.avoidDirection;
-                    state.avoidTicks = 30; // Обходим 1.5 секунды
+                    state.avoidTicks = 30;
                 }
                 
-                // Пробуем прыгнуть
+
                 if (state.jumpCooldown <= 0) {
                     bot.jump();
                     state.jumpCooldown = 10;
@@ -318,18 +308,14 @@ public class BotNavigation {
         }
     }
     
-    /**
-     * Проверка твёрдости блока
-     */
+    
     private static boolean isBlockSolid(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        // Блок твёрдый если он не воздух и не проходимый
+
         return !state.isAir() && state.isSolidBlock(world, pos);
     }
     
-    /**
-     * Проверка можно ли карабкаться по блоку (лестница, лиана)
-     */
+    
     private static boolean isClimbable(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         return state.getBlock() instanceof LadderBlock || 
@@ -341,9 +327,7 @@ public class BotNavigation {
                state.isOf(Blocks.WEEPING_VINES_PLANT);
     }
     
-    /**
-     * Поворот к цели
-     */
+    
     public static void lookAt(ServerPlayerEntity bot, Entity target) {
         Vec3d targetPos = target.getEyePos();
         Vec3d botPos = bot.getEyePos();
@@ -362,9 +346,7 @@ public class BotNavigation {
         bot.setHeadYaw(yaw);
     }
     
-    /**
-     * Поворот к позиции
-     */
+    
     public static void lookAtPosition(ServerPlayerEntity bot, Vec3d targetPos) {
         Vec3d botPos = bot.getEyePos();
         
@@ -382,14 +364,12 @@ public class BotNavigation {
         bot.setHeadYaw(yaw);
     }
     
-    /**
-     * Поворот от цели (для убегания)
-     */
+    
     public static void lookAway(ServerPlayerEntity bot, Entity target) {
         Vec3d targetPos = target.getEyePos();
         Vec3d botPos = bot.getEyePos();
         
-        // Направление ОТ цели
+
         double dx = botPos.x - targetPos.x;
         double dz = botPos.z - targetPos.z;
         
@@ -400,9 +380,7 @@ public class BotNavigation {
         bot.setHeadYaw(yaw);
     }
     
-    /**
-     * Idle блуждание когда нет цели
-     */
+    
     public static void idleWander(ServerPlayerEntity bot) {
         BotSettings settings = BotSettings.get();
         if (!settings.isIdleWanderEnabled()) {
@@ -412,22 +390,22 @@ public class BotNavigation {
         NavigationState state = getState(bot.getName().getString());
         Vec3d botPos = new Vec3d(bot.getX(), bot.getY(), bot.getZ());
         
-        // Запоминаем начальную позицию
+
         if (state.spawnPosition == null) {
             state.spawnPosition = botPos;
         }
         
-        // Уменьшаем кулдауны
+
         if (state.jumpCooldown > 0) state.jumpCooldown--;
         if (state.avoidTicks > 0) state.avoidTicks--;
         if (state.wanderCooldown > 0) state.wanderCooldown--;
         
         double radius = settings.getIdleWanderRadius();
         
-        // Выбираем новую цель если нужно
+
         if (state.wanderTarget == null || state.wanderCooldown <= 0 || 
             botPos.distanceTo(state.wanderTarget) < 1.5) {
-            // Случайная точка в радиусе от спавна
+
             double angle = Math.random() * Math.PI * 2;
             double dist = Math.random() * radius;
             state.wanderTarget = new Vec3d(
@@ -435,10 +413,10 @@ public class BotNavigation {
                 state.spawnPosition.y,
                 state.spawnPosition.z + Math.sin(angle) * dist
             );
-            state.wanderCooldown = 60 + (int)(Math.random() * 100); // 3-8 секунд
+            state.wanderCooldown = 60 + (int)(Math.random() * 100);
         }
         
-        // Идём к цели медленно
+
         double dx = state.wanderTarget.x - botPos.x;
         double dz = state.wanderTarget.z - botPos.z;
         double dist = Math.sqrt(dx * dx + dz * dz);
@@ -447,18 +425,18 @@ public class BotNavigation {
             dx /= dist;
             dz /= dist;
             
-            // Поворачиваемся в направлении движения
+
             float yaw = (float) (Math.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0f;
             bot.setYaw(yaw);
             bot.setHeadYaw(yaw);
             bot.setPitch(0);
             
-            // Медленно идём (не бежим)
+
             bot.setSprinting(false);
             bot.forwardSpeed = 0.5f;
             bot.addVelocity(dx * 0.03, 0, dz * 0.03);
             
-            // Проверяем препятствия
+
             var world = bot.getEntityWorld();
             BlockPos feetPos = new BlockPos(
                 (int) Math.floor(botPos.x + dx * 0.5),
@@ -472,7 +450,7 @@ public class BotNavigation {
                 state.jumpCooldown = 10;
             }
         } else {
-            // Стоим на месте
+
             bot.forwardSpeed = 0;
             bot.sidewaysSpeed = 0;
         }
@@ -480,9 +458,7 @@ public class BotNavigation {
         state.lastPosition = botPos;
     }
     
-    /**
-     * Сбросить idle состояние (когда появилась цель)
-     */
+    
     public static void resetIdle(String botName) {
         NavigationState state = navStates.get(botName);
         if (state != null) {

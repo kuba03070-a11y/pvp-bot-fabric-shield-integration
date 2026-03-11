@@ -32,8 +32,8 @@ public class BotManager {
         public String name;
         public double x, y, z;
         public float yaw, pitch;
-        public String dimension; // minecraft:overworld, minecraft:the_nether, minecraft:the_end
-        public String gamemode; // survival, creative, adventure, spectator
+        public String dimension;
+        public String gamemode;
         
         public BotData() {}
         
@@ -57,7 +57,7 @@ public class BotManager {
     public static void init(MinecraftServer server) {
         if (initialized) return;
         
-        // Очищаем состояние перед загрузкой нового мира
+
         bots.clear();
         botDataMap.clear();
         System.out.println("[PVP_BOT] Initializing BotManager for new world...");
@@ -131,7 +131,7 @@ public class BotManager {
                 success = true;
                 System.out.println("[PVP_BOT] вњ“ Successfully restored bot: " + name);
             } catch (Exception e) {
-                // РџСЂРѕР±СѓРµРј СѓРїСЂРѕС‰С‘РЅРЅСѓСЋ РєРѕРјР°РЅРґСѓ
+
                 try {
                     String simpleCommand = String.format(java.util.Locale.US,
                         "player %s spawn at %.2f %.2f %.2f",
@@ -151,7 +151,7 @@ public class BotManager {
                 }
             }
             
-            // Р•СЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ Рё РµСЃС‚СЊ РїРѕРїС‹С‚РєРё - РїРѕРІС‚РѕСЂСЏРµРј С‡РµСЂРµР· 20 С‚РёРєРѕРІ
+
             if (!success && retryCount < MAX_RETRIES) {
                 final int currentRetry = retryCount + 1;
                 server.execute(() -> {
@@ -160,7 +160,7 @@ public class BotManager {
                         @Override
                         public void run() {
                             delay[0]++;
-                            if (delay[0] < 20) { // 20 С‚РёРєРѕРІ = 1 СЃРµРєСѓРЅРґР°
+                            if (delay[0] < 20) {
                                 server.execute(this);
                             } else {
                                 restoreBotsDelayedWithRetry(server, botsToRestore, index, currentRetry);
@@ -169,7 +169,7 @@ public class BotManager {
                     });
                 });
             } else {
-                // РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµРјСѓ Р±РѕС‚Сѓ С‡РµСЂРµР· 10 С‚РёРєРѕРІ
+
                 final int nextIndex = index + 1;
                 server.execute(() -> {
                     final int[] delay = {0};
@@ -189,10 +189,7 @@ public class BotManager {
         }
     }
     
-    /**
-     * РћР±РЅРѕРІР»РµРЅРёРµ РґР°РЅРЅС‹С… РІСЃРµС… Р±РѕС‚РѕРІ РїРµСЂРµРґ СЃРѕС…СЂР°РЅРµРЅРёРµРј
-     * РЎРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ С‚РѕР»СЊРєРѕ Р¶РёРІС‹С… Р±РѕС‚РѕРІ, РјС‘СЂС‚РІС‹Рµ СЃРѕС…СЂР°РЅСЏСЋС‚ РїРѕСЃР»РµРґРЅСЋСЋ РїРѕР·РёС†РёСЋ
-     */
+    
     public static void updateBotData(MinecraftServer server) {
         int updated = 0;
         int skipped = 0;
@@ -200,25 +197,23 @@ public class BotManager {
         for (String name : bots) {
             ServerPlayerEntity bot = server.getPlayerManager().getPlayer(name);
             if (bot != null && bot.isAlive()) {
-                // РћР±РЅРѕРІР»СЏРµРј РґР°РЅРЅС‹Рµ Р¶РёРІРѕРіРѕ Р±РѕС‚Р°
+
                 botDataMap.put(name, new BotData(bot));
                 updated++;
             } else if (!botDataMap.containsKey(name)) {
-                // Р‘РѕС‚ РІ СЃРїРёСЃРєРµ РЅРѕ РЅРµС‚ РґР°РЅРЅС‹С… - СЌС‚Рѕ РїСЂРѕР±Р»РµРјР°!
-                // РЈРґР°Р»СЏРµРј С‚Р°РєРѕРіРѕ Р±РѕС‚Р° РёР· СЃРїРёСЃРєР°
+
+
                 missing++;
                 System.out.println("[PVP_BOT] WARNING: Bot " + name + " in list but has no data!");
             } else {
-                // Р‘РѕС‚ РЅРµ Р·Р°РіСЂСѓР¶РµРЅ РёР»Рё РјС‘СЂС‚РІ - СЃРѕС…СЂР°РЅСЏРµРј СЃС‚Р°СЂС‹Рµ РґР°РЅРЅС‹Рµ
+
                 skipped++;
             }
         }
         System.out.println("[PVP_BOT] Updated bot data: " + updated + " updated, " + skipped + " skipped, " + missing + " missing, " + bots.size() + " total in list, " + botDataMap.size() + " in data map");
     }
     
-    /**
-     * РЎРѕС…СЂР°РЅРµРЅРёРµ СЃРїРёСЃРєР° Р±РѕС‚РѕРІ
-     */
+    
     public static void saveBots() {
         if (savePath == null) return;
         
@@ -229,9 +224,7 @@ public class BotManager {
         }
     }
     
-    /**
-     * Р—Р°РіСЂСѓР·РєР° СЃРїРёСЃРєР° Р±РѕС‚РѕРІ
-     */
+    
     private static void loadBots() {
         System.out.println("[PVP_BOT] Loading bots from: " + savePath);
         if (savePath == null || !Files.exists(savePath)) {
@@ -251,34 +244,30 @@ public class BotManager {
         }
     }
     
-    /**
-     * РЎР±СЂРѕСЃ РїСЂРё РІС‹С…РѕРґРµ РёР· РјРёСЂР°
-     */
+    
     public static void reset(MinecraftServer server) {
         updateBotData(server);
         saveBots();
         initialized = false;
     }
-    /**
-     * Переключение мира - сохраняет текущихботов и загружает ботов нового мира
-     */
+    
     public static void switchWorld(MinecraftServer server) {
-        // Сохраняем текущих ботов
+
         updateBotData(server);
         saveBots();
         saveStats();
 
-        // Очищаем текущее состояние
+
         bots.clear();
         botDataMap.clear();
 
-        // Обновляем путь к файлу конфигурации для нового мира
+
         savePath = org.stepan1411.pvp_bot.config.WorldConfigHelper.getWorldConfigDir().resolve("bots.json");
 
-        // Загружаем ботов нового мира
+
         loadBots();
 
-        // Респавним ботов если включена настройка
+
         BotSettings settings = BotSettings.get();
         if (settings.isBotsRelogs() && !botDataMap.isEmpty()) {
             System.out.println("[PVP_BOT] Switching world, restoring " + botDataMap.size() + " bots...");
@@ -293,12 +282,12 @@ public class BotManager {
 
     public static boolean spawnBot(MinecraftServer server, String name, ServerCommandSource source) {
         boolean isNewBot = !bots.contains(name);
-        // РџСЂРѕРІРµСЂСЏРµРј, СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё СѓР¶Рµ РёРіСЂРѕРє СЃ С‚Р°РєРёРј РёРјРµРЅРµРј РЅР° СЃРµСЂРІРµСЂРµ
+
         ServerPlayerEntity existingPlayer = server.getPlayerManager().getPlayer(name);
         if (existingPlayer != null && existingPlayer.isAlive()) {
-            // Р‘РѕС‚ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Рё Р¶РёРІ
+
             if (!bots.contains(name)) {
-                bots.add(name); // Р”РѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє РµСЃР»Рё РЅРµ Р±С‹Р»Рѕ
+                bots.add(name);
                 botDataMap.put(name, new BotData(existingPlayer));
                 saveBots();
                 System.out.println("[PVP_BOT] Added existing bot to list: " + name);
@@ -306,57 +295,57 @@ public class BotManager {
             return false;
         }
 
-        // Execute HeroBot's /playerspawn command - spawn in survival mode
+
         var dispatcher = server.getCommandManager().getDispatcher();
         try {
-            // Spawn bot in survival mode using HeroBot syntax
+
             dispatcher.execute("playerspawn " + name + " at ~ ~ ~ facing 0 0 in survival", source);
         } catch (Exception e) {
-            // Try alternative method if first fails
+
             try {
                 dispatcher.execute("playerspawn " + name, source);
-                // Force gamemode change after spawn
+
                 dispatcher.execute("gamemode survival " + name, server.getCommandSource());
             } catch (Exception e2) {
-                // Р”Р°Р¶Рµ РµСЃР»Рё РєРѕРјР°РЅРґР° РІС‹Р±СЂРѕСЃРёР»Р° РёСЃРєР»СЋС‡РµРЅРёРµ, РїСЂРѕРІРµСЂРёРј РїРѕСЏРІРёР»СЃСЏ Р»Рё Р±РѕС‚
+
             }
         }
         
-        // РџСЂРѕРІРµСЂСЏРµРј РїРѕСЏРІРёР»СЃСЏ Р»Рё Р±РѕС‚ РЅР° СЃРµСЂРІРµСЂРµ (РЅРµР·Р°РІРёСЃРёРјРѕ РѕС‚ СЂРµР·СѓР»СЊС‚Р°С‚Р° РєРѕРјР°РЅРґС‹)
-        // Р”Р°С‘Рј РЅРµР±РѕР»СЊС€СѓСЋ Р·Р°РґРµСЂР¶РєСѓ С‡РµСЂРµР· execute
+
+
         server.execute(() -> {
             ServerPlayerEntity newBot = server.getPlayerManager().getPlayer(name);
             if (newBot != null && !bots.contains(name)) {
                 bots.add(name);
                 botDataMap.put(name, new BotData(newBot));
-                incrementBotsSpawned(); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє
+                incrementBotsSpawned();
                 saveBots();
                 System.out.println("[PVP_BOT] Added bot to list (delayed): " + name);
                 
-                // Fire spawn event
+
                 try {
                     org.stepan1411.pvp_bot.api.PvpBotAPI.getEventManager().fireSpawnEvent(newBot);
                 } catch (Exception e) {
                     System.err.println("[PVP_BOT_API] Error firing spawn event: " + e.getMessage());
                 }
             } else if (newBot != null && bots.contains(name)) {
-                // Р‘РѕС‚ СѓР¶Рµ РІ СЃРїРёСЃРєРµ, РЅРѕ РѕР±РЅРѕРІРёРј РґР°РЅРЅС‹Рµ
+
                 botDataMap.put(name, new BotData(newBot));
                 saveBots();
                 System.out.println("[PVP_BOT] Updated bot data (delayed): " + name);
             }
         });
         
-        // Р”РѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє СЃСЂР°Р·Сѓ (РЅР° СЃР»СѓС‡Р°Р№ РµСЃР»Рё Р±РѕС‚ СѓР¶Рµ РїРѕСЏРІРёР»СЃСЏ)
+
         ServerPlayerEntity newBot = server.getPlayerManager().getPlayer(name);
         if (newBot != null) {
             if (!bots.contains(name)) {
                 bots.add(name);
                 botDataMap.put(name, new BotData(newBot));
-                incrementBotsSpawned(); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє
+                incrementBotsSpawned();
                 saveBots();
                 System.out.println("[PVP_BOT] Added bot to list (immediate): " + name);
-                // Fire spawn event
+
                 try {
                     org.stepan1411.pvp_bot.api.BotAPIIntegration.fireSpawnEvent(newBot);
                 } catch (Exception e) {
@@ -366,10 +355,10 @@ public class BotManager {
             return true;
         }
         
-        // Р‘РѕС‚ РµС‰С‘ РЅРµ РїРѕСЏРІРёР»СЃСЏ, РґРѕР±Р°РІРёРј РёРјСЏ РІ СЃРїРёСЃРѕРє СЃ РґРµС„РѕР»С‚РЅС‹РјРё РґР°РЅРЅС‹РјРё
+
         if (!bots.contains(name)) {
             bots.add(name);
-            // РЎРѕР·РґР°С‘Рј РґРµС„РѕР»С‚РЅС‹Рµ РґР°РЅРЅС‹Рµ (РїРѕР·РёС†РёСЏ РёРіСЂРѕРєР° РєРѕС‚РѕСЂС‹Р№ СЃРїР°РІРЅРёС‚)
+
             BotData defaultData = new BotData();
             defaultData.name = name;
             defaultData.x = source.getPosition().x;
@@ -380,7 +369,7 @@ public class BotManager {
             defaultData.dimension = source.getWorld().getRegistryKey().getValue().toString();
             defaultData.gamemode = "survival";
             botDataMap.put(name, defaultData);
-            incrementBotsSpawned(); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє
+            incrementBotsSpawned();
             saveBots();
             System.out.println("[PVP_BOT] Added bot to list (default data): " + name);
         }
@@ -389,12 +378,12 @@ public class BotManager {
     }
 
     public static boolean removeBot(MinecraftServer server, String name, ServerCommandSource source) {
-        // РЈРґР°Р»СЏРµРј РёР· СЃРїРёСЃРєР° РІ Р»СЋР±РѕРј СЃР»СѓС‡Р°Рµ
+
         boolean wasInList = bots.remove(name);
-        botDataMap.remove(name); // РЈРґР°Р»СЏРµРј РґР°РЅРЅС‹Рµ Р±РѕС‚Р°
+        botDataMap.remove(name);
         saveBots();
         
-        // Clean all bot states
+
         BotCombat.removeState(name);
         BotUtils.removeState(name);
         BotNavigation.resetIdle(name);
@@ -405,10 +394,10 @@ public class BotManager {
         try {
             dispatcher.execute(command, source);
         } catch (Exception e) {
-            // Ignore
+
         }
         
-        // РЈР±СЂР°Р»Рё РјРіРЅРѕРІРµРЅРЅСѓСЋ РѕС‚РїСЂР°РІРєСѓ - СЃС‚Р°С‚РёСЃС‚РёРєР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР· 30 СЃРµРєСѓРЅРґ
+
         
         return wasInList;
     }
@@ -420,7 +409,7 @@ public class BotManager {
     public static void removeAllBots(MinecraftServer server, ServerCommandSource source) {
         var dispatcher = server.getCommandManager().getDispatcher();
         for (String name : new HashSet<>(bots)) {
-            // Clean all bot states
+
             BotCombat.removeState(name);
             BotUtils.removeState(name);
             BotNavigation.resetIdle(name);
@@ -430,14 +419,14 @@ public class BotManager {
             try {
                 dispatcher.execute(command, source);
             } catch (Exception e) {
-                // Ignore
+
             }
         }
         bots.clear();
-        botDataMap.clear(); // РћС‡РёС‰Р°РµРј РґР°РЅРЅС‹Рµ РІСЃРµС… Р±РѕС‚РѕРІ
+        botDataMap.clear();
         saveBots();
         
-        // РЈР±СЂР°Р»Рё РјРіРЅРѕРІРµРЅРЅСѓСЋ РѕС‚РїСЂР°РІРєСѓ - СЃС‚Р°С‚РёСЃС‚РёРєР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР· 30 СЃРµРєСѓРЅРґ
+
     }
 
     public static int getBotCount() {
@@ -457,17 +446,17 @@ public class BotManager {
         for (String name : new HashSet<>(bots)) {
             ServerPlayerEntity bot = server.getPlayerManager().getPlayer(name);
             
-            // Р•СЃР»Рё Р±РѕС‚ РЅРµ РЅР°Р№РґРµРЅ (bot == null) - РќР• СѓРґР°Р»СЏРµРј РµРіРѕ!
-            // РћРЅ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСЂРѕСЃС‚Рѕ РІС‹РіСЂСѓР¶РµРЅ РёР· РїР°РјСЏС‚Рё (РґР°Р»РµРєРѕ РѕС‚ РёРіСЂРѕРєР° РІ СЃРёРЅРіР»РїР»РµРµСЂРµ)
+
+
             if (bot == null) {
-                continue; // РџСЂРѕРїСѓСЃРєР°РµРј, РЅРµ СѓРґР°Р»СЏРµРј
+                continue;
             }
             
-            // РЈРґР°Р»СЏРµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё Р±РѕС‚ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РќРћ РјС‘СЂС‚РІ
+
             boolean isDead = !bot.isAlive() || bot.getHealth() <= 0 || bot.isDead();
             if (isDead) {
-                // РЈРґР°Р»СЏРµРј РјС‘СЂС‚РІРѕРіРѕ Р±РѕС‚Р° РёР· СЃРїРёСЃРєР°
-                // Fire death event BEFORE removing bot
+
+
                 try {
                     org.stepan1411.pvp_bot.api.BotAPIIntegration.fireDeathEvent(bot);
                 } catch (Exception e) {
@@ -480,7 +469,7 @@ public class BotManager {
                 BotUtils.removeState(name);
                 BotNavigation.resetIdle(name);
                 BotBaritone.removeBaritone(name);
-                incrementBotsKilled(); // Increment killed counter
+                incrementBotsKilled();
                 changed = true;
                 System.out.println("[PVP_BOT] Removed dead bot: " + name);
             }
@@ -496,14 +485,14 @@ public class BotManager {
      */
     public static void syncBots(MinecraftServer server) {
         boolean changed = false;
-        // РџСЂРѕРІРµСЂСЏРµРј РІСЃРµС… РёРіСЂРѕРєРѕРІ РЅР° СЃРµСЂРІРµСЂРµ
+
         for (var player : server.getPlayerManager().getPlayerList()) {
             String name = player.getName().getString();
             
-            // РџСЂРѕРїСѓСЃРєР°РµРј РµСЃР»Рё СѓР¶Рµ РІ СЃРїРёСЃРєРµ
+
             if (bots.contains(name)) continue;
             
-            // Carpet Р±РѕС‚С‹ РёРјРµСЋС‚ РєР»Р°СЃСЃ carpet.patches.EntityPlayerMPFake
+
             String className = player.getClass().getName();
             boolean isFakePlayer = className.contains("EntityPlayerMPFake") || 
                                    className.contains("FakePlayer") ||
@@ -527,18 +516,18 @@ public class BotManager {
      * Р”РѕР±Р°РІР»СЏРµС‚ Р±РѕС‚Р° РІ СЃРїРёСЃРѕРє РµСЃР»Рё РѕРЅ fake player Рё РµРіРѕ РЅРµС‚ РІ СЃРїРёСЃРєРµ
      */
     public static boolean syncBot(MinecraftServer server, String name) {
-        // РџСЂРѕРІРµСЂСЏРµРј РµСЃР»Рё СѓР¶Рµ РІ СЃРїРёСЃРєРµ
+
         if (bots.contains(name)) {
             return false;
         }
         
-        // РС‰РµРј РёРіСЂРѕРєР° РЅР° СЃРµСЂРІРµСЂРµ
+
         ServerPlayerEntity player = server.getPlayerManager().getPlayer(name);
         if (player == null) {
             return false;
         }
         
-        // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ СЌС‚Рѕ fake player
+
         String className = player.getClass().getName();
         boolean isFakePlayer = className.contains("EntityPlayerMPFake") || 
                                className.contains("FakePlayer") ||
@@ -563,7 +552,7 @@ public class BotManager {
     public static void incrementBotsSpawned() {
         botsSpawnedTotal++;
         saveStats();
-        // РЈР±СЂР°Р»Рё РјРіРЅРѕРІРµРЅРЅСѓСЋ РѕС‚РїСЂР°РІРєСѓ - СЃС‚Р°С‚РёСЃС‚РёРєР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР· 30 СЃРµРєСѓРЅРґ
+
     }
     
     /**
@@ -572,7 +561,7 @@ public class BotManager {
     public static void incrementBotsKilled() {
         botsKilledTotal++;
         saveStats();
-        // РЈР±СЂР°Р»Рё РјРіРЅРѕРІРµРЅРЅСѓСЋ РѕС‚РїСЂР°РІРєСѓ - СЃС‚Р°С‚РёСЃС‚РёРєР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР· 30 СЃРµРєСѓРЅРґ
+
     }
     
     /**

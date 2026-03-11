@@ -16,7 +16,7 @@ public class SettingsGui extends SimpleGui {
     
     private int currentPage = 0;
     private final List<SettingEntry> allSettings = new ArrayList<>();
-    private static final int SETTINGS_PER_PAGE = 45; // 5 СЂСЏРґРѕРІ РїРѕ 9 СЃР»РѕС‚РѕРІ
+    private static final int SETTINGS_PER_PAGE = 45;
     
     public SettingsGui(ServerPlayerEntity player) {
         super(ScreenHandlerType.GENERIC_9X6, player, false);
@@ -29,7 +29,7 @@ public class SettingsGui extends SimpleGui {
     private void initializeSettings() {
         BotSettings s = BotSettings.get();
         
-        // === Equipment Settings ===
+
         allSettings.add(new SettingEntry(
             "Auto Armor",
             "Automatically equip best armor",
@@ -86,7 +86,7 @@ public class SettingsGui extends SimpleGui {
             s::setDropWorseWeapons
         ));
         
-        // === Combat Settings ===
+
         allSettings.add(new SettingEntry(
             "Combat",
             "Enable/disable combat system",
@@ -150,7 +150,7 @@ public class SettingsGui extends SimpleGui {
             s::setMaceEnabled
         ));
         
-        // === Utilities ===
+
         allSettings.add(new SettingEntry(
             "Auto Potion",
             "Auto-use healing/buff potions",
@@ -172,7 +172,7 @@ public class SettingsGui extends SimpleGui {
             s::setCobwebEnabled
         ));
         
-        // === Navigation ===
+
         allSettings.add(new SettingEntry(
             "Retreat",
             "Retreat when low HP",
@@ -194,7 +194,7 @@ public class SettingsGui extends SimpleGui {
             s::setIdleWanderEnabled
         ));
         
-        // === Factions ===
+
         allSettings.add(new SettingEntry(
             "Factions",
             "Enable faction system",
@@ -211,16 +211,16 @@ public class SettingsGui extends SimpleGui {
     }
     
     private void updatePage() {
-        // РћС‡РёС‰Р°РµРј GUI
+
         for (int i = 0; i < this.getSize(); i++) {
             this.clearSlot(i);
         }
         
-        // Р’С‹С‡РёСЃР»СЏРµРј РґРёР°РїР°Р·РѕРЅ РЅР°СЃС‚СЂРѕРµРє РґР»СЏ С‚РµРєСѓС‰РµР№ СЃС‚СЂР°РЅРёС†С‹
+
         int startIndex = currentPage * SETTINGS_PER_PAGE;
         int endIndex = Math.min(startIndex + SETTINGS_PER_PAGE, allSettings.size());
         
-        // Р”РѕР±Р°РІР»СЏРµРј РЅР°СЃС‚СЂРѕР№РєРё
+
         for (int i = startIndex; i < endIndex; i++) {
             SettingEntry setting = allSettings.get(i);
             int slot = i - startIndex;
@@ -243,10 +243,10 @@ public class SettingsGui extends SimpleGui {
             this.setSlot(slot, element);
         }
         
-        // Р”РѕР±Р°РІР»СЏРµРј РЅР°РІРёРіР°С†РёСЋ РІРЅРёР·Сѓ (РїРѕСЃР»РµРґРЅРёР№ СЂСЏРґ)
+
         int totalPages = (int) Math.ceil((double) allSettings.size() / SETTINGS_PER_PAGE);
         
-        // РџСЂРµРґС‹РґСѓС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р° (СЃР»РѕС‚ 45)
+
         if (currentPage > 0) {
             this.setSlot(45, new GuiElementBuilder()
                 .setItem(Items.SPECTRAL_ARROW)
@@ -259,14 +259,14 @@ public class SettingsGui extends SimpleGui {
             );
         }
         
-        // РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃС‚СЂР°РЅРёС†Рµ (СЃР»РѕС‚ 49 - С†РµРЅС‚СЂ)
+
         this.setSlot(49, new GuiElementBuilder()
             .setItem(Items.BOOK)
             .setName(Text.literal("Page " + (currentPage + 1) + "/" + totalPages).formatted(Formatting.GOLD))
             .addLoreLine(Text.literal("Settings: " + allSettings.size()).formatted(Formatting.GRAY))
         );
         
-        // РЎР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р° (СЃР»РѕС‚ 53)
+
         if (currentPage < totalPages - 1) {
             this.setSlot(53, new GuiElementBuilder()
                 .setItem(Items.SPECTRAL_ARROW)
@@ -279,7 +279,7 @@ public class SettingsGui extends SimpleGui {
             );
         }
         
-        // РљРЅРѕРїРєР° РЅР°Р·Р°Рґ РІ РіР»Р°РІРЅРѕРµ РјРµРЅСЋ (СЃР»РѕС‚ 46)
+
         this.setSlot(46, new GuiElementBuilder()
             .setItem(Items.ARROW)
             .setName(Text.literal("Back to Menu").formatted(Formatting.YELLOW))

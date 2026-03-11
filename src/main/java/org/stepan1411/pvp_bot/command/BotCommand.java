@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 
 public class BotCommand {
     
-    // РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ InvView
+
     private static final boolean HAS_INVVIEW = FabricLoader.getInstance().isModLoaded("invview");
     
-    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ РёРјС‘РЅ Р±РѕС‚РѕРІ
+
     private static final SuggestionProvider<ServerCommandSource> BOT_SUGGESTIONS = (ctx, builder) -> {
         var server = ctx.getSource().getServer();
         var aliveBots = BotManager.getAllBots().stream()
@@ -43,7 +43,7 @@ public class BotCommand {
         return CommandSource.suggestMatching(aliveBots, builder);
     };
     
-    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ С†РµР»РµР№ (РІСЃРµ РёРіСЂРѕРєРё РЅР° СЃРµСЂРІРµСЂРµ)
+
     private static final SuggestionProvider<ServerCommandSource> TARGET_SUGGESTIONS = (ctx, builder) -> 
         CommandSource.suggestMatching(
             ctx.getSource().getServer().getPlayerManager().getPlayerList().stream()
@@ -51,18 +51,18 @@ public class BotCommand {
                 .collect(Collectors.toList()), 
             builder);
     
-    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ РІСЃРµС… РёРіСЂРѕРєРѕРІ (Р±РѕС‚С‹ + РёРіСЂРѕРєРё)
+
     private static final SuggestionProvider<ServerCommandSource> PLAYER_SUGGESTIONS = TARGET_SUGGESTIONS;
     
-    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ С„СЂР°РєС†РёР№
+
     private static final SuggestionProvider<ServerCommandSource> FACTION_SUGGESTIONS = (ctx, builder) -> 
         CommandSource.suggestMatching(BotFaction.getAllFactions(), builder);
     
-    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ РєРёС‚РѕРІ
+
     private static final SuggestionProvider<ServerCommandSource> KIT_SUGGESTIONS = (ctx, builder) -> 
         CommandSource.suggestMatching(BotKits.getKitNames(), builder);
     
-    // РџРѕРґСЃРєР°Р·РєРё РґР»СЏ РїСѓС‚РµР№
+
     private static final SuggestionProvider<ServerCommandSource> PATH_SUGGESTIONS = (ctx, builder) -> 
         CommandSource.suggestMatching(BotPath.getAllPaths().keySet(), builder);
 
@@ -70,7 +70,7 @@ public class BotCommand {
         dispatcher.register(
             CommandManager.literal("pvpbot")
                 
-                // /pvpbot spawn [name] - Р±РµР· РёРјРµРЅРё РіРµРЅРµСЂРёСЂСѓРµС‚ СЃР»СѓС‡Р°Р№РЅРѕРµ
+
                 .then(CommandManager.literal("spawn")
                     .executes(ctx -> spawnBot(ctx.getSource(), BotNameGenerator.generateUniqueName()))
                     .then(CommandManager.argument("name", StringArgumentType.word())
@@ -78,14 +78,14 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot massspawn <num> - СЃРїР°РІРЅРёС‚ РЅРµСЃРєРѕР»СЊРєРѕ Р±РѕС‚РѕРІ СЃ СЂР°РЅРґРѕРјРЅС‹РјРё РёРјРµРЅР°РјРё
+
                 .then(CommandManager.literal("massspawn")
                     .then(CommandManager.argument("count", IntegerArgumentType.integer(1, 50))
                         .executes(ctx -> massSpawnBots(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "count")))
                     )
                 )
                 
-                // /pvpbot remove <name> - СЃ РїРѕРґСЃРєР°Р·РєР°РјРё Р±РѕС‚РѕРІ
+
                 .then(CommandManager.literal("remove")
                     .then(CommandManager.argument("name", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -93,17 +93,17 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot removeall
+
                 .then(CommandManager.literal("removeall")
                     .executes(ctx -> removeAllBots(ctx.getSource()))
                 )
                 
-                // /pvpbot list
+
                 .then(CommandManager.literal("list")
                     .executes(ctx -> listBots(ctx.getSource()))
                 )
                 
-                // /pvpbot sync [name] - СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°С‚СЊ СЃРїРёСЃРѕРє Р±РѕС‚РѕРІ СЃ СЃРµСЂРІРµСЂРѕРј
+
                 .then(CommandManager.literal("sync")
                     .executes(ctx -> syncBots(ctx.getSource()))
                     .then(CommandManager.argument("name", StringArgumentType.word())
@@ -112,12 +112,12 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot debug - СЃРёСЃС‚РµРјР° РѕС‚Р»Р°РґРєРё
+
                 .then(CommandManager.literal("debug")
                     .then(CommandManager.argument("bot", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
                         
-                        // /pvpbot debug <bot> path [true/false]
+
                         .then(CommandManager.literal("path")
                             .executes(ctx -> toggleDebugPath(ctx.getSource(), StringArgumentType.getString(ctx, "bot")))
                             .then(CommandManager.argument("enabled", BoolArgumentType.bool())
@@ -125,7 +125,7 @@ public class BotCommand {
                             )
                         )
                         
-                        // /pvpbot debug <bot> target [true/false]
+
                         .then(CommandManager.literal("target")
                             .executes(ctx -> toggleDebugTarget(ctx.getSource(), StringArgumentType.getString(ctx, "bot")))
                             .then(CommandManager.argument("enabled", BoolArgumentType.bool())
@@ -133,7 +133,7 @@ public class BotCommand {
                             )
                         )
                         
-                        // /pvpbot debug <bot> combat [true/false]
+
                         .then(CommandManager.literal("combat")
                             .executes(ctx -> toggleDebugCombat(ctx.getSource(), StringArgumentType.getString(ctx, "bot")))
                             .then(CommandManager.argument("enabled", BoolArgumentType.bool())
@@ -141,7 +141,7 @@ public class BotCommand {
                             )
                         )
                         
-                        // /pvpbot debug <bot> navigation [true/false]
+
                         .then(CommandManager.literal("navigation")
                             .executes(ctx -> toggleDebugNavigation(ctx.getSource(), StringArgumentType.getString(ctx, "bot")))
                             .then(CommandManager.argument("enabled", BoolArgumentType.bool())
@@ -149,7 +149,7 @@ public class BotCommand {
                             )
                         )
                         
-                        // /pvpbot debug <bot> all [true/false]
+
                         .then(CommandManager.literal("all")
                             .executes(ctx -> toggleDebugAll(ctx.getSource(), StringArgumentType.getString(ctx, "bot")))
                             .then(CommandManager.argument("enabled", BoolArgumentType.bool())
@@ -157,28 +157,28 @@ public class BotCommand {
                             )
                         )
                         
-                        // /pvpbot debug <bot> status
+
                         .then(CommandManager.literal("status")
                             .executes(ctx -> showDebugStatus(ctx.getSource(), StringArgumentType.getString(ctx, "bot")))
                         )
                     )
                 )
                 
-                // /pvpbot menu - РѕС‚РєСЂС‹С‚СЊ С‚РµСЃС‚РѕРІРѕРµ РјРµРЅСЋ
+
                 .then(CommandManager.literal("menu")
                     .executes(ctx -> openTestMenu(ctx.getSource()))
                 )
                 
-                // /pvpbot settings
+
                 .then(CommandManager.literal("settings")
                     .executes(ctx -> showSettings(ctx.getSource()))
                     
-                    // /pvpbot settings gui - РѕС‚РєСЂС‹С‚СЊ GUI РЅР°СЃС‚СЂРѕРµРє
+
                     .then(CommandManager.literal("gui")
                         .executes(ctx -> openSettingsGui(ctx.getSource()))
                     )
                     
-                    // /pvpbot settings autoarmor [true/false]
+
                     .then(CommandManager.literal("autoarmor")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("autoarmor: " + BotSettings.get().isAutoEquipArmor()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -190,7 +190,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings autoweapon [true/false]
+
                     .then(CommandManager.literal("autoweapon")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("autoweapon: " + BotSettings.get().isAutoEquipWeapon()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -202,7 +202,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings droparmor [true/false]
+
                     .then(CommandManager.literal("droparmor")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("droparmor: " + BotSettings.get().isDropWorseArmor()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -214,7 +214,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings dropweapon [true/false]
+
                     .then(CommandManager.literal("dropweapon")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("dropweapon: " + BotSettings.get().isDropWorseWeapons()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -226,7 +226,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings dropdistance [1-10]
+
                     .then(CommandManager.literal("dropdistance")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("dropdistance: " + BotSettings.get().getDropDistance()), false); return 1; })
                         .then(CommandManager.argument("value", DoubleArgumentType.doubleArg(1.0, 10.0))
@@ -238,7 +238,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings interval [1-100]
+
                     .then(CommandManager.literal("interval")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("interval: " + BotSettings.get().getCheckInterval() + " ticks"), false); return 1; })
                         .then(CommandManager.argument("ticks", IntegerArgumentType.integer(1, 100))
@@ -250,7 +250,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings minarmorlevel [0-100]
+
                     .then(CommandManager.literal("minarmorlevel")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("minarmorlevel: " + BotSettings.get().getMinArmorLevel()), false); return 1; })
                         .then(CommandManager.argument("level", IntegerArgumentType.integer(0, 100))
@@ -262,7 +262,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // === Combat Settings (СЃ РїРѕРєР°Р·РѕРј С‚РµРєСѓС‰РµРіРѕ Р·РЅР°С‡РµРЅРёСЏ Р±РµР· Р°СЂРіСѓРјРµРЅС‚Р°) ===
+
                     .then(CommandManager.literal("combat")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("combat: " + BotSettings.get().isCombatEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -384,7 +384,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // === Navigation Settings ===
+
                     .then(CommandManager.literal("bhop")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("bhop: " + BotSettings.get().isBhopEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -446,7 +446,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // === Realism Settings ===
+
                     .then(CommandManager.literal("friendlyfire")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("friendlyfire: " + BotSettings.get().isFriendlyFireEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -488,7 +488,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // === Weapon Settings ===
+
                     .then(CommandManager.literal("prefersword")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("prefersword: " + BotSettings.get().isPreferSword()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -510,7 +510,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings autoshield [true/false]
+
                     .then(CommandManager.literal("autoshield")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("autoshield: " + BotSettings.get().isAutoShieldEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -522,7 +522,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings autopotion [true/false]
+
                     .then(CommandManager.literal("autopotion")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("autopotion: " + BotSettings.get().isAutoPotionEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -534,7 +534,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings autototem [true/false]
+
                     .then(CommandManager.literal("autototem")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("autototem: " + BotSettings.get().isAutoTotemEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -546,7 +546,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings totempriority [true/false]
+
                     .then(CommandManager.literal("totempriority")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("totempriority: " + BotSettings.get().isTotemPriority()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -558,7 +558,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings retreat [true/false]
+
                     .then(CommandManager.literal("retreat")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("retreat: " + BotSettings.get().isRetreatEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -570,7 +570,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings autoeat [true/false]
+
                     .then(CommandManager.literal("autoeat")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("autoeat: " + BotSettings.get().isAutoEatEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -582,7 +582,7 @@ public class BotCommand {
                         )
                     )
                     
-                    // /pvpbot settings automend [true/false]
+
                     .then(CommandManager.literal("automend")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("automend: " + BotSettings.get().isAutoMendEnabled()), false); return 1; })
                         .then(CommandManager.argument("value", BoolArgumentType.bool())
@@ -595,7 +595,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot attack <botname> <target> - СЃ РїРѕРґСЃРєР°Р·РєР°РјРё
+
                 .then(CommandManager.literal("attack")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -608,7 +608,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot stop <botname> - СЃ РїРѕРґСЃРєР°Р·РєР°РјРё
+
                 .then(CommandManager.literal("stop")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -616,7 +616,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot target <botname> - РїРѕРєР°Р·Р°С‚СЊ С‚РµРєСѓС‰СѓСЋ С†РµР»СЊ
+
                 .then(CommandManager.literal("target")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -624,7 +624,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot inventory <botname> - РїРѕРєР°Р·Р°С‚СЊ РёРЅРІРµРЅС‚Р°СЂСЊ Р±РѕС‚Р°
+
                 .then(CommandManager.literal("inventory")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -632,26 +632,26 @@ public class BotCommand {
                     )
                 )
                 
-                // ============ РљРѕРјР°РЅРґС‹ С„СЂР°РєС†РёР№ ============
+
                 .then(CommandManager.literal("faction")
-                    // /pvpbot faction list
+
                     .then(CommandManager.literal("list")
                         .executes(ctx -> listFactions(ctx.getSource()))
                     )
-                    // /pvpbot faction create <name>
+
                     .then(CommandManager.literal("create")
                         .then(CommandManager.argument("name", StringArgumentType.word())
                             .executes(ctx -> createFaction(ctx.getSource(), StringArgumentType.getString(ctx, "name")))
                         )
                     )
-                    // /pvpbot faction delete <name>
+
                     .then(CommandManager.literal("delete")
                         .then(CommandManager.argument("name", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
                             .executes(ctx -> deleteFaction(ctx.getSource(), StringArgumentType.getString(ctx, "name")))
                         )
                     )
-                    // /pvpbot faction add <faction> <player>
+
                     .then(CommandManager.literal("add")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -663,7 +663,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction remove <faction> <player>
+
                     .then(CommandManager.literal("remove")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -674,7 +674,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction hostile <faction1> <faction2> [true/false]
+
                     .then(CommandManager.literal("hostile")
                         .then(CommandManager.argument("faction1", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -693,14 +693,14 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction info <faction>
+
                     .then(CommandManager.literal("info")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
                             .executes(ctx -> factionInfo(ctx.getSource(), StringArgumentType.getString(ctx, "faction")))
                         )
                     )
-                    // /pvpbot faction addnear <faction> <radius> - РґРѕР±Р°РІРёС‚СЊ РІСЃРµС… Р±РѕС‚РѕРІ РІ СЂР°РґРёСѓСЃРµ
+
                     .then(CommandManager.literal("addnear")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -711,7 +711,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction addall <faction> - РґРѕР±Р°РІРёС‚СЊ Р’РЎР•РҐ Р±РѕС‚РѕРІ РІ С„СЂР°РєС†РёСЋ
+
                     .then(CommandManager.literal("addall")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -719,7 +719,7 @@ public class BotCommand {
                                 StringArgumentType.getString(ctx, "faction")))
                         )
                     )
-                    // /pvpbot faction give <faction> <item> [count] - РІС‹РґР°С‚СЊ РїСЂРµРґРјРµС‚ РІСЃРµР№ С„СЂР°РєС†РёРё
+
                     .then(CommandManager.literal("give")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -730,7 +730,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction attack <faction> <target> - РІСЃСЏ С„СЂР°РєС†РёСЏ Р°С‚Р°РєСѓРµС‚ С†РµР»СЊ
+
                     .then(CommandManager.literal("attack")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -742,7 +742,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction startpath <faction> <path> - запустить путь для всей фракции
+
                     .then(CommandManager.literal("startpath")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -754,7 +754,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot faction stoppath <faction> - остановить путь для всей фракции
+
                     .then(CommandManager.literal("stoppath")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
                             .suggests(FACTION_SUGGESTIONS)
@@ -764,7 +764,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot settings viewdistance [5-128] - РґР°Р»СЊРЅРѕСЃС‚СЊ РІРёРґРёРјРѕСЃС‚Рё
+
                 .then(CommandManager.literal("settings")
                     .then(CommandManager.literal("viewdistance")
                         .executes(ctx -> { 
@@ -781,15 +781,15 @@ public class BotCommand {
                     )
                 )
                 
-                // ============ РљРѕРјР°РЅРґС‹ РєРёС‚РѕРІ ============
-                // /pvpbot createkit <name> - СЃРѕР·РґР°С‚СЊ РєРёС‚ РёР· РёРЅРІРµРЅС‚Р°СЂСЏ РёРіСЂРѕРєР°
+
+
                 .then(CommandManager.literal("createkit")
                     .then(CommandManager.argument("name", StringArgumentType.word())
                         .executes(ctx -> createKit(ctx.getSource(), StringArgumentType.getString(ctx, "name")))
                     )
                 )
                 
-                // /pvpbot deletekit <name> - СѓРґР°Р»РёС‚СЊ РєРёС‚
+
                 .then(CommandManager.literal("deletekit")
                     .then(CommandManager.argument("name", StringArgumentType.word())
                         .suggests(KIT_SUGGESTIONS)
@@ -797,12 +797,12 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot kits - СЃРїРёСЃРѕРє РєРёС‚РѕРІ
+
                 .then(CommandManager.literal("kits")
                     .executes(ctx -> listKits(ctx.getSource()))
                 )
                 
-                // /pvpbot givekit <playername> <kitname> - РІС‹РґР°С‚СЊ РєРёС‚ РёРіСЂРѕРєСѓ РёР»Рё Р±РѕС‚Сѓ
+
                 .then(CommandManager.literal("givekit")
                     .then(CommandManager.argument("playername", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTIONS)
@@ -815,7 +815,7 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot faction givekit <faction> <kitname> - РІС‹РґР°С‚СЊ РєРёС‚ РІСЃРµР№ С„СЂР°РєС†РёРё
+
                 .then(CommandManager.literal("faction")
                     .then(CommandManager.literal("givekit")
                         .then(CommandManager.argument("faction", StringArgumentType.word())
@@ -830,9 +830,9 @@ public class BotCommand {
                     )
                 )
                 
-                // /pvpbot updatestats - РѕС‚РїСЂР°РІРёС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ СЃРµР№С‡Р°СЃ (РґР»СЏ РѕС‚Р»Р°РґРєРё)
+
                 
-                // /pvpbot path - система путей для патрулирования
+
                 .then(CommandManager.literal("path")
                     .then(CommandManager.literal("create")
                         .then(CommandManager.argument("name", StringArgumentType.word())
@@ -914,14 +914,14 @@ public class BotCommand {
                             .executes(ctx -> pathInfo(ctx.getSource(), StringArgumentType.getString(ctx, "name")))
                         )
                     )
-                    // /pvpbot path distribute <path> - распределить ботов по пути
+
                     .then(CommandManager.literal("distribute")
                         .then(CommandManager.argument("path", StringArgumentType.word())
                             .suggests(PATH_SUGGESTIONS)
                             .executes(ctx -> distributeBotsOnPath(ctx.getSource(), StringArgumentType.getString(ctx, "path")))
                         )
                     )
-                    // /pvpbot path startnear <path> <radius> - запустить путь для ботов в радиусе
+
                     .then(CommandManager.literal("startnear")
                         .then(CommandManager.argument("path", StringArgumentType.word())
                             .suggests(PATH_SUGGESTIONS)
@@ -930,7 +930,7 @@ public class BotCommand {
                             )
                         )
                     )
-                    // /pvpbot path stopall <path> - остановить всех ботов на пути
+
                     .then(CommandManager.literal("stopall")
                         .then(CommandManager.argument("path", StringArgumentType.word())
                             .suggests(PATH_SUGGESTIONS)
@@ -983,7 +983,7 @@ public class BotCommand {
 
 
     private static int spawnBot(ServerCommandSource source, String name) {
-        // РџСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё СЂРµР°Р»СЊРЅС‹Р№ РёРіСЂРѕРє СЃ С‚Р°РєРёРј РЅРёРєРѕРј
+
         var server = source.getServer();
         var existingPlayer = server.getPlayerManager().getPlayer(name);
         if (existingPlayer != null && !BotManager.getAllBots().contains(name)) {
@@ -1007,7 +1007,7 @@ public class BotCommand {
         
         source.sendFeedback(() -> Text.literal("Spawning " + count + " bots "), false);
         
-        // РЎРїР°РІРЅРёРј Р±РѕС‚РѕРІ СЃ Р·Р°РґРµСЂР¶РєРѕР№ С‡РµСЂРµР· scheduled tasks
+
         scheduleSpawn(server, source, count, spawned, current);
         
         return 1;
@@ -1019,16 +1019,16 @@ public class BotCommand {
             return;
         }
         
-        // РЎРїР°РІРЅРёРј РѕРґРЅРѕРіРѕ Р±РѕС‚Р°
+
         String name = BotNameGenerator.generateUniqueName();
         if (BotManager.spawnBot(server, name, source)) {
             spawned[0]++;
         }
         current[0]++;
         
-        // РџР»Р°РЅРёСЂСѓРµРј СЃР»РµРґСѓСЋС‰РёР№ СЃРїР°РІРЅ С‡РµСЂРµР· 5 С‚РёРєРѕРІ
+
         server.execute(() -> {
-            // РСЃРїРѕР»СЊР·СѓРµРј РїСЂРѕСЃС‚СѓСЋ Р·Р°РґРµСЂР¶РєСѓ С‡РµСЂРµР· С‚РёРєРё СЃРµСЂРІРµСЂР°
+
             final int[] delay = {0};
             server.execute(new Runnable() {
                 @Override
@@ -1079,7 +1079,7 @@ public class BotCommand {
         var server = source.getServer();
         int beforeCount = BotManager.getAllBots().size();
         
-        // РџРѕРєР°Р·С‹РІР°РµРј РІСЃРµС… РёРіСЂРѕРєРѕРІ Рё РёС… РєР»Р°СЃСЃС‹ РґР»СЏ РѕС‚Р»Р°РґРєРё
+
         source.sendFeedback(() -> Text.literal("=== Players on server ==="), false);
         for (var player : server.getPlayerManager().getPlayerList()) {
             String name = player.getName().getString();
@@ -1088,7 +1088,7 @@ public class BotCommand {
             source.sendFeedback(() -> Text.literal(" - " + name + " [" + className + "] " + (inList ? "(in list)" : "(NOT in list)")), false);
         }
         
-        // РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј
+
         BotManager.syncBots(server);
         
         int afterCount = BotManager.getAllBots().size();
@@ -1101,21 +1101,21 @@ public class BotCommand {
     private static int syncBot(ServerCommandSource source, String name) {
         var server = source.getServer();
         
-        // РџСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё С‚Р°РєРѕР№ РёРіСЂРѕРє
+
         ServerPlayerEntity player = server.getPlayerManager().getPlayer(name);
         if (player == null) {
             source.sendFeedback(() -> Text.literal("Player " + name + " not found on server!"), false);
             return 0;
         }
         
-        // РџРѕРєР°Р·С‹РІР°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёРіСЂРѕРєРµ
+
         String className = player.getClass().getName();
         boolean inList = BotManager.getAllBots().contains(name);
         source.sendFeedback(() -> Text.literal("Player: " + name), false);
         source.sendFeedback(() -> Text.literal("Class: " + className), false);
         source.sendFeedback(() -> Text.literal("In bot list: " + inList), false);
         
-        // РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј
+
         boolean added = BotManager.syncBot(server, name);
         
         if (added) {
@@ -1196,7 +1196,7 @@ public class BotCommand {
         return 1;
     }
     
-    // ============ РљРѕРјР°РЅРґС‹ С„СЂР°РєС†РёР№ ============
+
     
     private static int listFactions(ServerCommandSource source) {
         var factions = BotFaction.getAllFactions();
@@ -1342,7 +1342,7 @@ public class BotCommand {
             return 0;
         }
         
-        // Р•СЃР»Рё InvView СѓСЃС‚Р°РЅРѕРІР»РµРЅ - РёСЃРїРѕР»СЊР·СѓРµРј РµРіРѕ GUI
+
         if (HAS_INVVIEW) {
             try {
                 return openInvViewGui(source, bot);
@@ -1352,15 +1352,13 @@ public class BotCommand {
             }
         }
         
-        // Р•СЃР»Рё InvView РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ - РїРѕРєР°Р·С‹РІР°РµРј СЃРѕРѕР±С‰РµРЅРёРµ
+
         source.sendError(Text.literal("InvView mod is not installed!"));
         source.sendFeedback(() -> Text.literal("Please install InvView to view bot inventories: https://modrinth.com/mod/invview"), false);
         return 0;
     }
     
-    /**
-     * РћС‚РєСЂС‹РІР°РµС‚ GUI InvView С‡РµСЂРµР· СЂРµС„Р»РµРєСЃРёСЋ (С‡С‚РѕР±С‹ РЅРµ Р±С‹Р»Рѕ Р¶РµСЃС‚РєРѕР№ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё)
-     */
+    
     private static int openInvViewGui(ServerCommandSource source, ServerPlayerEntity targetPlayer) throws Exception {
         ServerPlayerEntity viewer = source.getPlayer();
         if (viewer == null) {
@@ -1368,35 +1366,35 @@ public class BotCommand {
             return 0;
         }
         
-        // РСЃРїРѕР»СЊР·СѓРµРј СЂРµС„Р»РµРєСЃРёСЋ С‚РѕР»СЊРєРѕ РґР»СЏ РєР»Р°СЃСЃРѕРІ InvView
+
         Class<?> simpleGuiClass = Class.forName("eu.pb4.sgui.api.gui.SimpleGui");
         Class<?> savingGuiClass = Class.forName("us.potatoboy.invview.gui.SavingPlayerDataGui");
         
-        // РџРѕР»СѓС‡Р°РµРј ScreenHandlerType.GENERIC_9X5 РЅР°РїСЂСЏРјСѓСЋ
+
         Object screenHandlerType = net.minecraft.screen.ScreenHandlerType.GENERIC_9X5;
         
-        // new SavingPlayerDataGui(ScreenHandlerType.GENERIC_9X5, viewer, targetPlayer)
+
         Object gui = savingGuiClass.getConstructor(
                 net.minecraft.screen.ScreenHandlerType.class, 
                 ServerPlayerEntity.class, 
                 ServerPlayerEntity.class)
                 .newInstance(screenHandlerType, viewer, targetPlayer);
         
-        // gui.setTitle(targetPlayer.getName())
+
         Method setTitleMethod = simpleGuiClass.getMethod("setTitle", Text.class);
         setTitleMethod.invoke(gui, targetPlayer.getName());
         
-        // Р”РѕР±Р°РІР»СЏРµРј СЃР»РѕС‚С‹ РёРЅРІРµРЅС‚Р°СЂСЏ (СЃ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ)
+
         Method setSlotRedirectMethod = simpleGuiClass.getMethod("setSlotRedirect", int.class, net.minecraft.screen.slot.Slot.class);
         var inventory = targetPlayer.getInventory();
         
         for (int i = 0; i < inventory.size(); i++) {
-            // new Slot(inventory, i, 0, 0) - РѕР±С‹С‡РЅС‹Р№ СЃР»РѕС‚ СЃ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
+
             net.minecraft.screen.slot.Slot slot = new net.minecraft.screen.slot.Slot(inventory, i, 0, 0);
             setSlotRedirectMethod.invoke(gui, i, slot);
         }
         
-        // gui.open()
+
         Method openMethod = simpleGuiClass.getMethod("open");
         openMethod.invoke(gui);
         
@@ -1414,7 +1412,7 @@ public class BotCommand {
         int count = 0;
         
         for (String memberName : members) {
-            // РСЃРїРѕР»СЊР·СѓРµРј РєРѕРјР°РЅРґСѓ give РґР»СЏ РєР°Р¶РґРѕРіРѕ С‡Р»РµРЅР° С„СЂР°РєС†РёРё
+
             try {
                 server.getCommandManager().getDispatcher().execute(
                     "give " + memberName + " " + itemCommand,
@@ -1422,7 +1420,7 @@ public class BotCommand {
                 );
                 count++;
             } catch (Exception e) {
-                // РРіРЅРѕСЂРёСЂСѓРµРј РѕС€РёР±РєРё (РёРіСЂРѕРє РјРѕР¶РµС‚ Р±С‹С‚СЊ РѕС„С„Р»Р°Р№РЅ)
+
             }
         }
         
@@ -1441,7 +1439,7 @@ public class BotCommand {
         int count = 0;
         
         for (String memberName : members) {
-            // РўРѕР»СЊРєРѕ Р±РѕС‚С‹ РјРѕРіСѓС‚ Р°С‚Р°РєРѕРІР°С‚СЊ
+
             if (BotManager.getAllBots().contains(memberName)) {
                 BotCombat.setTarget(memberName, targetName);
                 count++;
@@ -1453,7 +1451,7 @@ public class BotCommand {
         return count;
     }
     
-    // ============ РљРѕРјР°РЅРґС‹ РєРёС‚РѕРІ ============
+
     
     private static int createKit(ServerCommandSource source, String kitName) {
         var player = source.getPlayer();
@@ -1502,7 +1500,7 @@ public class BotCommand {
             return 0;
         }
         
-        // РС‰РµРј РёРіСЂРѕРєР° РЅР° СЃРµСЂРІРµСЂРµ (Р±РѕС‚ РёР»Рё РѕР±С‹С‡РЅС‹Р№ РёРіСЂРѕРє)
+
         var player = source.getServer().getPlayerManager().getPlayer(playerName);
         if (player == null) {
             source.sendError(Text.literal("Player '" + playerName + "' not found!"));
@@ -1537,7 +1535,7 @@ public class BotCommand {
         
         int count = 0;
         for (String memberName : members) {
-            // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ СЌС‚Рѕ Р±РѕС‚
+
             if (BotManager.getAllBots().contains(memberName)) {
                 var bot = BotManager.getBot(source.getServer(), memberName);
                 if (bot != null && BotKits.giveKit(kitName, bot)) {
@@ -1551,9 +1549,7 @@ public class BotCommand {
         return 1;
     }
     
-    /**
-     * РћС‚РєСЂС‹РІР°РµС‚ С‚РµСЃС‚РѕРІРѕРµ РјРµРЅСЋ СЃ РїСЂРёРјРµСЂР°РјРё sgui
-     */
+    
     private static int openTestMenu(ServerCommandSource source) {
         try {
             ServerPlayerEntity player = source.getPlayer();
@@ -1562,7 +1558,7 @@ public class BotCommand {
                 return 0;
             }
             
-            // РћС‚РєСЂС‹РІР°РµРј РіР»Р°РІРЅРѕРµ РјРµРЅСЋ
+
             org.stepan1411.pvp_bot.gui.BotMenuGui.openMainMenu(player);
             return 1;
         } catch (Exception e) {
@@ -1572,9 +1568,7 @@ public class BotCommand {
         }
     }
     
-    /**
-     * РћС‚РїСЂР°РІР»СЏРµС‚ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РЅР° СЃРµСЂРІРµСЂ (РґР»СЏ РѕС‚Р»Р°РґРєРё)
-     */
+    
     private static int updateStats(ServerCommandSource source) {
         try {
             StatsReporter.sendStats();
@@ -1586,7 +1580,7 @@ public class BotCommand {
         }
     }
     
-    // ============ Debug Commands ============
+
     
     private static int toggleDebugPath(ServerCommandSource source, String botName) {
         var settings = BotDebug.getSettings(botName);
@@ -1676,11 +1670,11 @@ public class BotCommand {
         return 1;
     }
     
-    // ========== PATH COMMANDS ==========
+
     
     private static int createPath(ServerCommandSource source, String name) {
         if (org.stepan1411.pvp_bot.bot.BotPath.createPath(name)) {
-            // Автоматически включаем визуализацию
+
             org.stepan1411.pvp_bot.bot.BotPath.setPathVisible(name, true);
             source.sendFeedback(() -> Text.literal("§aPath '" + name + "' created"), true);
             source.sendFeedback(() -> Text.literal("§7Visualization enabled. To disable: §e/pvpbot path show " + name + " false"), false);
@@ -1711,7 +1705,7 @@ public class BotCommand {
         net.minecraft.util.math.Vec3d pos = new net.minecraft.util.math.Vec3d(player.getX(), player.getY(), player.getZ());
         if (org.stepan1411.pvp_bot.bot.BotPath.addPoint(name, pos)) {
             var path = org.stepan1411.pvp_bot.bot.BotPath.getPath(name);
-            // Автоматически включаем визуализацию если ещё не включена
+
             if (!org.stepan1411.pvp_bot.bot.BotPath.isPathVisible(name)) {
                 org.stepan1411.pvp_bot.bot.BotPath.setPathVisible(name, true);
                 source.sendFeedback(() -> Text.literal("§7Visualization enabled. To disable: §e/pvpbot path show " + name + " false"), false);
@@ -1854,7 +1848,7 @@ public class BotCommand {
         }
     }
     
-    // ========== NEW PATH COMMANDS ==========
+
     
     private static int distributeBotsOnPath(ServerCommandSource source, String pathName) {
         var path = BotPath.getPath(pathName);
@@ -1868,7 +1862,7 @@ public class BotCommand {
             return 0;
         }
         
-        // Get all bots following this path
+
         var server = source.getServer();
         var botsOnPath = new java.util.ArrayList<String>();
         for (String botName : BotManager.getAllBots()) {
@@ -1882,7 +1876,7 @@ public class BotCommand {
             return 0;
         }
         
-        // Distribute bots evenly along the path
+
         int totalPoints = path.points.size();
         int botCount = botsOnPath.size();
         
@@ -1890,10 +1884,10 @@ public class BotCommand {
             String botName = botsOnPath.get(i);
             int pointIndex = (i * totalPoints) / botCount;
             
-            // Set bot's current point on path
+
             BotPath.setBotPathIndex(botName, pointIndex);
             
-            // Teleport bot to that point (1 block above to avoid getting stuck)
+
             var point = path.points.get(pointIndex);
             try {
                 String tpCommand = String.format(java.util.Locale.US,
@@ -1902,7 +1896,7 @@ public class BotCommand {
                 );
                 server.getCommandManager().getDispatcher().execute(tpCommand, server.getCommandSource());
             } catch (Exception e) {
-                // Ignore teleport errors
+
             }
         }
         
@@ -1974,7 +1968,7 @@ public class BotCommand {
         }
     }
     
-    // ========== FACTION PATH COMMANDS ==========
+
     
     private static int factionStartPath(ServerCommandSource source, String factionName, String pathName) {
         var members = BotFaction.getMembers(factionName);

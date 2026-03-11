@@ -20,16 +20,16 @@ public class PvpBotClient implements ClientModInitializer {
     public void onInitializeClient() {
         LOGGER.info("PVP Bot client initializing...");
         
-        // Показываем предупреждение когда открывается экран выбора мира
+
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (warningShown) return;
             
-            // Проверяем что это экран выбора синглплеер мира
+
             if (!(screen instanceof SelectWorldScreen)) return;
             
             LOGGER.info("SelectWorldScreen opened, checking warning...");
             
-            // Проверяем файл настройки
+
             Path configDir = FabricLoader.getInstance().getConfigDir().resolve("pvpbot");
             Path warningFile = configDir.resolve(WARNING_FILE);
             
@@ -42,7 +42,7 @@ public class PvpBotClient implements ClientModInitializer {
             warningShown = true;
             LOGGER.info("Showing warning screen");
             
-            // Показываем экран предупреждения
+
             client.setScreen(new WarningScreen(screen));
         });
         

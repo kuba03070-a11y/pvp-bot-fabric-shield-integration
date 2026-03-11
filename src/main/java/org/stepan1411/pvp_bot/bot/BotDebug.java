@@ -8,32 +8,28 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.*;
 
-/**
- * Debug system for visualizing bot behavior
- */
+
 public class BotDebug {
     
-    // Colors for particles (RGB in hex)
-    private static final int COLOR_GREEN = 0x00FF00;   // Green for path corners
-    private static final int COLOR_GRAY = 0x808080;    // Gray for path line
-    private static final int COLOR_RED = 0xFF0000;     // Red for target block
-    private static final int COLOR_PURPLE = 0xFF00FF;  // Purple for target hitbox
-    private static final int COLOR_BLUE = 0x0080FF;    // Blue for full pathfinding path
-    private static final int COLOR_YELLOW = 0xFFFF00;  // Yellow for combat
+
+    private static final int COLOR_GREEN = 0x00FF00;
+    private static final int COLOR_GRAY = 0x808080;
+    private static final int COLOR_RED = 0xFF0000;
+    private static final int COLOR_PURPLE = 0xFF00FF;
+    private static final int COLOR_BLUE = 0x0080FF;
+    private static final int COLOR_YELLOW = 0xFFFF00;
     
-    // Debug settings for each bot
+
     private static final Map<String, DebugSettings> debugSettings = new HashMap<>();
     
-    /**
-     * Debug settings for a bot
-     */
+    
     public static class DebugSettings {
         public boolean pathVisualization = false;
         public boolean targetVisualization = false;
         public boolean combatInfo = false;
         public boolean navigationInfo = false;
         
-        // Counters for display frequency control
+
         public int pathTickCounter = 0;
         public int targetTickCounter = 0;
         public int navigationTickCounter = 0;
@@ -80,24 +76,19 @@ public class BotDebug {
         return settings != null && settings.isAnyEnabled();
     }
     
-    /**
-     * Show path with history only
-     */
+    
     public static void showPath(ServerPlayerEntity bot, Vec3d targetPos, java.util.LinkedList<Vec3d> pathHistory) {
         showPath(bot, targetPos, pathHistory, null);
     }
     
-    /**
-     * Show path with full pathfinding path
-     * Updates every 5 ticks to reduce particle spam
-     */
+    
     public static void showPath(ServerPlayerEntity bot, Vec3d targetPos, java.util.LinkedList<Vec3d> pathHistory, List<Vec3d> fullPath) {
         DebugSettings settings = getSettings(bot.getName().getString());
         if (!settings.pathVisualization) {
             return;
         }
         
-        // Show particles only every 5 ticks
+
         settings.pathTickCounter++;
         if (settings.pathTickCounter < 5) {
             return;
@@ -106,19 +97,19 @@ public class BotDebug {
         
         ServerWorld world = (ServerWorld) bot.getEntityWorld();
         
-        // Create particles
+
         DustParticleEffect greenDust = new DustParticleEffect(COLOR_GREEN, 1.0f);
         DustParticleEffect grayDust = new DustParticleEffect(COLOR_GRAY, 0.7f);
         DustParticleEffect blueDust = new DustParticleEffect(COLOR_BLUE, 1.0f);
         
-        // If we have full path from pathfinding - show it
+
         if (fullPath != null && !fullPath.isEmpty()) {
-            // Show all waypoints as blue cubes
+
             for (Vec3d waypoint : fullPath) {
                 world.spawnParticles(blueDust, waypoint.x, waypoint.y + 0.5, waypoint.z, 3, 0.2, 0.2, 0.2, 0);
             }
             
-            // Connect waypoints with blue lines
+
             for (int i = 0; i < fullPath.size() - 1; i++) {
                 Vec3d pos1 = fullPath.get(i);
                 Vec3d pos2 = fullPath.get(i + 1);
@@ -129,10 +120,10 @@ public class BotDebug {
                     0.3);
             }
             
-            return; // Don't show old path if we have full path
+            return;
         }
         
-        // Old code for history + target
+
         List<Vec3d> allPositions = new ArrayList<>(pathHistory);
         Vec3d currentPos = new Vec3d(bot.getX(), bot.getY(), bot.getZ());
         
@@ -146,7 +137,7 @@ public class BotDebug {
             return;
         }
         
-        // Collect unique blocks along path
+
         Set<BlockPos> uniqueBlocks = new LinkedHashSet<>();
         for (Vec3d pos : allPositions) {
             BlockPos blockPos = new BlockPos(
@@ -157,7 +148,7 @@ public class BotDebug {
             uniqueBlocks.add(blockPos);
         }
         
-        // Draw only 2 corners of each block for performance
+
         for (BlockPos blockPos : uniqueBlocks) {
             int bx = blockPos.getX();
             int by = blockPos.getY();
@@ -167,7 +158,7 @@ public class BotDebug {
             world.spawnParticles(greenDust, bx + 1, by + 1, bz + 1, 1, 0, 0, 0, 0);
         }
         
-        // Draw gray line along path
+
         if (allPositions.size() > 1) {
             for (int i = 0; i < allPositions.size() - 1; i++) {
                 Vec3d pos1 = allPositions.get(i);
@@ -206,19 +197,19 @@ public class BotDebug {
         
         double step = 0.2;
         
-        // Bottom 4 edges
+
         drawLine(world, redDust, blockX, blockY, blockZ, blockX + 1, blockY, blockZ, step);
         drawLine(world, redDust, blockX, blockY, blockZ + 1, blockX + 1, blockY, blockZ + 1, step);
         drawLine(world, redDust, blockX, blockY, blockZ, blockX, blockY, blockZ + 1, step);
         drawLine(world, redDust, blockX + 1, blockY, blockZ, blockX + 1, blockY, blockZ + 1, step);
         
-        // Top 4 edges
+
         drawLine(world, redDust, blockX, blockY + 1, blockZ, blockX + 1, blockY + 1, blockZ, step);
         drawLine(world, redDust, blockX, blockY + 1, blockZ + 1, blockX + 1, blockY + 1, blockZ + 1, step);
         drawLine(world, redDust, blockX, blockY + 1, blockZ, blockX, blockY + 1, blockZ + 1, step);
         drawLine(world, redDust, blockX + 1, blockY + 1, blockZ, blockX + 1, blockY + 1, blockZ + 1, step);
         
-        // Vertical 4 edges
+
         drawLine(world, redDust, blockX, blockY, blockZ, blockX, blockY + 1, blockZ, step);
         drawLine(world, redDust, blockX + 1, blockY, blockZ, blockX + 1, blockY + 1, blockZ, step);
         drawLine(world, redDust, blockX, blockY, blockZ + 1, blockX, blockY + 1, blockZ + 1, step);
@@ -246,19 +237,19 @@ public class BotDebug {
         DustParticleEffect purpleDust = new DustParticleEffect(COLOR_PURPLE, 1.0f);
         double step = 0.2;
         
-        // Bottom 4 edges
+
         drawLine(world, purpleDust, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ, step);
         drawLine(world, purpleDust, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ, step);
         drawLine(world, purpleDust, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ, step);
         drawLine(world, purpleDust, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, step);
         
-        // Top 4 edges
+
         drawLine(world, purpleDust, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, step);
         drawLine(world, purpleDust, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ, step);
         drawLine(world, purpleDust, box.minX, box.maxY, box.minZ, box.minX, box.maxY, box.maxZ, step);
         drawLine(world, purpleDust, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, step);
         
-        // Vertical 4 edges
+
         drawLine(world, purpleDust, box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ, step);
         drawLine(world, purpleDust, box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.minZ, step);
         drawLine(world, purpleDust, box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.maxZ, step);

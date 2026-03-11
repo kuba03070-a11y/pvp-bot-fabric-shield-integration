@@ -28,25 +28,25 @@ public class Pvp_bot implements ModInitializer {
             BotCommand.register(dispatcher);
         });
 
-        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїСЂРё СЃС‚Р°СЂС‚Рµ СЃРµСЂРІРµСЂР° - РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ Р±РѕС‚РѕРІ
+
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            WorldConfigHelper.init(server); // Инициализация имени мира
+            WorldConfigHelper.init(server);
             
-            // Регистрируем callback для смены мира
+
             WorldConfigHelper.setOnWorldChangeCallback(() -> {
                 BotManager.switchWorld(server);
-                BotPath.init(); // Перезагрузка путей
+                BotPath.init();
             });
             
             BotManager.init(server);
             BotKits.init(server);
-            BotPath.init(); // Загрузка путей
+            BotPath.init();
             StatsReporter.start(server);
         });
         
-        // РЎРѕС…СЂР°РЅРµРЅРёРµ РїСЂРё РѕСЃС‚Р°РЅРѕРІРєРµ СЃРµСЂРІРµСЂР°
+
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-            StatsReporter.stop(); // РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕС‚РїСЂР°РІРєСѓ СЃС‚Р°С‚РёСЃС‚РёРєРё
+            StatsReporter.stop();
             BotManager.reset(server);
         });
 

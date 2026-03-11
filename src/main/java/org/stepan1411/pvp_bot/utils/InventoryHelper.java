@@ -12,7 +12,7 @@ public class InventoryHelper {
             selectedSlotField = PlayerInventory.class.getDeclaredField("selectedSlot");
             selectedSlotField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            // Try obfuscated name
+
             try {
                 selectedSlotField = PlayerInventory.class.getDeclaredField("field_7545");
                 selectedSlotField.setAccessible(true);

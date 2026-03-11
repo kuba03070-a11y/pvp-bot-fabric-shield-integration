@@ -5,44 +5,33 @@ import net.minecraft.server.MinecraftServer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/**
- * Helper class for managing per-world configuration paths
- */
+
 public class WorldConfigHelper {
     
     private static MinecraftServer server;
     private static String currentWorldName = null;
     private static Runnable onWorldChangeCallback = null;
     
-    /**
-     * Initialize with server instance
-     */
+    
     public static void init(MinecraftServer minecraftServer) {
         server = minecraftServer;
         currentWorldName = getWorldName();
         System.out.println("[PVP_BOT] WorldConfigHelper initialized with world: " + currentWorldName);
     }
     
-    /**
-     * Set callback to be called when world changes
-     */
+    
     public static void setOnWorldChangeCallback(Runnable callback) {
         onWorldChangeCallback = callback;
     }
     
-    /**
-     * Get the config directory for the current world
-     * Structure: config/pvpbot/worlds/{worldName}/
-     */
+    
     public static Path getWorldConfigDir() {
         checkWorldChange();
         String worldName = getWorldName();
         return getWorldConfigDir(worldName);
     }
     
-    /**
-     * Check if world has changed and trigger callback
-     */
+    
     private static void checkWorldChange() {
         String newWorldName = getWorldName();
         if (currentWorldName != null && !currentWorldName.equals(newWorldName)) {
@@ -56,9 +45,7 @@ public class WorldConfigHelper {
         }
     }
     
-    /**
-     * Get the config directory for a specific world
-     */
+    
     public static Path getWorldConfigDir(String worldName) {
         Path dir = FabricLoader.getInstance().getConfigDir()
             .resolve("pvpbot")
@@ -74,10 +61,7 @@ public class WorldConfigHelper {
         return dir;
     }
     
-    /**
-     * Get the global config directory (for stats, kits, server_id)
-     * Structure: config/pvpbot/
-     */
+    
     public static Path getGlobalConfigDir() {
         Path dir = FabricLoader.getInstance().getConfigDir().resolve("pvpbot");
         
@@ -90,9 +74,7 @@ public class WorldConfigHelper {
         return dir;
     }
     
-    /**
-     * Get the current world name from server
-     */
+    
     private static String getWorldName() {
         if (server != null) {
             String name = server.getSaveProperties().getLevelName();
