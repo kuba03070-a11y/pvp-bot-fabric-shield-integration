@@ -568,9 +568,11 @@ public class BotCombat {
     
     
     private static void handleMeleeCombat(ServerPlayerEntity bot, Entity target, CombatState state, double distance, BotSettings settings, net.minecraft.server.MinecraftServer server) {
-
+        System.out.println("[COMBAT] " + bot.getName().getString() + " handleMeleeCombat - target: " + target.getName().getString() + ", distance: " + String.format("%.2f", distance));
+        
         var utilsState = BotUtils.getState(bot.getName().getString());
         if (utilsState.isEating) {
+            System.out.println("[COMBAT] " + bot.getName().getString() + " is eating, skipping combat");
             return;
         }
         
@@ -643,12 +645,13 @@ public class BotCombat {
                 state.shieldToggleCooldown = 20;
             }
         }
-        
-
+        // Проверяем готовность к атаке
         if (distance <= meleeRange && state.attackCooldown <= 0) {
-
+            System.out.println("[COMBAT] " + bot.getName().getString() + " in attack range, checking conditions...");
+            
+            // Проверяем кулдаун атаки
             if (bot.getAttackCooldownProgress(0.5f) < 1.0f) {
-
+                System.out.println("[COMBAT] " + bot.getName().getString() + " attack cooldown not ready: " + bot.getAttackCooldownProgress(0.5f));
                 return;
             }
             
@@ -703,31 +706,33 @@ public class BotCombat {
 
             if (settings.isCriticalsEnabled()) {
                 if (bot.isOnGround()) {
-
+                    // Прыгаем для критического удара
+                    System.out.println("[COMBAT] " + bot.getName().getString() + " jumping for critical hit");
                     bot.jump();
                     return;
                 } else {
-
+                    // В воздухе - проверяем условия для критического удара
                     double velocityY = bot.getVelocity().y;
-                    double fallDistance = bot.fallDistance;
                     
-
-
-
-
-                    if (velocityY < 0 && fallDistance > 0.1) {
-
+                    // Упрощенное условие: атакуем если падаем (velocityY < 0)
+                    // Убираем проверку fallDistance, так как она может не работать с HeroBot
+                    if (velocityY < 0) {
+                        // Критический удар!
+                        System.out.println("[COMBAT] " + bot.getName().getString() + " performing critical hit (velocityY: " + velocityY + ")");
                         attackWithCarpet(bot, target, server);
-
+                        
                         int cooldown = shouldUseShield ? (int)(settings.getAttackCooldown() * 1.5) : settings.getAttackCooldown();
                         state.attackCooldown = cooldown;
+                    } else {
+                        System.out.println("[COMBAT] " + bot.getName().getString() + " waiting to fall for critical (velocityY: " + velocityY + ")");
                     }
-
+                    // Если еще поднимаемся (velocityY >= 0), ждем
                 }
             } else {
-
+                // Обычная атака без критических ударов
+                System.out.println("[COMBAT] " + bot.getName().getString() + " performing normal attack");
                 attackWithCarpet(bot, target, server);
-
+                
                 int cooldown = shouldUseShield ? (int)(settings.getAttackCooldown() * 1.5) : settings.getAttackCooldown();
                 state.attackCooldown = cooldown;
             }
@@ -1039,32 +1044,32 @@ public class BotCombat {
         
         var utilsState = BotUtils.getState(bot.getName().getString());
         if (!BotUtils.canAttack(bot, utilsState)) {
+            System.out.println("[COMBAT] " + bot.getName().getString() + " cannot attack - cobweb escape active");
             bot.swingHand(Hand.MAIN_HAND);
             return;
         }
 
         boolean cancelled = org.stepan1411.pvp_bot.api.BotAPIIntegration.fireAttackEvent(bot, target);
         if (cancelled) {
-
+            System.out.println("[COMBAT] " + bot.getName().getString() + " attack cancelled by API");
             bot.swingHand(Hand.MAIN_HAND);
             return;
         }
 
-        
-
+        // Проверка дружественного огня
         if (!settings.isFriendlyFireEnabled() && target instanceof PlayerEntity) {
             String botName = bot.getName().getString();
             String targetName = target.getName().getString();
             if (BotFaction.areAllies(botName, targetName)) {
-
+                System.out.println("[COMBAT] " + bot.getName().getString() + " skipping ally " + targetName);
                 bot.swingHand(Hand.MAIN_HAND);
                 return;
             }
         }
         
-
+        // Шанс промаха
         if (random.nextInt(100) < settings.getMissChance()) {
-
+            System.out.println("[COMBAT] " + bot.getName().getString() + " missed attack (miss chance)");
             try {
                 server.getCommandManager().getDispatcher().execute(
                     "player " + bot.getName().getString() + " swinghand", 
@@ -1076,19 +1081,22 @@ public class BotCombat {
             return;
         }
         
-
+        // Шанс ошибки (неточность)
         if (random.nextInt(100) < settings.getMistakeChance()) {
-
             float yawOffset = (random.nextFloat() - 0.5f) * 60;
             bot.setYaw(bot.getYaw() + yawOffset);
+            System.out.println("[COMBAT] " + bot.getName().getString() + " made aiming mistake");
         }
         
+        // Выполняем атаку
+        System.out.println("[COMBAT] " + bot.getName().getString() + " attacking " + target.getName().getString());
         try {
             server.getCommandManager().getDispatcher().execute(
                 "player " + bot.getName().getString() + " attack once", 
                 server.getCommandSource()
             );
         } catch (Exception e) {
+            System.out.println("[COMBAT] " + bot.getName().getString() + " attack command failed: " + e.getMessage());
             bot.swingHand(Hand.MAIN_HAND);
         }
     }
