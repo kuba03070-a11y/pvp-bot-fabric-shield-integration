@@ -1,6 +1,57 @@
 # 🚶 Navigation System
 
-PVP Bot features smart pathfinding and movement mechanics.
+PVP Bot features smart pathfinding, movement mechanics, and advanced movement commands.
+
+---
+
+## 🎯 Movement Commands
+
+### Follow System
+Bots can follow players or other bots while maintaining optimal distance:
+
+```mcfunction
+# Make bot follow a target
+/pvpbot follow Bot1 Steve
+
+# Stop following
+/pvpbot stopmovement Bot1
+```
+
+**Behavior:**
+- Maintains 3-block distance from target
+- Automatically avoids obstacles
+- Follows target across dimensions
+- Uses smart pathfinding
+
+### Escort System
+Enhanced follow mode with defensive capabilities:
+
+```mcfunction
+# Make bot escort (follow + protect) a target
+/pvpbot escort Bot1 Steve
+```
+
+**Behavior:**
+- Same as follow mode
+- Automatically defends target if attacked
+- Prioritizes target protection over other combat
+
+### Goto System
+Direct coordinate-based movement:
+
+```mcfunction
+# Send bot to specific coordinates
+/pvpbot goto Bot1 100 64 200
+
+# Enable Baritone for advanced pathfinding
+/pvpbot settings gotousebaritone true
+```
+
+**Behavior:**
+- Smart pathfinding to coordinates
+- Obstacle avoidance and jumping
+- Optional Baritone integration for complex paths
+- Works across different terrain types
 
 ---
 
@@ -87,6 +138,7 @@ Different situations use different speeds:
 | `idle` | true/false | true | Enable idle wandering |
 | `idleradius` | 3-50 | 10 | Wander radius |
 | `movespeed` | 0.1-2.0 | 1.0 | Base movement speed |
+| `gotousebaritone` | true/false | false | Use Baritone for goto |
 
 ---
 

@@ -1,15 +1,15 @@
-# 🎒 Kit-System
+# 🎒 Kit System
 
-Speichern Sie Ausrüstungsvoreinstellungen und rüsten Sie Bots schnell aus!
+Save equipment presets and quickly equip bots!
 
 ---
 
-## 📖 Übersicht
+## 📖 Overview
 
-Mit Kits können Sie:
-- Speichern Sie Ihren aktuellen Lagerbestand als Vorlage
-- Geben Sie Bots schnell Ausrüstung
-- Rüsten Sie ganze Fraktionen auf einmal aus
+Kits allow you to:
+- Save your current inventory as a template
+- Quickly give equipment to bots
+- Equip entire factions at once
 
 ---
 
@@ -85,10 +85,10 @@ Mit Kits können Sie:
 
 ### 🔨 Panzer
 - Netherit-Rüstung (Schutz IV)
-- Shield
-- Axe (for shield breaking)
-- Lots of golden apples
-- Multiple totems
+- Schild
+- Axt (zum Schildbrechen)
+- Viele goldene Äpfel
+- Mehrere Totems
 
 ### 💨 Speed ​​Fighter
 - Leichte Rüstung (Leder/Kette)
@@ -126,7 +126,7 @@ Mit Kits können Sie:
 
 ---
 
-## 💾 Data Storage
+## 💾 Datenspeicherung
 
 Kit-Daten werden gespeichert in:
 ```

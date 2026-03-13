@@ -9,10 +9,10 @@ El sistema de ruta le permite crear rutas predefinidas para que las sigan los ro
 - [Resumen](#resumen)
 - [Creando rutas](#creando-rutas)
 - [Gestión de waypoints](#managing-waypoints)
-- [Bot Control](#bot-control)
-- [Path Settings](#path-settings)
-- [Visualization](#visualization)
-- [Examples](#examples)
+- [Control de bots](#bot-control)
+- [Configuración de ruta] (#configuración de ruta)
+- [Visualización](#visualización)
+- [Ejemplos](#ejemplos)
 
 ---
 
@@ -21,7 +21,7 @@ El sistema de ruta le permite crear rutas predefinidas para que las sigan los ro
 Las rutas son secuencias de puntos de referencia que los robots pueden seguir. Cada camino tiene:
 - **Nombre** - Identificador único
 - **Waypoints** - Lista de posiciones (x, y, z)
-- **Modo de bucle** - Cómo se mueve el robot a través de los puntos de referencia
+- **Modo bucle** - Cómo se mueve el robot a través de los puntos de referencia
 - **Modo de ataque** - Si el bot se detiene para el combate
 - **Visualización** - Efectos de partículas que muestran el camino
 
@@ -48,7 +48,7 @@ Crea una ruta vacía con el nombre de pila.
 ```
 Elimina la ruta y evita que todos los bots la sigan.
 
-**Example:**
+**Ejemplo:**
 ```
 /pvpbot path delete patrol_route
 ```
@@ -90,7 +90,7 @@ Agrega su posición actual como un nuevo punto de ruta a la ruta.
 ```
 Párese en cada ubicación que desee que visite el bot y ejecute este comando.
 
-### Eliminar punto de referencia
+### Eliminar punto de ruta
 ```
 /pvpbot path remove <name> <index>
 ```
@@ -255,7 +255,7 @@ Para desactivar la visualización:
 /pvpbot path follow Courier1 delivery_route
 ```
 
-### Varios bots en el mismo camino
+### Múltiples bots en el mismo camino
 ```
 # Create path
 /pvpbot path create wall_patrol

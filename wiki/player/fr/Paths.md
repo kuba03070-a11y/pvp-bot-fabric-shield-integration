@@ -9,10 +9,10 @@ Le système de chemins vous permet de créer des itinéraires prédéfinis que l
 - [Aperçu](#aperçu)
 - [Création de chemins](#creating-paths)
 - [Gestion des waypoints](#managing-waypoints)
-- [Bot Control](#bot-control)
-- [Path Settings](#path-settings)
-- [Visualization](#visualization)
-- [Examples](#examples)
+- [Contrôle des robots](#bot-control)
+- [Paramètres du chemin](#path-settings)
+- [Visualisation](#visualisation)
+- [Exemples](#exemples)
 
 ---
 
@@ -48,7 +48,7 @@ Crée un chemin vide avec le nom donné.
 ```
 Supprime le chemin et arrête tous les robots qui le suivent.
 
-**Example:**
+**Exemple:**
 ```
 /pvpbot path delete patrol_route
 ```
@@ -148,7 +148,7 @@ Empêche le bot de suivre son chemin actuel.
 /pvpbot path loop <name> <true/false>
 ```
 
-Contrôle la façon dont le bot se déplace à travers les waypoints :
+Contrôle la façon dont le robot se déplace à travers les waypoints :
 - **faux** (par défaut) - Circulaire : 1→2→3→1→2→3...
 - **vrai** - Aller-retour : 1→2→3→2→1→2→3...
 

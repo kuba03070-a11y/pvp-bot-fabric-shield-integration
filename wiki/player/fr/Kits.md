@@ -1,19 +1,19 @@
 # 🎒 Système de kits
 
-Enregistrez les préréglages d’équipement et équipez rapidement les robots !
+Save equipment presets and quickly equip bots!
 
 ---
 
 ## 📖 Aperçu
 
-Les kits vous permettent de :
-- Enregistrez votre inventaire actuel comme modèle
-- Donnez rapidement de l'équipement aux robots
-- Équipez des factions entières à la fois
+Kits allow you to:
+- Save your current inventory as a template
+- Quickly give equipment to bots
+- Equip entire factions at once
 
 ---
 
-## 📦Création de kits
+## 📦 Creating Kits
 
 1. Mettez des objets dans votre inventaire (armures, armes, nourriture, etc.)
 2. Exécutez la commande de création
@@ -23,7 +23,7 @@ Les kits vous permettent de :
 ```
 
 ### Ce qui est enregistré
-- ✅ Éléments de la barre de raccourcis (emplacements 0 à 8)
+- ✅ Hotbar items (slots 0-8)
 - ✅ Articles d'inventaire
 - ✅ Pièces d'armure
 - ✅ Objet secondaire
@@ -86,11 +86,11 @@ Les kits vous permettent de :
 ### 🔨 Réservoir
 - Armure Netherite (Protection IV)
 - Bouclier
-- Axe (for shield breaking)
-- Lots of golden apples
-- Multiple totems
+- Hache (pour briser le bouclier)
+- Beaucoup de pommes dorées
+- Plusieurs totems
 
-### 💨 Speed Fighter
+### 💨 Combattant de vitesse
 - Armure légère (cuir/chaîne)
 - Épée de diamant (Netteté V)
 - Potions de vitesse
@@ -126,7 +126,7 @@ Les kits vous permettent de :
 
 ---
 
-## 💾 Data Storage
+## 💾 Stockage des données
 
 Les données du kit sont enregistrées dans :
 ```
@@ -142,4 +142,4 @@ Les kits persistent lors des redémarrages du serveur.
 - Les robots équiperont automatiquement l'armure du kit
 - Les robots sélectionneront automatiquement la meilleure arme
 - Les éléments existants dans l'inventaire du bot ne sont PAS effacés
-- Si l'inventaire du robot est plein, certains objets peuvent ne pas être donnés
+- Si l'inventaire du bot est plein, certains objets peuvent ne pas être donnés

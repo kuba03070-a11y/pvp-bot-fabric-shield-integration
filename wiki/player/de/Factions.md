@@ -4,11 +4,11 @@ Organisieren Sie Bots und Spieler in Teams, die gegeneinander kämpfen können!
 
 ---
 
-## 📖 Übersicht
+## 📖 Overview
 
 Fraktionen sind Gruppen von Bots und Spielern. Du kannst:
 - Erstellen Sie Teams aus Bots
-- Stellen Sie Fraktionen als feindselig zueinander ein
+- Set factions as hostile to each other
 - Bots greifen automatisch Feinde feindlicher Fraktionen an
 
 ---
@@ -33,7 +33,7 @@ Fraktionen sind Gruppen von Bots und Spielern. Du kannst:
 
 ## 👤 Mitglieder verwalten
 
-### Mitglieder hinzufügen
+### Add Members
 ```mcfunction
 # Add a bot to faction
 /pvpbot faction add RedTeam Bot1
@@ -85,7 +85,7 @@ Machen Sie Fraktionen zu Feinden – ihre Mitglieder greifen sich automatisch ge
 /pvpbot faction give RedTeam golden_apple 16
 ```
 
-### Give Kits
+### Geben Sie Kits
 ```mcfunction
 # Give a saved kit to entire faction
 /pvpbot faction givekit RedTeam warrior
@@ -93,7 +93,7 @@ Machen Sie Fraktionen zu Feinden – ihre Mitglieder greifen sich automatisch ge
 
 ---
 
-## 📋 Complete Example
+## 📋 Vollständiges Beispiel
 
 Bilden Sie zwei Teams und lassen Sie sie kämpfen:
 
@@ -149,11 +149,11 @@ Wenn Friendly Fire deaktiviert ist (Standard), können Bots Mitgliedern ihrer ei
 
 ---
 
-## 💾 Data Storage
+## 💾 Datenspeicherung
 
 Fraktionsdaten werden gespeichert in:
 ```
 config/pvp_bot_factions.json
 ```
 
-Diese Datei bleibt über Serverneustarts hinweg bestehen.
+This file persists across server restarts.

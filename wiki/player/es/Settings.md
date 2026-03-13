@@ -1,4 +1,4 @@
-# ⚙️ Settings
+# ⚙️ Configuración
 
 Lista completa de todas las opciones de configuración.
 
@@ -35,6 +35,7 @@ Lista completa de todas las opciones de configuración.
 | `spear`| booleano | - | falso | Usar lanza (deshabilitado debido a un error en la alfombra) |
 | `crystalpvp`| booleano | - | falso | Utilice cristal PVP (obsidiana + cristales) |
 | `anchorpvp`| booleano | - | falso | Usar ancla PVP (ancla de reaparición + piedra luminosa) |
+| `elytramace`| booleano | - | verdadero | Utilice el truco ElytraMace (élytra + maza) |
 | `attackcooldown`| entero | 1-40 | 10 | Tics entre ataques |
 | `meleerange`| doble | 2-6 | 3.5 | Distancia de ataque cuerpo a cuerpo |
 | `movespeed`| doble | 0,1-2,0 | 1.0 | Multiplicador de velocidad de movimiento |
@@ -51,7 +52,7 @@ Lista completa de todas las opciones de configuración.
 | `autopotion`| booleano | - | verdadero | Uso automático de pociones curativas/mejoradoras |
 | `cobweb`| booleano | - | verdadero | Usa telarañas para ralentizar a los enemigos |
 
-Los bots usan automáticamente:
+Los bots utilizan automáticamente:
 - **Pociones curativas** cuando el HP es bajo
 - **Pociones de fuerza** al entrar en combate
 - **Pociones de velocidad** al entrar en combate
@@ -122,6 +123,22 @@ Todas las pociones de mejora se lanzan a la vez cuando comienza el combate o cua
 |---------|------|-------|---------|-------------|
 | `factions`| booleano | - | verdadero | Habilitar sistema de facciones |
 | `friendlyfire`| booleano | - | falso | Permitir daño a los aliados de las facciones |
+| `specialnames`| booleano | - | falso | Utilice nombres especiales de la base de datos |
+| `gotousebaritone`| booleano | - | falso | Utilice Barítono para ir a comandos |
+
+---
+
+## 🚀 Configuración de ElytraMace
+
+| Configuración | Tipo | Gama | Predeterminado | Descripción |
+|---------|------|-------|---------|-------------|
+| `elytramace`| booleano | - | verdadero | Habilitar el truco ElytraMace |
+| `elytramaceretries`| entero | 1-10 | 1 | Intentos máximos de reintento de despegue |
+| `elytramacealtitude`| entero | 5-50 | 20 | Altitud mínima para el ataque |
+| `elytramacedistance`| doble | 3-15 | 8.0 | Distancia de ataque desde el objetivo |
+| `elytramacefireworks`| entero | 1-10 | 3 | Número de fuegos artificiales a utilizar |
+
+**Truco de ElytraMace:** Bot equipa los élitros, usa fuegos artificiales para volar, elimina los élitros en el aire y ataca con una maza para causar un daño masivo por caída.
 
 ---
 
@@ -178,4 +195,21 @@ Tanto la configuración como los bots persisten tras los reinicios del servidor.
 ```mcfunction
 /pvpbot settings idle false
 /pvpbot settings bhop false
+```
+
+### Habilitar el truco ElytraMace
+```mcfunction
+/pvpbot settings elytramace true
+/pvpbot settings elytramacealtitude 25
+/pvpbot settings elytramaceretries 2
+```
+
+### Habilitar comandos de movimiento con Barítono
+```mcfunction
+/pvpbot settings gotousebaritone true
+```
+
+### Habilitar nombres especiales
+```mcfunction
+/pvpbot settings specialnames true
 ```

@@ -50,6 +50,9 @@ public class BotTicker {
 
                 BotUtils.update(bot, server);
                 
+                // Обновить движение бота (follow/escort/goto)
+                BotMovement.updateMovement(bot);
+                
 
                 boolean isFollowingWithoutAttack = BotPath.isFollowing(botName) && !BotPath.shouldAttack(botName);
                 if (!isFollowingWithoutAttack) {

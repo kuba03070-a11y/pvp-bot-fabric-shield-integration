@@ -4,36 +4,38 @@
 
 ---
 
-## 📖 Acerca de
+## 📖 About
 
-PVP Bot es un mod de Minecraft Fabric que agrega robots de combate inteligentes impulsados ​​por el mod Carpet. ¡Crea ejércitos de robots, organízalos en facciones y observa cómo se desarrollan batallas épicas!
+PVP Bot es un mod de Minecraft Fabric que agrega robots de combate inteligentes impulsados ​​por el mod HeroBot. ¡Crea ejércitos de robots, organízalos en facciones y observa cómo se desarrollan batallas épicas!
 
 ---
 
-## 🚀 Inicio rápido
+## 🚀 Quick Start
 
-1. Instale [Fabric Loader](https://fabricmc.net/) y [Carpet Mod](https://github.com/gnembon/fabric-carpet)
+1. Instale [Fabric Loader](https://fabricmc.net/) y [HeroBot Mod](https://modrinth.com/mod/herobot)
 2. Descarga PVP Bot y colócalo en tu`mods`carpeta
 3. Inicie el juego y use`/pvpbot spawn BotName`para crear tu primer bot!
 
 ---
 
-## 📚 Documentación
+## 📚 Documentation
 
 | Página | Descripción |
 |------|-------------|
 | [🎮 Comandos](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Commands) | Todos los comandos disponibles |
 | [⚔️ Sistema de combate](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Combat) | Cómo luchan los robots |
-| [� Combate explosivo](https://github.com/Stepan1411/pvp-bot-fabric/wiki/ExplosiveCombat) | PvP cristal y PvP ancla |
-| [� Navegación](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Navigation) | Movimiento y búsqueda de caminos |
-| [�️ Rutas](https://github.com/Stepean1411/pvp-bot-fabric/wiki/Paths) | Sistema de rutas y puntos de referencia |
+| [💥 Combate explosivo](https://github.com/Stepan1411/pvp-bot-fabric/wiki/ExplosiveCombat) | PvP cristal y PvP ancla |
+| [🚀 ElytraMace](https://github.com/Stepan1411/pvp-bot-fabric/wiki/ElytraMace) | Técnica avanzada de combate aéreo |
+| [🚶 Navegación](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Navigation) | Búsqueda de caminos básicos |
+| [🏃 Movimiento](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Movement) | Seguir, acompañar e ir a comandos |
+| [🛤️ Rutas](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Paths) | Sistema de rutas y puntos de referencia |
 | [👥 Facciones](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Factions) | Sistema de equipo |
 | [🎒 Kits](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Kits) | Preajustes de equipos |
 | [⚙️ Configuración](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Settings) | Todas las opciones de configuración |
 
 ---
 
-## 💡 Quick Examples
+## 💡 Ejemplos rápidos
 
 ### Crea un bot simple
 ```
@@ -45,9 +47,19 @@ PVP Bot es un mod de Minecraft Fabric que agrega robots de combate inteligentes 
 /pvpbot settings crystalpvp true
 ```
 
-### Habilitar PvP ancla
+### Habilitar el truco ElytraMace
 ```
-/pvpbot settings anchorpvp true
+/pvpbot settings elytramace true
+```
+
+### Hacer que el bot siga a un jugador
+```
+/pvpbot follow Bot1 Steve
+```
+
+### Hacer que el bot escolte (seguir + proteger) un jugador
+```
+/pvpbot escort Bot1 Steve
 ```
 
 ### Haz que dos equipos peleen
@@ -65,6 +77,6 @@ PVP Bot es un mod de Minecraft Fabric que agrega robots de combate inteligentes 
 
 ## 🔗 Enlaces
 
-- [Repositorio de GitHub](https://github.com/Stepan1411/pvp-bot-fabric)
-- [Modrinth Page](https://modrinth.com/mod/pvp-bot)
-- [Informes de errores](https://github.com/Stepan1411/pvp-bot-fabric/issues)
+- [Repositorio de GitHub] (https://github.com/Stepan1411/pvp-bot-fabric)
+- [Página de Modrinth](https://modrinth.com/mod/pvp-bot)
+- [Bug Reports](https://github.com/Stepan1411/pvp-bot-fabric/issues)

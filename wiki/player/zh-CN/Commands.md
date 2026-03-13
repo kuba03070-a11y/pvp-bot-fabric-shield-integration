@@ -4,11 +4,11 @@
 
 ---
 
-## 📋 目录
+## 📋 Table of Contents
 
-- [机器人管理](#-bot-management)
+- [Bot Management](#-bot-management)
 - [战斗命令](#-combat-commands)
-- [派系命令](#-faction-commands)
+- [Faction Commands](#-faction-commands)
 - [套件命令](#-kit-commands)
 - [路径命令](#-path-commands)
 - [设置](#-设置)
@@ -17,7 +17,7 @@
 
 ## 🤖 机器人管理
 
-|命令 |描述 |
+| Command | Description |
 |---------|-------------|
 | `/pvpbot spawn [name]`|创建一个新机器人（如果未指定，则为随机名称）|
 | `/pvpbot massspawn <count>`|生成多个具有随机名称的机器人 (1-50) |
@@ -50,13 +50,45 @@
 
 ---
 
-## ⚔️ Combat Commands
+## ⚔️ 战斗命令
+
+|命令 |描述 |
+|---------|-------------|
+| `/pvpbot attack <bot> <target>` | Order bot to attack a player/entity |
+| `/pvpbot stop <bot>` | Stop bot from attacking |
+| `/pvpbot target <bot>` | Show bot's current target |
+
+---
+
+## 🚶 Movement Commands
 
 | Command | Description |
 |---------|-------------|
-| `/pvpbot attack <bot> <target>`|命令机器人攻击玩家/实体 |
-| `/pvpbot stop <bot>`|阻止机器人攻击 |
-| `/pvpbot target <bot>`|显示机器人的当前目标 |
+| `/pvpbot follow <bot> <target>`|让机器人跟随玩家/机器人 |
+| `/pvpbot escort <bot> <target>`|让机器人跟踪并保护目标 |
+| `/pvpbot goto <bot> <x> <y> <z>`|将机器人移动到特定坐标 |
+| `/pvpbot stopmovement <bot>`|停止机器人移动 |
+
+### 动作示例
+
+```mcfunction
+# Make Bot1 follow player Steve
+/pvpbot follow Bot1 Steve
+
+# Make Bot2 escort (follow + protect) player Alex
+/pvpbot escort Bot2 Alex
+
+# Send Bot3 to coordinates 100 64 200
+/pvpbot goto Bot3 100 64 200
+
+# Stop Bot1 from moving
+/pvpbot stopmovement Bot1
+```
+
+**笔记：**
+- **跟随**：机器人与目标保持 3 格距离
+- **护送**：与以下相同，但如果受到攻击，机器人将保护目标
+- **Goto**：机器人使用智能寻路移动到坐标（男中音，如果启用）
 
 ### 示例
 
@@ -73,9 +105,9 @@
 
 ---
 
-## 👥 Faction Commands
+## 👥 派系命令
 
-| Command | Description |
+|命令 |描述 |
 |---------|-------------|
 | `/pvpbot faction create <name>`|创建新派系|
 | `/pvpbot faction delete <name>`|删除派别 |
@@ -86,7 +118,12 @@
 | `/pvpbot faction give <faction> <item>`|向所有会员赠送物品|
 | `/pvpbot faction givekit <faction> <kit>`|向所有会员赠送套件 |
 | `/pvpbot faction attack <faction> <target>`|派系中的所有机器人都攻击目标 |
-| `/pvpbot faction list` | List all factions |
+| `/pvpbot faction follow <faction> <target>`|派系中的所有机器人都遵循目标 |
+| `/pvpbot faction escort <faction> <target>`|派系中的所有机器人护送目标 |
+| `/pvpbot faction goto <faction> <x> <y> <z>`|将派系中的所有机器人移至坐标 |
+| `/pvpbot faction startpath <faction> <path>`|派系中所有机器人的起始路径 |
+| `/pvpbot faction stoppath <faction>`|阻止派系中所有机器人的路径 |
+| `/pvpbot faction list`|列出所有派别 |
 | `/pvpbot faction info <faction>`|显示派系详细信息 |
 
 ### 示例
@@ -106,8 +143,23 @@
 # Order entire faction to attack
 /pvpbot faction attack RedTeam Steve
 
+# Make entire faction follow a player
+/pvpbot faction follow RedTeam Alex
+
+# Make entire faction escort a player
+/pvpbot faction escort RedTeam Steve
+
+# Move entire faction to coordinates
+/pvpbot faction goto RedTeam 100 64 200
+
 # Give swords to everyone in RedTeam
 /pvpbot faction give RedTeam diamond_sword
+
+# Make entire faction patrol a path
+/pvpbot faction startpath RedTeam patrol_route
+
+# Stop faction from patrolling
+/pvpbot faction stoppath RedTeam
 ```
 
 ---
@@ -143,16 +195,19 @@
 |---------|-------------|
 | `/pvpbot path create <name>`|创建新路径 |
 | `/pvpbot path delete <name>`|删除路径 |
-| `/pvpbot path add <name>`|添加当前位置作为航点 |
-| `/pvpbot path remove <name> <index>`|按索引删除航路点 |
+| `/pvpbot path addpoint <name>`|添加当前位置作为航点 |
+| `/pvpbot path removepoint <name> [index]`|删除航路点（最后一个或按索引）|
 | `/pvpbot path clear <name>`|删除所有航点 |
 | `/pvpbot path list`|列出所有路径 |
 | `/pvpbot path info <name>`|显示路径信息 |
-| `/pvpbot path follow <bot> <path>`|让机器人遵循路径 |
+| `/pvpbot path start <bot> <path>`|让机器人遵循路径 |
 | `/pvpbot path stop <bot>`|阻止机器人遵循以下路径 |
 | `/pvpbot path loop <name> <true/false>`|切换循环模式 |
 | `/pvpbot path attack <name> <true/false>`|切换战斗模式 |
 | `/pvpbot path show <name> <true/false>`|切换路径可视化|
+| `/pvpbot path distribute <path>`|沿路径均匀分布机器人 |
+| `/pvpbot path startnear <path> <radius>`|半径内机器人的起始路径 |
+| `/pvpbot path stopall <path>`|停止此路径上的所有机器人 |
 
 ### 示例
 
@@ -161,12 +216,12 @@
 /pvpbot path create patrol
 
 # Add waypoints (stand at each location)
-/pvpbot path add patrol
-/pvpbot path add patrol
-/pvpbot path add patrol
+/pvpbot path addpoint patrol
+/pvpbot path addpoint patrol
+/pvpbot path addpoint patrol
 
 # Make bot follow the path
-/pvpbot path follow Guard1 patrol
+/pvpbot path start Guard1 patrol
 
 # Enable back-and-forth movement
 /pvpbot path loop patrol true
@@ -176,6 +231,15 @@
 
 # Show path with particles
 /pvpbot path show patrol true
+
+# Distribute all bots on path evenly
+/pvpbot path distribute patrol
+
+# Start path for all bots within 50 blocks
+/pvpbot path startnear patrol 50
+
+# Stop all bots following this path
+/pvpbot path stopall patrol
 ```
 
 有关详细指南，请参阅[路径](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Paths)页面。

@@ -28,6 +28,7 @@ public class BotElytraMace {
         int takeoffTicks = 0; // Счетчик тиков взлета
         double startY = 0; // Начальная высота для отслеживания взлета
         int waitTicks = 0; // Счетчик ожидания
+        int retryCount = 0; // Счетчик попыток взлета
         
         // Слоты предметов
         int elytraSlot = -1;
@@ -49,10 +50,16 @@ public class BotElytraMace {
      * Проверить возможность использования ElytraMace
      */
     public static boolean canUseElytraMace(ServerPlayerEntity bot, Entity target, BotSettings settings) {
-        if (!settings.isElytraMaceEnabled()) return false; // Исправлено!
+        System.out.println("[ElytraMace] " + bot.getName().getString() + " checking canUseElytraMace...");
+        
+        if (!settings.isElytraMaceEnabled()) {
+            return false;
+        }
         
         double distance = bot.distanceTo(target);
-        if (distance > 15.0) return false; // Слишком далеко
+        if (distance > 15.0) {
+            return false;
+        }
         
         PlayerInventory inventory = bot.getInventory();
         boolean hasAllItems = hasElytra(inventory) && hasMace(inventory) && hasFireworks(inventory) && hasChestplate(inventory);
@@ -80,6 +87,8 @@ public class BotElytraMace {
         ElytraMaceState state = getState(bot.getName().getString());
         World world = bot.getEntityWorld();
         double distance = bot.distanceTo(target);
+        
+        System.out.println("[ElytraMace] " + bot.getName().getString() + " doElytraMace called - step: " + state.step + ", distance: " + String.format("%.1f", distance));
         
         // Отладочная информация в начале каждого цикла
         if (state.step == 0 && state.cooldownTicks == 0) {
@@ -149,11 +158,15 @@ public class BotElytraMace {
                                            net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         PlayerInventory inventory = bot.getInventory();
         
+        System.out.println("[ElytraMace] " + bot.getName().getString() + " step 0: preparing elytra...");
+        
         // Находим все необходимые предметы
         state.elytraSlot = findElytra(inventory);
         state.chestplateSlot = findChestplate(inventory);
         state.fireworkSlot = findFireworks(inventory);
         state.maceSlot = findMace(inventory);
+        
+        System.out.println("[ElytraMace] " + bot.getName().getString() + " found items - Elytra: " + state.elytraSlot + ", Chestplate: " + state.chestplateSlot + ", Fireworks: " + state.fireworkSlot + ", Mace: " + state.maceSlot);
         
         if (state.elytraSlot < 0 || state.fireworkSlot < 0 || state.maceSlot < 0) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " missing required items!");
@@ -161,7 +174,9 @@ public class BotElytraMace {
         }
         
         // Берем элитры в руку
+        System.out.println("[ElytraMace] " + bot.getName().getString() + " selecting elytra from slot " + state.elytraSlot);
         if (!selectItem(bot, state.elytraSlot)) {
+            System.out.println("[ElytraMace] " + bot.getName().getString() + " failed to select elytra");
             return true;
         }
         
@@ -196,54 +211,31 @@ public class BotElytraMace {
         // Инициализация счетчика тиков взлета
         if (state.takeoffTicks == 0) {
             state.startY = bot.getY(); // Запоминаем начальную высоту
-            System.out.println("[ElytraMace] " + bot.getName().getString() + " starting takeoff sequence...");
+            System.out.println("[ElytraMace] " + bot.getName().getString() + " starting takeoff sequence at Y=" + String.format("%.1f", state.startY) + "...");
         }
         
         state.takeoffTicks++;
+        System.out.println("[ElytraMace] " + bot.getName().getString() + " takeoff tick " + state.takeoffTicks);
         
-        // Первый прыжок
+        // Первый прыжок и установка горизонтального взгляда
         if (state.takeoffTicks == 1) {
-            // Поворачиваем взгляд максимально вверх
-            bot.setPitch(-90.0f);
+            // Смотрим горизонтально (pitch = 0)
+            bot.setPitch(0.0f);
             
-            try {
-                server.getCommandManager().getDispatcher().execute(
-                    "player " + bot.getName().getString() + " jump", 
-                    server.getCommandSource()
-                );
-                System.out.println("[ElytraMace] " + bot.getName().getString() + " jumping...");
-            } catch (Exception e) {
-                bot.jump(); // Fallback
-                System.out.println("[ElytraMace] " + bot.getName().getString() + " jumping (fallback)...");
-            }
+            // Используем прямой вызов jump вместо команды
+            bot.jump();
+            System.out.println("[ElytraMace] " + bot.getName().getString() + " jumping with horizontal look (direct call)...");
         }
         
         // Активируем элитры через команду HeroBot
         if (state.takeoffTicks == 5) {
-            try {
-                // Попробуем активировать элитры через sneak
-                server.getCommandManager().getDispatcher().execute(
-                    "player " + bot.getName().getString() + " sneak", 
-                    server.getCommandSource()
-                );
-                System.out.println("[ElytraMace] " + bot.getName().getString() + " activating elytra with sneak...");
-            } catch (Exception e) {
-                try {
-                    // Альтернативный способ - двойной jump
-                    server.getCommandManager().getDispatcher().execute(
-                        "player " + bot.getName().getString() + " jump", 
-                        server.getCommandSource()
-                    );
-                    System.out.println("[ElytraMace] " + bot.getName().getString() + " activating elytra with jump...");
-                } catch (Exception e2) {
-                    bot.jump(); // Fallback
-                    System.out.println("[ElytraMace] " + bot.getName().getString() + " activating elytra (fallback)...");
-                }
-            }
+            // Используем прямой вызов jump для активации элитр
+            bot.jump();
+            System.out.println("[ElytraMace] " + bot.getName().getString() + " activating elytra with direct jump...");
         }
         
-        // Используем фейерверки для ускорения
-        if (state.takeoffTicks >= 10) {
+        // Используем фейерверки для ускорения (пока еще смотрим горизонтально)
+        if (state.takeoffTicks == 8) {
             // Выбираем фейерверки
             if (!selectItem(bot, state.fireworkSlot)) {
                 return true;
@@ -251,25 +243,31 @@ public class BotElytraMace {
             
             System.out.println("[ElytraMace] " + bot.getName().getString() + " launching with fireworks...");
             
-            // Запускаем фейерверки (ПКМ) несколько раз для гарантии взлета
+            // Запускаем фейерверки (используем настройку количества)
+            int fireworkCount = settings.getElytraMaceFireworkCount();
             try {
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < fireworkCount; i++) {
                     server.getCommandManager().getDispatcher().execute(
                         "player " + bot.getName().getString() + " use once", 
                         server.getCommandSource()
                     );
                 }
                 
-                // Принудительно задаем скорость вверх
-                bot.setVelocity(bot.getVelocity().x, 2.0, bot.getVelocity().z);
-                
-                state.step = 2;
-                state.cooldownTicks = 3;
-                System.out.println("[ElytraMace] " + bot.getName().getString() + " fireworks launched, moving to step 2");
+                System.out.println("[ElytraMace] " + bot.getName().getString() + " launched " + fireworkCount + " fireworks");
                 
             } catch (Exception e) {
                 System.out.println("[ElytraMace] " + bot.getName().getString() + " error launching fireworks: " + e.getMessage());
             }
+        }
+        
+        // Теперь поворачиваем взгляд вверх для набора высоты
+        if (state.takeoffTicks == 12) {
+            bot.setPitch(-90.0f);
+            System.out.println("[ElytraMace] " + bot.getName().getString() + " looking up for altitude gain");
+            
+            state.step = 2;
+            state.cooldownTicks = 3;
+            System.out.println("[ElytraMace] " + bot.getName().getString() + " moving to step 2");
         }
         
         return true;
@@ -282,14 +280,35 @@ public class BotElytraMace {
                                           net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         state.takeoffTicks++;
         double currentHeight = bot.getY() - state.startY;
+        int minAltitude = settings.getElytraMaceMinAltitude();
         
         System.out.println("[ElytraMace] " + bot.getName().getString() + " altitude: " + String.format("%.1f", currentHeight) + " blocks (tick " + state.takeoffTicks + ")");
         
-        // Проверяем высоту или таймаут
-        if (currentHeight >= 10.0 || state.takeoffTicks >= 60) { // 60 тиков = 3 секунды максимум
+        // Проверяем успешный взлет
+        if (currentHeight >= minAltitude) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " reached altitude " + String.format("%.1f", currentHeight) + ", moving to step 3");
             state.step = 3;
             state.cooldownTicks = 0;
+            return true;
+        }
+        
+        // Проверяем неудачный взлет (таймаут или падение)
+        if (state.takeoffTicks >= 80 || (state.takeoffTicks > 20 && currentHeight < 2.0)) {
+            state.retryCount++;
+            int maxRetries = settings.getElytraMaceMaxRetries();
+            
+            if (state.retryCount < maxRetries) {
+                System.out.println("[ElytraMace] " + bot.getName().getString() + " takeoff failed (altitude: " + String.format("%.1f", currentHeight) + "), retry " + state.retryCount + "/" + maxRetries);
+                // Сбрасываем к шагу 0 для повторной попытки
+                state.step = 0;
+                state.takeoffTicks = 0;
+                state.elytraEquipped = false;
+                state.cooldownTicks = 10; // Небольшая пауза перед повтором
+            } else {
+                System.out.println("[ElytraMace] " + bot.getName().getString() + " takeoff failed after " + maxRetries + " attempts, giving up");
+                resetState(state);
+                return false; // Выходим из ElytraMace режима
+            }
         }
         
         return true;
@@ -344,9 +363,6 @@ public class BotElytraMace {
         PlayerInventory inventory = bot.getInventory();
         double distance = bot.distanceTo(target);
         
-        // Поворачиваем бота прямо вниз
-        bot.setPitch(90.0f);
-        
         // Одеваем элитры обратно
         if (!state.elytraEquipped) {
             if (!selectItem(bot, state.elytraSlot)) {
@@ -367,13 +383,26 @@ public class BotElytraMace {
             return true;
         }
         
-        // Смотрим на цель для планирования
+        // Улучшенное прицеливание - смотрим на цель с учетом движения
         lookAtEntity(bot, target);
         
-        System.out.println("[ElytraMace] " + bot.getName().getString() + " gliding to target, distance: " + String.format("%.1f", distance));
+        // Вычисляем угол для планирования к цели
+        double deltaX = target.getX() - bot.getX();
+        double deltaY = target.getY() - bot.getY();
+        double deltaZ = target.getZ() - bot.getZ();
+        double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+        
+        // Устанавливаем pitch для планирования (не прямо вниз, а под углом к цели)
+        float targetPitch = (float) Math.toDegrees(Math.atan2(deltaY, horizontalDistance));
+        // Ограничиваем pitch от 30 до 90 градусов (вниз)
+        targetPitch = Math.max(30.0f, Math.min(90.0f, targetPitch));
+        bot.setPitch(targetPitch);
+        
+        System.out.println("[ElytraMace] " + bot.getName().getString() + " gliding to target, distance: " + String.format("%.1f", distance) + ", pitch: " + String.format("%.1f", targetPitch));
         
         // Проверяем дистанцию до цели
-        if (distance <= 7.0) {
+        double attackDistance = settings.getElytraMaceAttackDistance();
+        if (distance <= attackDistance) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " close to target (" + String.format("%.1f", distance) + "), moving to step 5");
             state.step = 5;
             state.cooldownTicks = 0;
@@ -456,6 +485,7 @@ public class BotElytraMace {
         state.waitTicks = 0;
         state.stuckCounter = 0;
         state.lastStep = -1;
+        state.retryCount = 0; // Сбрасываем счетчик попыток
         state.elytraSlot = -1;
         state.chestplateSlot = -1;
         state.fireworkSlot = -1;

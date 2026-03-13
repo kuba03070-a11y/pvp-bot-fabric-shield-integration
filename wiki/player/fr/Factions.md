@@ -1,12 +1,12 @@
 # 👥 Système de factions
 
-Organisez les robots et les joueurs en équipes qui peuvent s'affronter !
+Organisez les robots et les joueurs en équipes qui peuvent s'affronter !
 
 ---
 
-## 📖 Aperçu
+## 📖 Overview
 
-Les factions sont des groupes de robots et de joueurs. Tu peux:
+Factions are groups of bots and players. You can:
 - Créer des équipes de robots
 - Définir les factions comme hostiles les unes aux autres
 - Les robots attaquent automatiquement les ennemis des factions hostiles
@@ -33,7 +33,7 @@ Les factions sont des groupes de robots et de joueurs. Tu peux:
 
 ## 👤 Gestion des membres
 
-### Ajouter des membres
+### Add Members
 ```mcfunction
 # Add a bot to faction
 /pvpbot faction add RedTeam Bot1
@@ -156,4 +156,4 @@ Les données de faction sont enregistrées dans :
 config/pvp_bot_factions.json
 ```
 
-Ce fichier persiste lors des redémarrages du serveur.
+This file persists across server restarts.

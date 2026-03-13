@@ -6,10 +6,10 @@ PVP Bot verfügt über eine fortschrittliche Kampf-KI, die verschiedene Waffen u
 
 ## 🗡️ Waffentypen
 
-### Nahkampf
+### Melee Combat
 - **Schwerter** – Schnelle Angriffe, guter Schaden
 - **Äxte** – Langsamer, kann aber Schilde brechen
-- Bots wechseln automatisch in den Nahkampf, wenn Feinde in der Nähe sind
+- Bots automatically switch to melee when enemies are close
 
 ### Fernkampf
 - **Bögen** – Pfeile ziehen und loslassen
@@ -17,9 +17,16 @@ PVP Bot verfügt über eine fortschrittliche Kampf-KI, die verschiedene Waffen u
 - Bots halten optimalen Abstand (8-20 Blöcke)
 
 ### Streitkolbenkampf
-- **Streitkolben + Windladung** – Sprungangriffe für massiven Schaden
+- **Mace + Wind Charge** - Jump attacks for massive damage
 - Bots nutzen Windladungen, um in die Luft zu fliegen
 - Verheerende Sturzangriffe
+
+### ElytraMace Combat
+- **Elytra + Streitkolben + Feuerwerk** – Fortgeschrittene Luftangriffstechnik
+- Bots rüsten Flügeldecken aus und nutzen Feuerwerk, um an Höhe zu gewinnen
+- Entfernen Sie die Flügeldecken in der Luft und greifen Sie mit der Keule an, um massiven Fallschaden zu verursachen
+- Waffenauswahl mit höchster Priorität, sofern verfügbar
+- Konfigurierbare Höhen-, Distanz- und Wiederholungseinstellungen
 
 ### Kristall-PVP
 - **Endkristalle + Obsidian** – Obsidian platzieren und Kristalle zur Detonation bringen
@@ -37,26 +44,26 @@ PVP Bot verfügt über eine fortschrittliche Kampf-KI, die verschiedene Waffen u
 
 ## 🎯 Targeting
 
-### Revenge Mode
+### Rachemodus
 Wenn ein Bot Schaden erleidet, zielt er automatisch auf den Angreifer.
 ```mcfunction
 /pvpbot settings revenge true
 ```
 
 ### Automatisches Ziel
-Bots suchen automatisch nach Feinden in Sichtweite.
+Bots automatically search for enemies within view distance.
 ```mcfunction
 /pvpbot settings autotarget true
 ```
 
-### Manuelles Ziel
-Force a bot to attack a specific target.
+### Manual Target
+Zwingen Sie einen Bot, ein bestimmtes Ziel anzugreifen.
 ```mcfunction
 /pvpbot attack BotName TargetName
 ```
 
-### Zielfilter
-Wählen Sie aus, worauf Bots abzielen können:
+### Target Filters
+Choose what bots can target:
 ```mcfunction
 /pvpbot settings targetplayers true   # Target players
 /pvpbot settings targetmobs true      # Target hostile mobs
@@ -65,10 +72,10 @@ Wählen Sie aus, worauf Bots abzielen können:
 
 ---
 
-## 🛡️ Verteidigung
+## 🛡️ Defense
 
 ### Auto-Shield
-Bots erhöhen automatisch Schilde, wenn Feinde angreifen.
+Bots automatically raise shields when enemies attack.
 ```mcfunction
 /pvpbot settings autoshield true
 ```
@@ -80,14 +87,14 @@ Bots verwenden Äxte, um feindliche Schilde zu deaktivieren.
 ```
 
 ### Auto-Totem
-Bots keep totems of undying in offhand.
+Bots behalten Totems der Unsterblichen in der Nebenhand.
 ```mcfunction
 /pvpbot settings autototem true
 /pvpbot settings totempriority true  # Prioritize totem over shield
 ```
 
 ### Automatische Reparatur
-Bots automatically repair damaged armor using XP bottles.
+Bots reparieren beschädigte Rüstungen automatisch mithilfe von XP-Flaschen.
 ```mcfunction
 /pvpbot settings automend true
 /pvpbot settings menddurability 0.5  # Repair at 50% durability
@@ -109,7 +116,7 @@ Bots fressen Nahrung, wenn:
 
 ### Auto-Tränke
 Bots verwenden automatisch Tränke:
-- **Healing potions** - when HP is low (splash or drinkable)
+- **Heiltränke** – wenn die HP niedrig sind (Spritzer oder trinkbar)
 - **Stärketränke** – beim Eintritt in den Kampf
 - **Geschwindigkeitstränke** – beim Eintritt in den Kampf
 - **Feuerwiderstandstränke** – beim Eintritt in den Kampf
@@ -131,7 +138,7 @@ Der Rückzug ist deaktiviert, wenn der Bot keine Nahrung hat (Kämpfe bis zum To
 
 ---
 
-## 💥 Critical Hits
+## 💥 Kritische Treffer
 
 Bots können kritische Treffer ausführen, indem sie ihre Angriffe mit Sprüngen zeitlich festlegen.
 ```mcfunction
@@ -165,8 +172,9 @@ Bots können Spinnweben strategisch nutzen:
 | `spear`| wahr/falsch | falsch | Verwenden Sie Speer (Buggy) |
 | `crystalpvp`| wahr/falsch | falsch | Verwenden Sie Kristall-PVP |
 | `anchorpvp`| wahr/falsch | falsch | Verwenden Sie Anker-PVP |
+| `elytramace`| wahr/falsch | wahr | Verwenden Sie den ElytraMace-Trick |
 | `autopotion`| wahr/falsch | wahr | Tränke automatisch verwenden |
-| `automend`| wahr/falsch | wahr | Automatische Reparatur von Rüstungen |
+| `automend`| wahr/falsch | wahr | Autoreparatur-Rüstung |
 | `menddurability`| 0,1-1,0 | 0,5 | Haltbarkeit % zu reparieren |
 | `totempriority`| wahr/falsch | wahr | Totem über Schild |
 | `cobweb`| wahr/falsch | wahr | Verwenden Sie Spinnweben |

@@ -35,6 +35,7 @@ Complete list of all configuration options.
 | `spear` | bool | - | false | Use spear (disabled due to Carpet bug) |
 | `crystalpvp` | bool | - | false | Use crystal PVP (obsidian + crystals) |
 | `anchorpvp` | bool | - | false | Use anchor PVP (respawn anchor + glowstone) |
+| `elytramace` | bool | - | true | Use ElytraMace trick (elytra + mace) |
 | `attackcooldown` | int | 1-40 | 10 | Ticks between attacks |
 | `meleerange` | double | 2-6 | 3.5 | Melee attack distance |
 | `movespeed` | double | 0.1-2.0 | 1.0 | Movement speed multiplier |
@@ -122,6 +123,22 @@ All buff potions are thrown at once when combat starts or when effects expire.
 |---------|------|-------|---------|-------------|
 | `factions` | bool | - | true | Enable faction system |
 | `friendlyfire` | bool | - | false | Allow damage to faction allies |
+| `specialnames` | bool | - | false | Use special names from database |
+| `gotousebaritone` | bool | - | false | Use Baritone for goto commands |
+
+---
+
+## 🚀 ElytraMace Settings
+
+| Setting | Type | Range | Default | Description |
+|---------|------|-------|---------|-------------|
+| `elytramace` | bool | - | true | Enable ElytraMace trick |
+| `elytramaceretries` | int | 1-10 | 1 | Max takeoff retry attempts |
+| `elytramacealtitude` | int | 5-50 | 20 | Minimum altitude for attack |
+| `elytramacedistance` | double | 3-15 | 8.0 | Attack distance from target |
+| `elytramacefireworks` | int | 1-10 | 3 | Number of fireworks to use |
+
+**ElytraMace Trick:** Bot equips elytra, uses fireworks to fly up, removes elytra mid-air, and attacks with mace for massive fall damage.
 
 ---
 
@@ -178,4 +195,21 @@ Both settings and bots persist across server restarts. Bots are automatically re
 ```mcfunction
 /pvpbot settings idle false
 /pvpbot settings bhop false
+```
+
+### Enable ElytraMace trick
+```mcfunction
+/pvpbot settings elytramace true
+/pvpbot settings elytramacealtitude 25
+/pvpbot settings elytramaceretries 2
+```
+
+### Enable movement commands with Baritone
+```mcfunction
+/pvpbot settings gotousebaritone true
+```
+
+### Enable special names
+```mcfunction
+/pvpbot settings specialnames true
 ```

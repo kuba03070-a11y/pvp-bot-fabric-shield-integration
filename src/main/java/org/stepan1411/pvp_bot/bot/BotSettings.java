@@ -18,55 +18,37 @@ public class BotSettings {
 
     private boolean autoEquipArmor = true;
     private boolean autoEquipWeapon = true;
-    
-
     private boolean dropWorseArmor = false;
     private boolean dropWorseWeapons = false;
     private double dropDistance = 3.0;
     private int dropDelay = 20;
-    
-
     private int checkInterval = 20;
-    
-
     private int minArmorLevel = 0;
-    
-
     private boolean combatEnabled = true;
     private boolean revengeEnabled = true;
     private boolean autoTargetEnabled = false;
     private boolean targetPlayers = true;
     private boolean targetHostileMobs = false;
     private boolean targetOtherBots = false;
-    
-
     private double maxTargetDistance = 64.0;
     private double meleeRange = 3.5;
     private double rangedMinRange = 8.0;
     private double rangedOptimalRange = 20.0;
     private double maceRange = 6.0;
-    
-
     private int attackCooldown = 10;
     private double moveSpeed = 1.0;
     private boolean criticalsEnabled = true;
     private int bowMinDrawTime = 15;
-    
-
     private boolean rangedEnabled = true;
     private boolean maceEnabled = true;
     private boolean spearEnabled = false;
     private boolean crystalPvpEnabled = true;
     private boolean anchorPvpEnabled = true;
-    private boolean elytraMaceEnabled = true; // Новая настройка
-    
-
+    private boolean elytraMaceEnabled = true;
     private double spearRange = 4.5;
     private double spearChargeRange = 12.0;
     private int spearMinChargeTime = 15;
     private int spearMaxChargeTime = 40;
-    
-
     private boolean autoTotemEnabled = true;
     private boolean totemPriority = true;
     private boolean autoEatEnabled = true;
@@ -79,8 +61,6 @@ public class BotSettings {
     private int minHungerToEat = 14;
     private boolean autoPotionEnabled = true;
     private boolean cobwebEnabled = true;
-    
-
     private boolean useBaritone = true;
     private boolean retreatEnabled = true;
     private double retreatHealthPercent = 0.3;
@@ -90,17 +70,21 @@ public class BotSettings {
     private double jumpBoost = 0.0;
     private boolean idleWanderEnabled = false;
     private double idleWanderRadius = 10.0;
-    
-
     private boolean factionsEnabled = true;
     private boolean friendlyFireEnabled = false;
     private int missChance = 10;
     private int mistakeChance = 5;
     private int reactionDelay = 0;
     private boolean botsRelogs = true;
-    
-
     private boolean sendStats = true;
+    private boolean useSpecialNames = false;
+    private int elytraMaceMaxRetries = 3;
+    private int elytraMaceMinAltitude = 15;
+    private double elytraMaceAttackDistance = 6.0;
+    private int elytraMaceFireworkCount = 3;
+    private boolean gotoUseBaritone = true;
+    private boolean escortUseBaritone = false;
+    private boolean followUseBaritone = false;
     
     private BotSettings() {}
     
@@ -219,6 +203,18 @@ public class BotSettings {
     
 
     public boolean isSendStats() { return sendStats; }
+    public boolean isUseSpecialNames() { return useSpecialNames; }
+    
+    // Геттеры для ElytraMace настроек
+    public int getElytraMaceMaxRetries() { return elytraMaceMaxRetries; }
+    public int getElytraMaceMinAltitude() { return elytraMaceMinAltitude; }
+    public double getElytraMaceAttackDistance() { return elytraMaceAttackDistance; }
+    public int getElytraMaceFireworkCount() { return elytraMaceFireworkCount; }
+    
+    // Геттер для goto настроек
+    public boolean isGotoUseBaritone() { return gotoUseBaritone; }
+    public boolean isEscortUseBaritone() { return escortUseBaritone; }
+    public boolean isFollowUseBaritone() { return followUseBaritone; }
     
 
     public void setAutoEquipArmor(boolean value) { 
@@ -383,4 +379,39 @@ public class BotSettings {
         save(); 
     }
     public void setBotsRelogs(boolean value) { this.botsRelogs = value; save(); }
+    public void setUseSpecialNames(boolean value) { this.useSpecialNames = value; save(); }
+    
+    // Сеттеры для ElytraMace настроек
+    public void setElytraMaceMaxRetries(int value) { 
+        this.elytraMaceMaxRetries = Math.max(1, Math.min(10, value)); 
+        save(); 
+    }
+    public void setElytraMaceMinAltitude(int value) { 
+        this.elytraMaceMinAltitude = Math.max(5, Math.min(50, value)); 
+        save(); 
+    }
+    public void setElytraMaceAttackDistance(double value) { 
+        this.elytraMaceAttackDistance = Math.max(3.0, Math.min(15.0, value)); 
+        save(); 
+    }
+    public void setElytraMaceFireworkCount(int value) { 
+        this.elytraMaceFireworkCount = Math.max(1, Math.min(10, value)); 
+        save(); 
+    }
+    
+    // Сеттер для goto настроек
+    public void setGotoUseBaritone(boolean value) { 
+        this.gotoUseBaritone = value; 
+        save(); 
+    }
+    
+    public void setEscortUseBaritone(boolean value) { 
+        this.escortUseBaritone = value; 
+        save(); 
+    }
+    
+    public void setFollowUseBaritone(boolean value) { 
+        this.followUseBaritone = value; 
+        save(); 
+    }
 }

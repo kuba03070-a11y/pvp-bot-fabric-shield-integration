@@ -44,12 +44,13 @@ PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
 - **Advanced combat AI** with various tactics
 - **Critical hits** when jumping
 - **Many weapon types**:
-- Melee: swords, axes
-- Ranged: bows, crossbows (IN DEVELOPMENT)
-- Mace with jumping attacks
-- Crystal PVP (obsidian + crystals)
-- Anchor PVP (respawn anchor + glowstone)
-- Spear - 1.21.11+ (In IN DEVELOPMENT)
+  - Melee: swords, axes
+  - Ranged: bows, crossbows (IN DEVELOPMENT)
+  - Mace with jumping attacks
+  - **ElytraMace trick** - advanced aerial mace attacks with elytra
+  - Crystal PVP (obsidian + crystals)
+  - Anchor PVP (respawn anchor + glowstone)
+  - Spear - 1.21.11+ (IN DEVELOPMENT)
 
 ### 🛡️ Utilities and Survival
 - **Auto-equip** armor and weapons
@@ -62,6 +63,10 @@ PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
 - **Web use**
 
 ### 🚶 Navigation and Movement
+- **Follow system** - bots can follow players or other bots
+- **Escort mode** - follow and protect a target
+- **Goto commands** - move bots to specific coordinates
+- **Baritone integration** - smart pathfinding (configurable)
 - **Bunny hop**
 - **Adjustable speed**
 - **Wander mode** when no target
@@ -119,6 +124,20 @@ PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
 /pvpbot menu - Open the test menu
 ```
 
+### Movement Commands
+```
+/pvpbot follow <bot> <target> - Make bot follow a player/bot
+```
+```
+/pvpbot escort <bot> <target> - Make bot follow and protect a target
+```
+```
+/pvpbot goto <bot> <x> <y> <z> - Move bot to coordinates
+```
+```
+/pvpbot stopmovement <bot> - Stop bot movement
+```
+
 ### Settings
 ```
 /pvpbot settings - Show all settings
@@ -174,6 +193,9 @@ PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
 /pvpbot settings mace [true/false] - Use mace
 ```
 ```
+/pvpbot settings elytramace [true/false] - Use ElytraMace trick
+```
+```
 /pvpbot settings attackcooldown <1-40> - Attack cooldown (ticks)
 ```
 ```
@@ -181,6 +203,20 @@ PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
 ```
 ```
 /pvpbot settings movespeed <0.1-2.0> - Movement speed
+```
+
+### ElytraMace Settings
+```
+/pvpbot settings elytramaceretries <1-10> - Max takeoff attempts (default: 3)
+```
+```
+/pvpbot settings elytramacealtitude <5-50> - Min altitude for takeoff (default: 15)
+```
+```
+/pvpbot settings elytramacedistance <3-15> - Attack distance (default: 6.0)
+```
+```
+/pvpbot settings elytramacefireworks <1-10> - Firework count (default: 3)
 ```
 
 ### Utilities
@@ -209,6 +245,14 @@ PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
 ```
 ```
 /pvpbot settings idleradius <3-50> - Wander radius
+```
+```
+/pvpbot settings gotousebaritone [true/false] - Use Baritone for goto commands
+```
+
+### Special Names
+```
+/pvpbot settings specialnames [true/false] - Use special names from database
 ```
 
 ### Realism
@@ -246,6 +290,15 @@ PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
 ```
 ```
 /pvpbot faction ally <faction1> <faction2> - Create alliance
+```
+```
+/pvpbot faction follow <faction> <target> - All bots follow target
+```
+```
+/pvpbot faction escort <faction> <target> - All bots escort target
+```
+```
+/pvpbot faction goto <faction> <x> <y> <z> - Move all bots to coordinates
 ```
 
 ### Paths

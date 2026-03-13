@@ -4,13 +4,13 @@ Der PVP-Bot unterstützt fortgeschrittene explosive Kampftaktiken mithilfe von E
 
 ---
 
-## 💎 Kristall-PVP
+## 💎 Crystal PVP
 
-Kristall-PVP ist eine Kampftechnik mit hohem Schaden, bei der Endkristalle und Obsidian zum Einsatz kommen.
+Crystal PVP is a high-damage combat technique using End Crystals and Obsidian.
 
 ### Wie es funktioniert
-1. Bot platziert Obsidian in der Nähe des Ziels
-2. Bot platziert den Endkristall auf dem Obsidian
+1. Bot places obsidian near the target
+2. Bot places End Crystal on the obsidian
 3. Bot lässt den Kristall explodieren und verursacht massiven Explosionsschaden
 4. Bot berechnet Sicherheitsabstände, um Selbstschäden zu vermeiden
 
@@ -21,7 +21,7 @@ Kristall-PVP ist eine Kampftechnik mit hohem Schaden, bei der Endkristalle und O
 
 ### Anforderungen
 Bots benötigen in ihrem Inventar:
-- **Obsidian** – für Kristallplatzierungsbasis
+- **Obsidian** - for crystal placement base
 - **Endkristalle** – für Explosionen
 
 ### Taktik
@@ -34,12 +34,12 @@ Bots benötigen in ihrem Inventar:
 
 ## ⚓ Anker-PVP
 
-Anchor PVP uses Respawn Anchors as explosive weapons in Overworld and End.
+Anchor PVP verwendet Respawn-Anker als Sprengwaffen in Overworld und End.
 
 ### Wie es funktioniert
 1. Bot platziert Respawn-Anker in der Nähe des Ziels
 2. Bot lädt den Anker mit Glowstone auf
-3. Bot attempts to set spawn (triggers explosion)
+3. Bot versucht, Spawn zu setzen (löst eine Explosion aus)
 4. Massiver Schaden an nahegelegenen Einheiten
 
 ### Anker-PVP aktivieren
@@ -47,25 +47,25 @@ Anchor PVP uses Respawn Anchors as explosive weapons in Overworld and End.
 /pvpbot settings anchorpvp true
 ```
 
-### Requirements
-Bots need in their inventory:
+### Anforderungen
+Bots benötigen in ihrem Inventar:
 - **Respawn-Anker** – der Sprengsatz
 - **Glowstone** – um den Anker aufzuladen
 
-### Wichtige Hinweise
+### Important Notes
 - Funktioniert nur in Overworld und End (nicht in Nether)
 - In Nether funktionieren Anker normal (keine Explosion)
 - Sehr hoher Schadensausstoß
-- Verbraucht pro Anwendung Anker und Leuchtstein
+- Consumes anchor and glowstone per use
 
 ---
 
-## ⚙️ Settings
+## ⚙️ Einstellungen
 
-| Setting | Type | Default | Description |
+| Einstellung | Geben Sie | ein Standard | Beschreibung |
 |---------|------|---------|-------------|
-| `crystalpvp`| bool | falsch | Kristall-PVP aktivieren |
-| `anchorpvp`| bool | falsch | Anker-PVP aktivieren |
+| `crystalpvp` | bool | false | Enable Crystal PVP |
+| `anchorpvp` | bool | false | Enable Anchor PVP |
 
 ---
 
@@ -73,7 +73,7 @@ Bots need in their inventory:
 
 ### Kristall-PVP
 - Geben Sie Bots Stapel von Obsidian und Kristallen
-- Funktioniert am besten bei mittlerer Reichweite (5-10 Blöcke)
+- Works best at medium range (5-10 blocks)
 - Sehr effektiv gegen gepanzerte Gegner
 - Kann Schilde durchbrechen
 

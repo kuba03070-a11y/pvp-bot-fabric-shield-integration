@@ -388,6 +388,7 @@ public class BotManager {
         BotUtils.removeState(name);
         BotNavigation.resetIdle(name);
         BotBaritone.removeBaritone(name);
+        BotMovement.clearState(name);
 
         String command = "player " + name + " kill";
         var dispatcher = server.getCommandManager().getDispatcher();
@@ -414,6 +415,7 @@ public class BotManager {
             BotUtils.removeState(name);
             BotNavigation.resetIdle(name);
             BotBaritone.removeBaritone(name);
+            BotMovement.clearState(name);
             
             String command = "player " + name + " kill";
             try {

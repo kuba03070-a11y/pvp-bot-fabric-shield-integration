@@ -6,10 +6,10 @@ PVP Bot dispose d'une IA de combat avancée qui peut utiliser différentes armes
 
 ## 🗡️ Types d'armes
 
-### Combat au corps à corps
+### Melee Combat
 - **Épées** - Attaques rapides, bons dégâts
 - **Haches** - Plus lentes mais peuvent briser les boucliers
-- Les robots passent automatiquement en mêlée lorsque les ennemis sont proches
+- Bots automatically switch to melee when enemies are close
 
 ### Combat à distance
 - **Arcs** - Dessinez et relâchez les flèches
@@ -17,9 +17,16 @@ PVP Bot dispose d'une IA de combat avancée qui peut utiliser différentes armes
 - Les robots gardent une distance optimale (8 à 20 blocs)
 
 ### Combat à la masse
-- **Mace + Wind Charge** - Attaques sautées pour des dégâts massifs
+- **Mace + Wind Charge** - Jump attacks for massive damage
 - Les robots utilisent des charges de vent pour se lancer dans les airs
 - Attaques de chute dévastatrices
+
+### Combat d'ElytraMace
+- **Elytra + Mace + Fireworks** - Technique d'attaque aérienne avancée
+- Les robots équipent les élytres, utilisent des feux d'artifice pour prendre de l'altitude
+- Supprimez les élytres dans les airs et attaquez avec la masse pour infliger des dégâts de chute massifs
+- Sélection d'armes la plus prioritaire lorsqu'elle est disponible
+- Paramètres configurables d'altitude, de distance et de nouvelle tentative
 
 ### Cristal PvP
 - **Cristaux de fin + Obsidienne** - Placez l'obsidienne et faites exploser les cristaux
@@ -43,19 +50,19 @@ Lorsqu'un robot subit des dégâts, il cible automatiquement l'attaquant.
 /pvpbot settings revenge true
 ```
 
-### Ciblage automatique
-Les robots recherchent automatiquement les ennemis à portée de vue.
+### Auto-Target
+Bots automatically search for enemies within view distance.
 ```mcfunction
 /pvpbot settings autotarget true
 ```
 
 ### Cible manuelle
-Forcer un bot à attaquer une cible spécifique.
+Force a bot to attack a specific target.
 ```mcfunction
 /pvpbot attack BotName TargetName
 ```
 
-### Filtres cibles
+### Target Filters
 Choose what bots can target:
 ```mcfunction
 /pvpbot settings targetplayers true   # Target players
@@ -65,9 +72,9 @@ Choose what bots can target:
 
 ---
 
-## 🛡️ Défense
+## 🛡️ Defense
 
-### Bouclier automatique
+### Auto-Shield
 Les robots lèvent automatiquement leurs boucliers lorsque les ennemis attaquent.
 ```mcfunction
 /pvpbot settings autoshield true
@@ -87,7 +94,7 @@ Les robots gardent les totems éternels à portée de main.
 ```
 
 ### Réparation automatique
-Bots automatically repair damaged armor using XP bottles.
+Les robots réparent automatiquement les armures endommagées à l'aide de bouteilles XP.
 ```mcfunction
 /pvpbot settings automend true
 /pvpbot settings menddurability 0.5  # Repair at 50% durability
@@ -95,7 +102,7 @@ Bots automatically repair damaged armor using XP bottles.
 
 ---
 
-## 🍎 Healing
+## 🍎 Guérison
 
 ### Manger automatiquement
 Les robots mangent de la nourriture quand :
@@ -111,7 +118,7 @@ Les robots mangent de la nourriture quand :
 Les robots utilisent automatiquement des potions :
 - **Potions de guérison** - lorsque les HP sont faibles (splash ou buvable)
 - **Potions de force** - lors de l'entrée en combat
-- **Speed potions** - when entering combat
+- **Potions de vitesse** - lors de l'entrée en combat
 - **Potions de résistance au feu** - en entrant en combat
 
 Toutes les potions de buff sont lancées en même temps lorsque le combat commence. Les robots réappliquent les buffs lorsque les effets expirent (< 5 secondes restantes).
@@ -165,6 +172,7 @@ Les robots peuvent utiliser les toiles d'araignées de manière stratégique :
 | `spear`| vrai/faux | faux | Utiliser la lance (buggy) |
 | `crystalpvp`| vrai/faux | faux | Utiliser du cristal PVP |
 | `anchorpvp`| vrai/faux | faux | Utiliser l'ancre PVP |
+| `elytramace`| vrai/faux | vrai | Utilisez l'astuce ElytraMace |
 | `autopotion`| vrai/faux | vrai | Potions à usage automatique |
 | `automend`| vrai/faux | vrai | Armure de réparation automatique |
 | `menddurability`| 0,1-1,0 | 0,5 | Durabilité % à réparer |

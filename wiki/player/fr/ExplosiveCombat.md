@@ -10,7 +10,7 @@ Crystal PVP est une technique de combat à dégâts élevés utilisant End Cryst
 
 ### Comment ça marche
 1. Le robot place l'obsidienne près de la cible
-2. Le robot place End Crystal sur l'obsidienne
+2. Bot places End Crystal on the obsidian
 3. Le robot fait exploser le cristal pour provoquer d'énormes dégâts d'explosion
 4. Le robot calcule les distances de sécurité pour éviter de s'automutiler
 
@@ -21,7 +21,7 @@ Crystal PVP est une technique de combat à dégâts élevés utilisant End Cryst
 
 ### Exigences
 Les robots ont besoin dans leur inventaire :
-- **Obsidienne** - pour base de placement de cristal
+- **Obsidian** - for crystal placement base
 - **Cristaux de fin** - pour les explosions
 
 ### Tactiques
@@ -34,10 +34,10 @@ Les robots ont besoin dans leur inventaire :
 
 ## ⚓ Ancre PVP
 
-Anchor PVP uses Respawn Anchors as explosive weapons in Overworld and End.
+Anchor PVP utilise les Respawn Anchors comme armes explosives dans Overworld et End.
 
 ### Comment ça marche
-1. Bot places Respawn Anchor near the target
+1. Le robot place l'ancre Respawn près de la cible
 2. Le robot charge l'ancre avec Glowstone
 3. Le robot tente de définir l'apparition (déclenche une explosion)
 4. Dommages massifs aux entités voisines
@@ -48,7 +48,7 @@ Anchor PVP uses Respawn Anchors as explosive weapons in Overworld and End.
 ```
 
 ### Exigences
-Bots need in their inventory:
+Les robots ont besoin dans leur inventaire :
 - **Respawn Anchor** - l'engin explosif
 - **Glowstone** - pour charger l'ancre
 
@@ -56,7 +56,7 @@ Bots need in their inventory:
 - Fonctionne uniquement dans Overworld et End (pas dans Nether)
 - Dans le Nether, les ancres fonctionnent normalement (pas d'explosion)
 - Dégâts très élevés
-- Consomme de l'ancre et de la pierre lumineuse par utilisation
+- Consumes anchor and glowstone per use
 
 ---
 
@@ -65,7 +65,7 @@ Bots need in their inventory:
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `crystalpvp` | bool | false | Enable Crystal PVP |
-| `anchorpvp`| booléen | faux | Activer le PVP d'ancrage |
+| `anchorpvp` | bool | false | Enable Anchor PVP |
 
 ---
 
@@ -73,7 +73,7 @@ Bots need in their inventory:
 
 ### Cristal PvP
 - Donnez aux robots des piles d'obsidienne et de cristaux
-- Fonctionne mieux à moyenne portée (5 à 10 blocs)
+- Works best at medium range (5-10 blocks)
 - Très efficace contre les adversaires blindés
 - Peut briser les boucliers
 

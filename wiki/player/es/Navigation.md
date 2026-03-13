@@ -1,6 +1,57 @@
 # 🚶 Sistema de navegación
 
-PVP Bot presenta mecánicas de movimiento y búsqueda de caminos inteligentes.
+PVP Bot presenta búsqueda de caminos inteligente, mecánicas de movimiento y comandos de movimiento avanzados.
+
+---
+
+## 🎯 Comandos de movimiento
+
+### Seguir el sistema
+Los bots pueden seguir a jugadores u otros bots manteniendo una distancia óptima:
+
+```mcfunction
+# Make bot follow a target
+/pvpbot follow Bot1 Steve
+
+# Stop following
+/pvpbot stopmovement Bot1
+```
+
+**Comportamiento:**
+- Mantiene una distancia de 3 bloques del objetivo.
+- Evita automáticamente los obstáculos.
+- Sigue el objetivo en todas las dimensiones.
+- Utiliza búsqueda de caminos inteligente
+
+### Sistema de acompañamiento
+Modo de seguimiento mejorado con capacidades defensivas:
+
+```mcfunction
+# Make bot escort (follow + protect) a target
+/pvpbot escort Bot1 Steve
+```
+
+**Comportamiento:**
+- Igual que el modo de seguimiento
+- Defiende automáticamente al objetivo si es atacado.
+- Prioriza la protección del objetivo sobre otros combates.
+
+### Ir al sistema
+Movimiento directo basado en coordenadas:
+
+```mcfunction
+# Send bot to specific coordinates
+/pvpbot goto Bot1 100 64 200
+
+# Enable Baritone for advanced pathfinding
+/pvpbot settings gotousebaritone true
+```
+
+**Comportamiento:**
+- Búsqueda inteligente de rutas a las coordenadas
+- Evitar obstáculos y saltar.
+- Integración opcional de barítono para caminos complejos
+- Funciona en diferentes tipos de terreno.
 
 ---
 
@@ -10,11 +61,11 @@ PVP Bot presenta mecánicas de movimiento y búsqueda de caminos inteligentes.
 Los bots detectan y evitan automáticamente:
 - **Paredes** - Gira a la izquierda/derecha para rodear
 - **Agujeros** - Saltar sobre huecos
-- **1-block obstacles** - Jump up
+- **Obstáculos de 1 bloque** - Saltar
 
-### Climbing
-Bots can climb:
-- Ladders
+### Escalada
+Los bots pueden escalar:
+- escaleras
 - Vides
 - Andamios
 - Enredaderas retorcidas/lloronas
@@ -38,7 +89,7 @@ Los robots pueden saltar para moverse más rápido: saltar mientras corren para 
 
 ### Cuando se activa Bhop
 - La velocidad es >= 1,0
-- No obstacles ahead
+- No hay obstáculos por delante
 - No escalar
 - En el suelo
 
@@ -87,6 +138,7 @@ Diferentes situaciones utilizan diferentes velocidades:
 | `idle`| verdadero/falso | verdadero | Habilitar deambulación inactiva |
 | `idleradius`| 3-50 | 10 | Radio de desplazamiento |
 | `movespeed`| 0,1-2,0 | 1.0 | Velocidad de movimiento base |
+| `gotousebaritone`| verdadero/falso | falso | Utilice barítono para ir a |
 
 ---
 

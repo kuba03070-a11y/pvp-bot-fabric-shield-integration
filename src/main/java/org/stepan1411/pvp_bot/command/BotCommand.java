@@ -12,11 +12,13 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 import org.stepan1411.pvp_bot.bot.BotCombat;
 import org.stepan1411.pvp_bot.bot.BotDebug;
 import org.stepan1411.pvp_bot.bot.BotFaction;
 import org.stepan1411.pvp_bot.bot.BotKits;
 import org.stepan1411.pvp_bot.bot.BotManager;
+import org.stepan1411.pvp_bot.bot.BotMovement;
 import org.stepan1411.pvp_bot.bot.BotNameGenerator;
 import org.stepan1411.pvp_bot.bot.BotPath;
 import org.stepan1411.pvp_bot.bot.BotSettings;
@@ -363,6 +365,86 @@ public class BotCommand {
                             })
                         )
                     )
+                    .then(CommandManager.literal("specialnames")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("specialnames: " + BotSettings.get().isUseSpecialNames()), false); return 1; })
+                        .then(CommandManager.argument("value", BoolArgumentType.bool())
+                            .executes(ctx -> {
+                                BotSettings.get().setUseSpecialNames(BoolArgumentType.getBool(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("Use special names: " + BotSettings.get().isUseSpecialNames()), true);
+                                return 1;
+                            })
+                        )
+                    )
+                    .then(CommandManager.literal("elytramaceretries")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("elytramaceretries: " + BotSettings.get().getElytraMaceMaxRetries()), false); return 1; })
+                        .then(CommandManager.argument("value", IntegerArgumentType.integer(1, 10))
+                            .executes(ctx -> {
+                                BotSettings.get().setElytraMaceMaxRetries(IntegerArgumentType.getInteger(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("ElytraMace max retries: " + BotSettings.get().getElytraMaceMaxRetries()), true);
+                                return 1;
+                            })
+                        )
+                    )
+                    .then(CommandManager.literal("elytramacealtitude")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("elytramacealtitude: " + BotSettings.get().getElytraMaceMinAltitude()), false); return 1; })
+                        .then(CommandManager.argument("value", IntegerArgumentType.integer(5, 50))
+                            .executes(ctx -> {
+                                BotSettings.get().setElytraMaceMinAltitude(IntegerArgumentType.getInteger(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("ElytraMace min altitude: " + BotSettings.get().getElytraMaceMinAltitude()), true);
+                                return 1;
+                            })
+                        )
+                    )
+                    .then(CommandManager.literal("elytramacedistance")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("elytramacedistance: " + BotSettings.get().getElytraMaceAttackDistance()), false); return 1; })
+                        .then(CommandManager.argument("value", DoubleArgumentType.doubleArg(3.0, 15.0))
+                            .executes(ctx -> {
+                                BotSettings.get().setElytraMaceAttackDistance(DoubleArgumentType.getDouble(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("ElytraMace attack distance: " + BotSettings.get().getElytraMaceAttackDistance()), true);
+                                return 1;
+                            })
+                        )
+                    )
+                    .then(CommandManager.literal("elytramacefireworks")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("elytramacefireworks: " + BotSettings.get().getElytraMaceFireworkCount()), false); return 1; })
+                        .then(CommandManager.argument("value", IntegerArgumentType.integer(1, 10))
+                            .executes(ctx -> {
+                                BotSettings.get().setElytraMaceFireworkCount(IntegerArgumentType.getInteger(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("ElytraMace firework count: " + BotSettings.get().getElytraMaceFireworkCount()), true);
+                                return 1;
+                            })
+                        )
+                    )
+                    .then(CommandManager.literal("gotousebaritone")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("gotousebaritone: " + BotSettings.get().isGotoUseBaritone()), false); return 1; })
+                        .then(CommandManager.argument("value", BoolArgumentType.bool())
+                            .executes(ctx -> {
+                                BotSettings.get().setGotoUseBaritone(BoolArgumentType.getBool(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("Goto use Baritone: " + BotSettings.get().isGotoUseBaritone()), true);
+                                return 1;
+                            })
+                        )
+                    )
+                    .then(CommandManager.literal("escortusebaritone")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("escortusebaritone: " + BotSettings.get().isEscortUseBaritone()), false); return 1; })
+                        .then(CommandManager.argument("value", BoolArgumentType.bool())
+                            .executes(ctx -> {
+                                BotSettings.get().setEscortUseBaritone(BoolArgumentType.getBool(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("Escort use Baritone: " + BotSettings.get().isEscortUseBaritone()), true);
+                                return 1;
+                            })
+                        )
+                    )
+                    .then(CommandManager.literal("followusebaritone")
+                        .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("followusebaritone: " + BotSettings.get().isFollowUseBaritone()), false); return 1; })
+                        .then(CommandManager.argument("value", BoolArgumentType.bool())
+                            .executes(ctx -> {
+                                BotSettings.get().setFollowUseBaritone(BoolArgumentType.getBool(ctx, "value"));
+                                ctx.getSource().sendFeedback(() -> Text.literal("Follow use Baritone: " + BotSettings.get().isFollowUseBaritone()), true);
+                                return 1;
+                            })
+                        )
+                    )
                     .then(CommandManager.literal("attackcooldown")
                         .executes(ctx -> { ctx.getSource().sendFeedback(() -> Text.literal("attackcooldown: " + BotSettings.get().getAttackCooldown() + " ticks"), false); return 1; })
                         .then(CommandManager.argument("ticks", IntegerArgumentType.integer(1, 40))
@@ -626,6 +708,58 @@ public class BotCommand {
                     )
                 )
                 
+                // Команда для остановки движения
+                .then(CommandManager.literal("stopmovement")
+                    .then(CommandManager.argument("botname", StringArgumentType.word())
+                        .suggests(BOT_SUGGESTIONS)
+                        .executes(ctx -> stopBotMovement(ctx.getSource(), StringArgumentType.getString(ctx, "botname")))
+                    )
+                )
+                
+                // Команды follow
+                .then(CommandManager.literal("follow")
+                    .then(CommandManager.argument("botname", StringArgumentType.word())
+                        .suggests(BOT_SUGGESTIONS)
+                        .then(CommandManager.argument("target", StringArgumentType.word())
+                            .suggests(TARGET_SUGGESTIONS)
+                            .executes(ctx -> setBotFollow(ctx.getSource(), 
+                                StringArgumentType.getString(ctx, "botname"),
+                                StringArgumentType.getString(ctx, "target"), false))
+                        )
+                    )
+                )
+                
+                // Команды escort (follow + defend)
+                .then(CommandManager.literal("escort")
+                    .then(CommandManager.argument("botname", StringArgumentType.word())
+                        .suggests(BOT_SUGGESTIONS)
+                        .then(CommandManager.argument("target", StringArgumentType.word())
+                            .suggests(TARGET_SUGGESTIONS)
+                            .executes(ctx -> setBotFollow(ctx.getSource(), 
+                                StringArgumentType.getString(ctx, "botname"),
+                                StringArgumentType.getString(ctx, "target"), true))
+                        )
+                    )
+                )
+                
+                // Команды goto
+                .then(CommandManager.literal("goto")
+                    .then(CommandManager.argument("botname", StringArgumentType.word())
+                        .suggests(BOT_SUGGESTIONS)
+                        .then(CommandManager.argument("x", DoubleArgumentType.doubleArg())
+                            .then(CommandManager.argument("y", DoubleArgumentType.doubleArg())
+                                .then(CommandManager.argument("z", DoubleArgumentType.doubleArg())
+                                    .executes(ctx -> setBotGoto(ctx.getSource(), 
+                                        StringArgumentType.getString(ctx, "botname"),
+                                        DoubleArgumentType.getDouble(ctx, "x"),
+                                        DoubleArgumentType.getDouble(ctx, "y"),
+                                        DoubleArgumentType.getDouble(ctx, "z")))
+                                )
+                            )
+                        )
+                    )
+                )
+                
 
                 .then(CommandManager.literal("target")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
@@ -770,6 +904,47 @@ public class BotCommand {
                             .suggests(FACTION_SUGGESTIONS)
                             .executes(ctx -> factionStopPath(ctx.getSource(), 
                                 StringArgumentType.getString(ctx, "faction")))
+                        )
+                    )
+                    
+                    .then(CommandManager.literal("follow")
+                        .then(CommandManager.argument("faction", StringArgumentType.word())
+                            .suggests(FACTION_SUGGESTIONS)
+                            .then(CommandManager.argument("target", StringArgumentType.word())
+                                .suggests(TARGET_SUGGESTIONS)
+                                .executes(ctx -> factionFollow(ctx.getSource(), 
+                                    StringArgumentType.getString(ctx, "faction"),
+                                    StringArgumentType.getString(ctx, "target"), false))
+                            )
+                        )
+                    )
+                    
+                    .then(CommandManager.literal("escort")
+                        .then(CommandManager.argument("faction", StringArgumentType.word())
+                            .suggests(FACTION_SUGGESTIONS)
+                            .then(CommandManager.argument("target", StringArgumentType.word())
+                                .suggests(TARGET_SUGGESTIONS)
+                                .executes(ctx -> factionFollow(ctx.getSource(), 
+                                    StringArgumentType.getString(ctx, "faction"),
+                                    StringArgumentType.getString(ctx, "target"), true))
+                            )
+                        )
+                    )
+                    
+                    .then(CommandManager.literal("goto")
+                        .then(CommandManager.argument("faction", StringArgumentType.word())
+                            .suggests(FACTION_SUGGESTIONS)
+                            .then(CommandManager.argument("x", DoubleArgumentType.doubleArg())
+                                .then(CommandManager.argument("y", DoubleArgumentType.doubleArg())
+                                    .then(CommandManager.argument("z", DoubleArgumentType.doubleArg())
+                                        .executes(ctx -> factionGoto(ctx.getSource(), 
+                                            StringArgumentType.getString(ctx, "faction"),
+                                            DoubleArgumentType.getDouble(ctx, "x"),
+                                            DoubleArgumentType.getDouble(ctx, "y"),
+                                            DoubleArgumentType.getDouble(ctx, "z")))
+                                    )
+                                )
+                            )
                         )
                     )
                 )
@@ -1180,6 +1355,14 @@ public class BotCommand {
         source.sendFeedback(() -> Text.literal("ranged: " + s.isRangedEnabled()), false);
         source.sendFeedback(() -> Text.literal("mace: " + s.isMaceEnabled()), false);
         source.sendFeedback(() -> Text.literal("elytramace: " + s.isElytraMaceEnabled()), false);
+        source.sendFeedback(() -> Text.literal("specialnames: " + s.isUseSpecialNames()), false);
+        source.sendFeedback(() -> Text.literal("elytramaceretries: " + s.getElytraMaceMaxRetries()), false);
+        source.sendFeedback(() -> Text.literal("elytramacealtitude: " + s.getElytraMaceMinAltitude()), false);
+        source.sendFeedback(() -> Text.literal("elytramacedistance: " + s.getElytraMaceAttackDistance()), false);
+        source.sendFeedback(() -> Text.literal("elytramacefireworks: " + s.getElytraMaceFireworkCount()), false);
+        source.sendFeedback(() -> Text.literal("gotousebaritone: " + s.isGotoUseBaritone()), false);
+        source.sendFeedback(() -> Text.literal("escortusebaritone: " + s.isEscortUseBaritone()), false);
+        source.sendFeedback(() -> Text.literal("followusebaritone: " + s.isFollowUseBaritone()), false);
         source.sendFeedback(() -> Text.literal("attackcooldown: " + s.getAttackCooldown() + " ticks"), false);
         source.sendFeedback(() -> Text.literal("meleerange: " + s.getMeleeRange()), false);
         source.sendFeedback(() -> Text.literal("movespeed: " + s.getMoveSpeed()), false);
@@ -2035,6 +2218,103 @@ public class BotCommand {
             return stopped;
         } else {
             source.sendError(Text.literal("§cNo bots in faction '" + factionName + "' were following a path"));
+            return 0;
+        }
+    }
+    
+    // Функции для команд follow/escort
+    private static int setBotFollow(ServerCommandSource source, String botName, String targetName, boolean escort) {
+        if (!BotManager.getAllBots().contains(botName)) {
+            source.sendError(Text.literal("§cBot '" + botName + "' not found"));
+            return 0;
+        }
+        
+        // Установить режим следования
+        BotMovement.setFollow(botName, targetName, escort);
+        
+        String mode = escort ? "escorting" : "following";
+        source.sendFeedback(() -> Text.literal("§aBot '" + botName + "' is now " + mode + " '" + targetName + "'"), true);
+        return 1;
+    }
+    
+    // Функция для остановки движения бота
+    private static int stopBotMovement(ServerCommandSource source, String botName) {
+        if (!BotManager.getAllBots().contains(botName)) {
+            source.sendError(Text.literal("§cBot '" + botName + "' not found"));
+            return 0;
+        }
+        
+        BotMovement.stop(botName);
+        source.sendFeedback(() -> Text.literal("§aBot '" + botName + "' movement stopped"), true);
+        return 1;
+    }
+    
+    // Функции для команд goto
+    private static int setBotGoto(ServerCommandSource source, String botName, double x, double y, double z) {
+        if (!BotManager.getAllBots().contains(botName)) {
+            source.sendError(Text.literal("§cBot '" + botName + "' not found"));
+            return 0;
+        }
+        
+        // Установить режим перемещения к координатам
+        Vec3d targetPos = new Vec3d(x, y, z);
+        BotMovement.setGoto(botName, targetPos);
+        
+        source.sendFeedback(() -> Text.literal("§aBot '" + botName + "' is moving to " + 
+            String.format("%.1f %.1f %.1f", x, y, z)), true);
+        return 1;
+    }
+    
+    // Функции для faction команд
+    private static int factionFollow(ServerCommandSource source, String factionName, String targetName, boolean escort) {
+        var members = BotFaction.getMembers(factionName);
+        if (members.isEmpty()) {
+            source.sendError(Text.literal("§cFaction '" + factionName + "' not found or has no members"));
+            return 0;
+        }
+        
+        int count = 0;
+        String mode = escort ? "escorting" : "following";
+        for (String member : members) {
+            if (BotManager.getAllBots().contains(member)) {
+                BotMovement.setFollow(member, targetName, escort);
+                count++;
+            }
+        }
+        
+        if (count > 0) {
+            int finalCount = count;
+            source.sendFeedback(() -> Text.literal("§a" + finalCount + " bots in faction '" + factionName + "' are now " + mode + " '" + targetName + "'"), true);
+            return count;
+        } else {
+            source.sendError(Text.literal("§cNo bots found in faction '" + factionName + "'"));
+            return 0;
+        }
+    }
+    
+    private static int factionGoto(ServerCommandSource source, String factionName, double x, double y, double z) {
+        var members = BotFaction.getMembers(factionName);
+        if (members.isEmpty()) {
+            source.sendError(Text.literal("§cFaction '" + factionName + "' not found or has no members"));
+            return 0;
+        }
+        
+        int count = 0;
+        Vec3d targetPos = new Vec3d(x, y, z);
+        for (String member : members) {
+            if (BotManager.getAllBots().contains(member)) {
+                BotMovement.setGoto(member, targetPos);
+                count++;
+            }
+        }
+        
+        if (count > 0) {
+            int finalCount = count;
+            source.sendFeedback(() -> Text.literal("§a" + finalCount + " bots in faction '" + factionName + "' are moving to " + 
+                String.format("%.1f %.1f %.1f", x, y, z)), true);
+            return count;
+        } else {
+            source.sendError(Text.literal("§cNo bots found in faction '" + factionName + "'"));
             return 0;
         }
     }

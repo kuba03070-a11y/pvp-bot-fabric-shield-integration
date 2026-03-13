@@ -1,15 +1,15 @@
-# 🎒 Sistema de kit
+# 🎒 Kit System
 
-¡Guarda ajustes preestablecidos de equipos y equipa bots rápidamente!
+Save equipment presets and quickly equip bots!
 
 ---
 
-## 📖 Descripción general
+## 📖 Overview
 
-Los kits le permiten:
-- Guarde su inventario actual como plantilla
-- Entrega rápidamente equipo a los bots.
-- Equipa facciones enteras a la vez
+Kits allow you to:
+- Save your current inventory as a template
+- Quickly give equipment to bots
+- Equip entire factions at once
 
 ---
 
@@ -47,7 +47,7 @@ Los kits le permiten:
 /pvpbot kits
 ```
 
-### Eliminar equipo
+### Eliminar kit
 ```mcfunction
 /pvpbot deletekit pvp_warrior
 ```
@@ -72,12 +72,12 @@ Los kits le permiten:
 
 ### ⚔️ Luchador cuerpo a cuerpo
 - Espada de diamante/netherita
-- Full diamond armor
+- Armadura de diamante completa
 - Blindaje
 - manzanas doradas
 - Tótem de lo inmortal (de improviso)
 
-### 🏹 Archer
+### 🏹 Arquero
 - Arco (Poder V, Infinito)
 - Flecha (1 pila)
 - Armadura de cuero/cadena
@@ -85,10 +85,10 @@ Los kits le permiten:
 
 ### 🔨 Tanque
 - Armadura Netherite (Protección IV)
-- Shield
-- Axe (for shield breaking)
-- Lots of golden apples
-- Multiple totems
+- Blindaje
+- Hacha (para romper escudo)
+- Muchas manzanas doradas
+- Múltiples tótems
 
 ### 💨 Luchador de velocidad
 - Armadura ligera (cuero/cadena)
@@ -142,4 +142,4 @@ Los kits persisten tras los reinicios del servidor.
 - Los robots equiparán automáticamente la armadura del kit.
 - Los bots seleccionarán automáticamente la mejor arma.
 - Los elementos existentes en el inventario de bots NO se borran
-- If bot inventory is full, some items may not be given
+- Si el inventario del bot está lleno, es posible que no se entreguen algunos artículos.

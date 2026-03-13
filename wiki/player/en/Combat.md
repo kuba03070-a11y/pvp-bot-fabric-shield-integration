@@ -21,6 +21,13 @@ PVP Bot features an advanced combat AI that can use different weapons and tactic
 - Bots use wind charges to launch into the air
 - Devastating falling attacks
 
+### ElytraMace Combat
+- **Elytra + Mace + Fireworks** - Advanced aerial attack technique
+- Bots equip elytra, use fireworks to gain altitude
+- Remove elytra mid-air and attack with mace for massive fall damage
+- Highest priority weapon selection when available
+- Configurable altitude, distance, and retry settings
+
 ### Crystal PVP
 - **End Crystals + Obsidian** - Place obsidian and detonate crystals
 - Bots calculate safe explosion distances
@@ -165,6 +172,7 @@ Bots can use cobwebs strategically:
 | `spear` | true/false | false | Use spear (buggy) |
 | `crystalpvp` | true/false | false | Use crystal PVP |
 | `anchorpvp` | true/false | false | Use anchor PVP |
+| `elytramace` | true/false | true | Use ElytraMace trick |
 | `autopotion` | true/false | true | Auto-use potions |
 | `automend` | true/false | true | Auto-repair armor |
 | `menddurability` | 0.1-1.0 | 0.5 | Durability % to repair |

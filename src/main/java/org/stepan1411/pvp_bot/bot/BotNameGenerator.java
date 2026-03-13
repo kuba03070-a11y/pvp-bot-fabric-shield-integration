@@ -494,13 +494,15 @@ public class BotNameGenerator {
     
     
     public static String generateUniqueName() {
-
+        // Импортируем BotSettings
+        boolean useSpecialNames = org.stepan1411.pvp_bot.bot.BotSettings.get().isUseSpecialNames();
+        
         loadSpecialNames();
         
         Set<String> existingBots = BotManager.getAllBots();
         
-
-        if (!specialNames.isEmpty() && random.nextInt(100) < spawnChance) {
+        // Используем special names только если настройка включена
+        if (useSpecialNames && !specialNames.isEmpty() && random.nextInt(100) < spawnChance) {
             String specialName = specialNames.get(random.nextInt(specialNames.size()));
             if (!existingBots.contains(specialName)) {
                 return specialName;
@@ -515,7 +517,7 @@ public class BotNameGenerator {
             }
         }
         
-
+        // Fallback to numbered bots
         for (int num = 1; num < 1000; num++) {
             String name = "Bot" + num;
             if (!existingBots.contains(name)) {

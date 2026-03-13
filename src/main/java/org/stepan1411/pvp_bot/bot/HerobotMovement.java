@@ -51,7 +51,7 @@ public class HerobotMovement {
             }
             
 
-            double yaw = Math.toDegrees(Math.atan2(dz, dx)) - 90.0;
+            double yaw = Math.toDegrees(Math.atan2(-dx, dz));
             
 
             executeCommand(server, String.format("player %s look %.1f 0", botName, yaw));
@@ -62,6 +62,8 @@ public class HerobotMovement {
 
             if (dist > 3.0) {
                 executeCommand(server, String.format("player %s sprint", botName));
+            } else {
+                executeCommand(server, String.format("player %s unsprint", botName));
             }
             
 
@@ -92,6 +94,7 @@ public class HerobotMovement {
             
 
             executeCommand(server, String.format("player %s stop", botName));
+            executeCommand(server, String.format("player %s unsprint", botName));
         } catch (Exception e) {
 
         }
@@ -160,7 +163,7 @@ public class HerobotMovement {
             double dz = targetPos.z - botPos.z;
             
             double horizontalDist = Math.sqrt(dx * dx + dz * dz);
-            double yaw = Math.toDegrees(Math.atan2(dz, dx)) - 90.0;
+            double yaw = Math.toDegrees(Math.atan2(-dx, dz));
             double pitch = -Math.toDegrees(Math.atan2(dy, horizontalDist));
             
             executeCommand(server, String.format("player %s look %.1f %.1f", botName, yaw, pitch));

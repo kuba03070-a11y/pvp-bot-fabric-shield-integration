@@ -6,10 +6,10 @@ PVP Bot presenta una IA de combate avanzada que puede usar diferentes armas y t�
 
 ## 🗡️ Tipos de armas
 
-### Combate cuerpo a cuerpo
+### Melee Combat
 - **Espadas** - Ataques rápidos, buen daño
 - **Hachas** - Más lento pero puede romper escudos
-- Los bots cambian automáticamente a cuerpo a cuerpo cuando los enemigos están cerca
+- Bots automatically switch to melee when enemies are close
 
 ### Combate a distancia
 - **Arcos** - Dibuja y suelta flechas
@@ -17,9 +17,16 @@ PVP Bot presenta una IA de combate avanzada que puede usar diferentes armas y t�
 - Los robots mantienen una distancia óptima (8-20 bloques)
 
 ### Combate con maza
-- **Maza + Carga de viento** - Ataques de salto que causan daño masivo
+- **Mace + Wind Charge** - Jump attacks for massive damage
 - Los robots usan cargas de viento para lanzarse al aire.
 - Devastadores ataques de caída
+
+### Combate de ElytraMace
+- **Élytra + Maza + Fuegos artificiales** - Técnica avanzada de ataque aéreo
+- Los robots equipan élitros y usan fuegos artificiales para ganar altitud.
+- Elimina los élitros en el aire y ataca con una maza para causar un daño masivo por caída.
+- Selección de arma de mayor prioridad cuando esté disponible
+- Configuraciones configurables de altitud, distancia y reintento.
 
 ### Cristal JcJ
 - **Cristales finales + Obsidiana** - Coloca obsidiana y detona cristales
@@ -44,19 +51,19 @@ Cuando un robot recibe daño, automáticamente apunta al atacante.
 ```
 
 ### Orientación automática
-Los bots buscan automáticamente enemigos dentro de la distancia de visión.
+Bots automatically search for enemies within view distance.
 ```mcfunction
 /pvpbot settings autotarget true
 ```
 
-### Objetivo manual
-Obligar a un robot a atacar a un objetivo específico.
+### Manual Target
+Force a bot to attack a specific target.
 ```mcfunction
 /pvpbot attack BotName TargetName
 ```
 
 ### Filtros de destino
-Elija a qué pueden apuntar los bots:
+Choose what bots can target:
 ```mcfunction
 /pvpbot settings targetplayers true   # Target players
 /pvpbot settings targetmobs true      # Target hostile mobs
@@ -65,10 +72,10 @@ Elija a qué pueden apuntar los bots:
 
 ---
 
-## 🛡️ Defensa
+## 🛡️ Defense
 
 ### Auto-Shield
-Los robots levantan escudos automáticamente cuando los enemigos atacan.
+Bots automatically raise shields when enemies attack.
 ```mcfunction
 /pvpbot settings autoshield true
 ```
@@ -86,8 +93,8 @@ Los robots mantienen tótems de inmortalidad a la ligera.
 /pvpbot settings totempriority true  # Prioritize totem over shield
 ```
 
-### Auto-Mend
-Bots automatically repair damaged armor using XP bottles.
+### Reparación automática
+Los bots reparan automáticamente armaduras dañadas usando botellas de XP.
 ```mcfunction
 /pvpbot settings automend true
 /pvpbot settings menddurability 0.5  # Repair at 50% durability
@@ -95,7 +102,7 @@ Bots automatically repair damaged armor using XP bottles.
 
 ---
 
-## 🍎 Healing
+## 🍎 Curación
 
 ### Comer automáticamente
 Los robots comen comida cuando:
@@ -111,7 +118,7 @@ Los robots comen comida cuando:
 Los bots usan pociones automáticamente:
 - **Pociones curativas** - cuando el HP es bajo (salpicaduras o bebibles)
 - **Pociones de fuerza** - al entrar en combate
-- **Speed potions** - when entering combat
+- **Pociones de velocidad** - al entrar en combate
 - **Pociones de resistencia al fuego** - al entrar en combate
 
 Todas las pociones de mejora se lanzan a la vez cuando comienza el combate. Los robots vuelven a aplicar mejoras cuando los efectos expiran (quedan menos de 5 segundos).
@@ -165,6 +172,7 @@ Los bots pueden utilizar las telarañas estratégicamente:
 | `spear`| verdadero/falso | falso | Utilice lanza (buggy) |
 | `crystalpvp`| verdadero/falso | falso | Utilice PVP de cristal |
 | `anchorpvp`| verdadero/falso | falso | Utilice PVP ancla |
+| `elytramace`| verdadero/falso | verdadero | Utilice el truco ElytraMace |
 | `autopotion`| verdadero/falso | verdadero | Pociones de uso automático |
 | `automend`| verdadero/falso | verdadero | Armadura de reparación automática |
 | `menddurability`| 0,1-1,0 | 0,5 | Durabilidad % a reparar |

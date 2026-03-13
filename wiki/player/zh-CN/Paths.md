@@ -9,10 +9,10 @@
 - [概述](#概述)
 - [创建路径](#creating-paths)
 - [管理航点](#managing-waypoints)
-- [Bot Control](#bot-control)
+- [机器人控制](#bot-control)
 - [路径设置](#path-settings)
-- [Visualization](#visualization)
-- [Examples](#examples)
+- [可视化](#可视化)
+- [示例](#examples)
 
 ---
 
@@ -21,7 +21,7 @@
 路径是机器人可以遵循的路径点序列。每条路径有：
 - **名称** - 唯一标识符
 - **航点** - 位置列表（x、y、z）
-- **循环模式** - 机器人如何通过航路点移动
+- **循环模式** - 机器人如何通过路径点移动
 - **攻击模式** - 机器人是否停止战斗
 - **可视化** - 显示路径的粒子效果
 
@@ -48,7 +48,7 @@
 ```
 删除路径并阻止所有机器人遵循它。
 
-**Example:**
+**例子：**
 ```
 /pvpbot path delete patrol_route
 ```
@@ -100,7 +100,7 @@
 ```
 /pvpbot path remove patrol_route 2
 ```
-从路径中删除第三个航点。
+从路径中删除第三个航路点。
 
 ### 清除所有航点
 ```

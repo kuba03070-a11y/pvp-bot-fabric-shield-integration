@@ -1,6 +1,57 @@
-# 🚶 导航系统
+# 🚶 Navigation System
 
-PVP Bot 具有智能寻路和移动机制。
+PVP Bot features smart pathfinding, movement mechanics, and advanced movement commands.
+
+---
+
+## 🎯 Movement Commands
+
+### Follow System
+机器人可以跟随玩家或其他机器人，同时保持最佳距离：
+
+```mcfunction
+# Make bot follow a target
+/pvpbot follow Bot1 Steve
+
+# Stop following
+/pvpbot stopmovement Bot1
+```
+
+**行为：**
+- 与目标保持 3 格距离
+- 自动避开障碍物
+- 跨维度追踪目标
+- 使用智能寻路
+
+### 护送系统
+增强跟随模式与防御能力：
+
+```mcfunction
+# Make bot escort (follow + protect) a target
+/pvpbot escort Bot1 Steve
+```
+
+**行为：**
+- 与跟随模式相同
+- 受到攻击时自动防御目标
+- 优先考虑目标保护而不是其他战斗
+
+### 转到系统
+直接基于坐标的运动：
+
+```mcfunction
+# Send bot to specific coordinates
+/pvpbot goto Bot1 100 64 200
+
+# Enable Baritone for advanced pathfinding
+/pvpbot settings gotousebaritone true
+```
+
+**行为：**
+- 智能寻路坐标
+- 躲避障碍和跳跃
+- 针对复杂路径的可选男中音集成
+- 适用于不同的地形类型
 
 ---
 
@@ -46,7 +97,7 @@ PVP Bot 具有智能寻路和移动机制。
 
 ## 😴 闲逛
 
-When bots have no target, they wander around their spawn point.
+当机器人没有目标时，它们会在生成点周围徘徊。
 
 ```mcfunction
 # Enable/disable idle wandering
@@ -59,19 +110,19 @@ When bots have no target, they wander around their spawn point.
 ＃＃＃ 行为
 - 机器人缓慢行走（不是冲刺）
 - 保持在重生点的半径范围内
-- Pick random destinations
+- 选择随机目的地
 - 徘徊时避开障碍物
 
 ---
 
 ## 🏃 移动速度
 
-Different situations use different speeds:
+不同的情况使用不同的速度：
 
-|情况|速度|波普|
+|情况|速度|波普 |
 |------------|------|------|
 |闲逛| 0.5 | 0.5 ❌ |
-| Approaching target | 1.0 | ✅ |
+|接近目标 | 1.0 | ✅ |
 |吃饭（撤退）| 1.2 | 1.2 ✅ |
 |低HP撤退| 1.5 | 1.5 ✅ |
 
@@ -79,14 +130,15 @@ Different situations use different speeds:
 
 ## ⚙️ 导航设置
 
-|设置|范围 |默认 |描述 |
+|设置|范围 |默认|描述 |
 |--------|--------|---------|------------|
-| `bhop` | true/false | true | Enable bunny hop |
-| `bhopcooldown` | 5-30 | 12 | Ticks between jumps |
+| `bhop`|真/假|真实 |启用兔子跳 |
+| `bhopcooldown`| 5-30 | 12 | 12跳跃之间的刻度|
 | `jumpboost`| 0.0-0.5 | 0.0 | 0.0额外跳跃高度|
 | `idle`|真/假|真实 |启用空闲徘徊|
 | `idleradius`| 3-50 | 3-50 10 | 10游走半径|
 | `movespeed`| 0.1-2.0 | 1.0 |基础移动速度|
+| `gotousebaritone`|真/假|假 |使用 Baritone 进行 goto |
 
 ---
 
@@ -101,7 +153,7 @@ Different situations use different speeds:
 - 确保梯子/藤蔓放置正确
 - 机器人需要面向可攀爬的方块
 
-### Bot falls into holes
+### 机器人掉进洞里
 - 机器人尝试跳过 2 个区块的间隙
 - 较大的间隙可能会导致跌倒
 - 考虑为重要路径搭建桥梁

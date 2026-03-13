@@ -4,9 +4,9 @@
 
 ---
 
-## 📖 概述
+## 📖 Overview
 
-派系是由机器人和玩家组成的群体。你可以：
+Factions are groups of bots and players. You can:
 - 创建机器人团队
 - 将派系设置为彼此敌对
 - 机器人自动攻击敌对派系的敌人
@@ -33,7 +33,7 @@
 
 ## 👤 管理会员
 
-### 添加成员
+### Add Members
 ```mcfunction
 # Add a bot to faction
 /pvpbot faction add RedTeam Bot1
@@ -75,7 +75,7 @@
 
 ## 🎁 给予物品
 
-### Give Items
+### 给予物品
 ```mcfunction
 # Give diamond sword to all faction members
 /pvpbot faction give RedTeam diamond_sword
@@ -95,7 +95,7 @@
 
 ## 📋 完整示例
 
-创建两支队伍并让他们战斗：
+创建两个团队并让他们战斗：
 
 ```mcfunction
 # Create bots
@@ -145,7 +145,7 @@
 /pvpbot settings friendlyfire false
 ```
 
-When friendly fire is disabled (default), bots cannot damage members of their own faction or allied factions.
+当友军火力被禁用（默认）时，机器人无法伤害自己派系或盟友派系的成员。
 
 ---
 

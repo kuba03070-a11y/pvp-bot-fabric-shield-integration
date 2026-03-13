@@ -1,6 +1,57 @@
 # 🚶 Système de navigation
 
-PVP Bot propose des mécanismes d'orientation et de mouvement intelligents.
+PVP Bot propose une recherche de chemin intelligente, une mécanique de mouvement et des commandes de mouvement avancées.
+
+---
+
+## 🎯 Commandes de mouvement
+
+### Suivre le système
+Les robots peuvent suivre des joueurs ou d'autres robots tout en maintenant une distance optimale :
+
+```mcfunction
+# Make bot follow a target
+/pvpbot follow Bot1 Steve
+
+# Stop following
+/pvpbot stopmovement Bot1
+```
+
+**Comportement:**
+- Maintient une distance de 3 pâtés de maisons de la cible
+- Évite automatiquement les obstacles
+- Suit la cible dans toutes les dimensions
+- Utilise une recherche de chemin intelligente
+
+### Système d'escorte
+Mode de suivi amélioré avec des capacités défensives :
+
+```mcfunction
+# Make bot escort (follow + protect) a target
+/pvpbot escort Bot1 Steve
+```
+
+**Comportement:**
+- Identique au mode suivi
+- Défend automatiquement la cible en cas d'attaque
+- Donne la priorité à la protection de la cible par rapport aux autres combats
+
+### Aller au système
+Mouvement direct basé sur les coordonnées :
+
+```mcfunction
+# Send bot to specific coordinates
+/pvpbot goto Bot1 100 64 200
+
+# Enable Baritone for advanced pathfinding
+/pvpbot settings gotousebaritone true
+```
+
+**Comportement:**
+- Recherche de chemin intelligente vers les coordonnées
+- Évitement d'obstacles et saut
+- Intégration baryton en option pour les chemins complexes
+- Fonctionne sur différents types de terrain
 
 ---
 
@@ -12,10 +63,10 @@ Les robots détectent et évitent automatiquement :
 - **Trous** - Sauter par-dessus les espaces
 - **Obstacles à 1 bloc** - Sauter
 
-### Climbing
-Bots can climb:
-- Ladders
-- Vines
+### Escalade
+Les robots peuvent grimper :
+- Échelles
+- Vignes
 - Échafaudage
 - Vignes tordues/pleureuses
 
@@ -23,7 +74,7 @@ Bots can climb:
 
 ## 🐰 Lapin Hop (Bhop)
 
-Les robots peuvent sauter en lapin pour se déplacer plus rapidement – ​​en sautant tout en sprintant pour augmenter leur vitesse.
+Les robots peuvent sauter en lapin pour des mouvements plus rapides – sauter tout en sprintant pour augmenter leur vitesse.
 
 ```mcfunction
 # Enable/disable bhop
@@ -59,7 +110,7 @@ Lorsque les robots n’ont pas de cible, ils errent autour de leur point d’app
 ### Comportement
 - Les robots marchent lentement (pas de sprint)
 - Restez dans le rayon du point d'apparition
-- Pick random destinations
+- Choisissez des destinations aléatoires
 - Évitez les obstacles en errant
 
 ---
@@ -87,6 +138,7 @@ Différentes situations utilisent des vitesses différentes :
 | `idle`| vrai/faux | vrai | Activer l'errance inactive |
 | `idleradius`| 3-50 | 10 | Rayon d'errance |
 | `movespeed`| 0,1-2,0 | 1.0 | Vitesse de déplacement de base |
+| `gotousebaritone`| vrai/faux | faux | Utilisez Baryton pour aller à |
 
 ---
 

@@ -4,9 +4,9 @@
 
 ---
 
-## 📖 Descripción general
+## 📖 Overview
 
-Las facciones son grupos de bots y jugadores. Puede:
+Factions are groups of bots and players. You can:
 - Crear equipos de bots.
 - Establecer facciones como hostiles entre sí.
 - Los bots atacan automáticamente a enemigos de facciones hostiles.
@@ -85,7 +85,7 @@ Haz que las facciones sean enemigas: ¡sus miembros se atacarán automáticament
 /pvpbot faction give RedTeam golden_apple 16
 ```
 
-### Give Kits
+### Regalar kits
 ```mcfunction
 # Give a saved kit to entire faction
 /pvpbot faction givekit RedTeam warrior
@@ -145,7 +145,7 @@ Crea dos equipos y hazlos luchar:
 /pvpbot settings friendlyfire false
 ```
 
-When friendly fire is disabled (default), bots cannot damage members of their own faction or allied factions.
+Cuando el fuego amigo está desactivado (predeterminado), los robots no pueden dañar a miembros de su propia facción o facciones aliadas.
 
 ---
 

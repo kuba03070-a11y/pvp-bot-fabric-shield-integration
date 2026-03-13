@@ -35,6 +35,7 @@ Vollständige Liste aller Konfigurationsoptionen.
 | `spear`| bool | - | falsch | Speer verwenden (wegen Teppichfehler deaktiviert) |
 | `crystalpvp`| bool | - | falsch | Verwenden Sie Kristall-PVP (Obsidian + Kristalle) |
 | `anchorpvp`| bool | - | falsch | Benutze Anker-PVP (Respawn-Anker + Leuchtstein) |
+| `elytramace`| bool | - | wahr | Benutze den ElytraMace-Trick (Elytra + Keule) |
 | `attackcooldown`| int | 1-40 | 10 | Ticks zwischen Anfällen |
 | `meleerange`| doppelt | 2-6 | 3,5 | Nahkampfangriffsdistanz |
 | `movespeed`| doppelt | 0,1-2,0 | 1,0 | Bewegungsgeschwindigkeitsmultiplikator |
@@ -122,6 +123,22 @@ Alle Buff-Tränke werden auf einmal ausgegeben, wenn der Kampf beginnt oder wenn
 |---------|------|-------|---------|-------------|
 | `factions`| bool | - | wahr | Fraktionssystem aktivieren |
 | `friendlyfire`| bool | - | falsch | Schaden an Fraktionsverbündeten zulassen |
+| `specialnames`| bool | - | falsch | Verwenden Sie spezielle Namen aus der Datenbank |
+| `gotousebaritone`| bool | - | falsch | Verwenden Sie Bariton für Gehe zu-Befehle |
+
+---
+
+## 🚀 ElytraMace-Einstellungen
+
+| Einstellung | Geben Sie | ein Reichweite | Standard | Beschreibung |
+|---------|------|-------|---------|-------------|
+| `elytramace`| bool | - | wahr | ElytraMace-Trick aktivieren |
+| `elytramaceretries`| int | 1-10 | 1 | Max. Startwiederholungsversuche |
+| `elytramacealtitude`| int | 5-50 | 20 | Mindesthöhe für Angriff |
+| `elytramacedistance`| doppelt | 3-15 | 8,0 | Angriffsentfernung vom Ziel |
+| `elytramacefireworks`| int | 1-10 | 3 | Anzahl der zu verwendenden Feuerwerkskörper |
+
+**ElytraMace-Trick:** Bot rüstet Elytra aus, fliegt mit Feuerwerkskörpern hoch, entfernt Elytra in der Luft und greift mit Streitkolben an, um massiven Fallschaden zu verursachen.
 
 ---
 
@@ -178,4 +195,21 @@ Sowohl die Einstellungen als auch die Bots bleiben bei Serverneustarts bestehen.
 ```mcfunction
 /pvpbot settings idle false
 /pvpbot settings bhop false
+```
+
+### Aktivieren Sie den ElytraMace-Trick
+```mcfunction
+/pvpbot settings elytramace true
+/pvpbot settings elytramacealtitude 25
+/pvpbot settings elytramaceretries 2
+```
+
+### Bewegungsbefehle mit Bariton aktivieren
+```mcfunction
+/pvpbot settings gotousebaritone true
+```
+
+### Spezielle Namen aktivieren
+```mcfunction
+/pvpbot settings specialnames true
 ```

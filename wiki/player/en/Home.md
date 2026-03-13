@@ -6,13 +6,13 @@ Welcome to the official PVP Bot documentation!
 
 ## 📖 About
 
-PVP Bot is a Minecraft Fabric mod that adds intelligent combat bots powered by Carpet mod. Create armies of bots, organize them into factions, and watch epic battles unfold!
+PVP Bot is a Minecraft Fabric mod that adds intelligent combat bots powered by HeroBot mod. Create armies of bots, organize them into factions, and watch epic battles unfold!
 
 ---
 
 ## 🚀 Quick Start
 
-1. Install [Fabric Loader](https://fabricmc.net/) and [Carpet Mod](https://github.com/gnembon/fabric-carpet)
+1. Install [Fabric Loader](https://fabricmc.net/) and [HeroBot Mod](https://modrinth.com/mod/herobot)
 2. Download PVP Bot and put it in your `mods` folder
 3. Start the game and use `/pvpbot spawn BotName` to create your first bot!
 
@@ -24,9 +24,11 @@ PVP Bot is a Minecraft Fabric mod that adds intelligent combat bots powered by C
 |------|-------------|
 | [🎮 Commands](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Commands) | All available commands |
 | [⚔️ Combat System](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Combat) | How bots fight |
-| [� Explosive Combat](https://github.com/Stepan1411/pvp-bot-fabric/wiki/ExplosiveCombat) | Crystal PVP and Anchor PVP |
-| [� Navigation](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Navigation) | Movement and pathfinding |
-| [�️ Paths](https://github.com/Stepean1411/pvp-bot-fabric/wiki/Paths) | Path system and waypoints |
+| [💥 Explosive Combat](https://github.com/Stepan1411/pvp-bot-fabric/wiki/ExplosiveCombat) | Crystal PVP and Anchor PVP |
+| [🚀 ElytraMace](https://github.com/Stepan1411/pvp-bot-fabric/wiki/ElytraMace) | Advanced aerial combat technique |
+| [🚶 Navigation](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Navigation) | Basic pathfinding |
+| [🏃 Movement](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Movement) | Follow, escort, and goto commands |
+| [🛤️ Paths](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Paths) | Path system and waypoints |
 | [👥 Factions](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Factions) | Team system |
 | [🎒 Kits](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Kits) | Equipment presets |
 | [⚙️ Settings](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Settings) | All configuration options |
@@ -45,9 +47,19 @@ PVP Bot is a Minecraft Fabric mod that adds intelligent combat bots powered by C
 /pvpbot settings crystalpvp true
 ```
 
-### Enable Anchor PVP
+### Enable ElytraMace trick
 ```
-/pvpbot settings anchorpvp true
+/pvpbot settings elytramace true
+```
+
+### Make bot follow a player
+```
+/pvpbot follow Bot1 Steve
+```
+
+### Make bot escort (follow + protect) a player
+```
+/pvpbot escort Bot1 Steve
 ```
 
 ### Make two teams fight

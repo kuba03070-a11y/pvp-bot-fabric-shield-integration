@@ -1,4 +1,4 @@
-# ⚙️ Settings
+# ⚙️ Paramètres
 
 Liste complète de toutes les options de configuration.
 
@@ -35,6 +35,7 @@ Liste complète de toutes les options de configuration.
 | `spear`| booléen | - | faux | Utiliser la lance (désactivée en raison d'un bug de tapis) |
 | `crystalpvp`| booléen | - | faux | Utiliser du cristal PVP (obsidienne + cristaux) |
 | `anchorpvp`| booléen | - | faux | Utiliser l'ancre PVP (ancre de réapparition + pierre lumineuse) |
+| `elytramace`| booléen | - | vrai | Utiliser l'astuce ElytraMace (élytres + masse) |
 | `attackcooldown`| entier | 1-40 | 10 | Tiques entre les attaques |
 | `meleerange`| double | 2-6 | 3.5 | Distance d'attaque en mêlée |
 | `movespeed`| double | 0,1-2,0 | 1.0 | Multiplicateur de vitesse de déplacement |
@@ -122,6 +123,22 @@ Toutes les potions de buff sont lancées en même temps lorsque le combat commen
 |---------|------|-------|---------|-------------|
 | `factions`| booléen | - | vrai | Activer le système de faction |
 | `friendlyfire`| booléen | - | faux | Autoriser les dégâts aux alliés de la faction |
+| `specialnames`| booléen | - | faux | Utiliser des noms spéciaux de la base de données |
+| `gotousebaritone`| booléen | - | faux | Utiliser Baryton pour les commandes goto |
+
+---
+
+## 🚀 Paramètres ElytraMace
+
+| Paramètre | Tapez | Gamme | Par défaut | Descriptif |
+|---------|------|-------|---------|-------------|
+| `elytramace`| booléen | - | vrai | Activer l'astuce ElytraMace |
+| `elytramaceretries`| entier | 1-10 | 1 | Nombre maximal de tentatives de décollage |
+| `elytramacealtitude`| entier | 5-50 | 20 | Altitude minimale pour l'attaque |
+| `elytramacedistance`| double | 3-15 | 8.0 | Distance d'attaque de la cible |
+| `elytramacefireworks`| entier | 1-10 | 3 | Nombre de feux d'artifice à utiliser |
+
+**ElytraMace Trick :** Le robot équipe les élytres, utilise des feux d'artifice pour voler, supprime les élytres dans les airs et attaque avec une masse pour infliger d'énormes dégâts de chute.
 
 ---
 
@@ -178,4 +195,21 @@ Les paramètres et les robots persistent lors des redémarrages du serveur. Les 
 ```mcfunction
 /pvpbot settings idle false
 /pvpbot settings bhop false
+```
+
+### Activer l'astuce ElytraMace
+```mcfunction
+/pvpbot settings elytramace true
+/pvpbot settings elytramacealtitude 25
+/pvpbot settings elytramaceretries 2
+```
+
+### Activer les commandes de mouvement avec Baryton
+```mcfunction
+/pvpbot settings gotousebaritone true
+```
+
+### Activer les noms spéciaux
+```mcfunction
+/pvpbot settings specialnames true
 ```

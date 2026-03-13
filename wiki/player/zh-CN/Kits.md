@@ -4,11 +4,11 @@
 
 ---
 
-## 📖 概述
+## 📖 Overview
 
-套件让您能够：
+Kits allow you to:
 - 将当前库存保存为模板
-- 快速给机器人提供装备
+- Quickly give equipment to bots
 - 立即装备整个派系
 
 ---
@@ -54,7 +54,7 @@
 
 ---
 
-## 🎁 Giving Kits
+## 🎁 赠送套件
 
 ### 到单个机器人
 ```mcfunction
@@ -74,23 +74,23 @@
 - 钻石/下界合金剑
 - 全钻石盔甲
 - 盾
-- Golden apples
+- 金苹果
 - 不死图腾（副手）
 
-### 🏹 弓箭手
-- 弓（力量V，无限）
+### 🏹 Archer
+- Bow (Power V, Infinity)
 - 箭头（1 层）
-- 皮革/链甲
-- 金苹果
+- Leather/Chain armor
+- Golden apples
 
-### 🔨 坦克
-- 下界合金盔甲（防护 IV）
-- 盾
+### 🔨 Tank
+- Netherite armor (Protection IV)
+- Shield
 - Axe (for shield breaking)
-- Lots of golden apples
-- Multiple totems
+- 很多金苹果
+- 多个图腾
 
-### 💨 Speed Fighter
+### 💨 速度战士
 - 轻甲（皮革/链甲）
 - 钻石剑（锋利V）
 - 速度药水
@@ -128,7 +128,7 @@
 
 ## 💾 数据存储
 
-Kit data is saved in:
+套件数据保存在：
 ```
 config/pvp_bot_kits.json
 ```

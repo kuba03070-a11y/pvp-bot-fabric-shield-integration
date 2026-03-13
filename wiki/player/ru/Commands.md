@@ -4,11 +4,11 @@
 
 ---
 
-## 📋 Содержание
+## 📋 Table of Contents
 
 - [Управление ботами](#-bot-management)
 - [Боевые команды](#-боевые-команды)
-- [Команды фракции](#-faction-commands)
+- [Faction Commands](#-faction-commands)
 - [Команды набора](#-kit-commands)
 - [Команды пути](#-команды пути)
 - [Настройки](#-настройки)
@@ -52,11 +52,43 @@
 
 ## ⚔️ Боевые команды
 
-| Command | Description |
+| Команда | Описание |
 |---------|-------------|
 | `/pvpbot attack <bot> <target>`| Приказать боту атаковать игрока/сущность |
 | `/pvpbot stop <bot>`| Не дать боту атаковать |
-| `/pvpbot target <bot>`| Показать текущую цель бота |
+| `/pvpbot target <bot>` | Show bot's current target |
+
+---
+
+## 🚶 Команды движения
+
+| Command | Description |
+|---------|-------------|
+| `/pvpbot follow <bot> <target>` | Make bot follow a player/bot |
+| `/pvpbot escort <bot> <target>` | Make bot follow and protect a target |
+| `/pvpbot goto <bot> <x> <y> <z>`| Переместить бота в определенные координаты |
+| `/pvpbot stopmovement <bot>` | Stop bot movement |
+
+### Примеры движений
+
+```mcfunction
+# Make Bot1 follow player Steve
+/pvpbot follow Bot1 Steve
+
+# Make Bot2 escort (follow + protect) player Alex
+/pvpbot escort Bot2 Alex
+
+# Send Bot3 to coordinates 100 64 200
+/pvpbot goto Bot3 100 64 200
+
+# Stop Bot1 from moving
+/pvpbot stopmovement Bot1
+```
+
+**Примечание:**
+- **Следовать**: бот поддерживает расстояние в 3 блока от цели.
+- **Сопровождение**: то же самое, что и ниже, но бот будет защищать цель в случае нападения.
+- **Goto**: бот перемещается к координатам, используя интеллектуальный поиск пути (баритон, если включен).
 
 ### Примеры
 
@@ -73,9 +105,9 @@
 
 ---
 
-## 👥 Faction Commands
+## 👥 Команды фракций
 
-| Command | Description |
+| Команда | Описание |
 |---------|-------------|
 | `/pvpbot faction create <name>`| Создать новую фракцию |
 | `/pvpbot faction delete <name>`| Удалить фракцию |
@@ -86,7 +118,12 @@
 | `/pvpbot faction give <faction> <item>`| Раздать предмет всем участникам |
 | `/pvpbot faction givekit <faction> <kit>`| Раздайте комплект всем участникам |
 | `/pvpbot faction attack <faction> <target>`| Все боты фракции атакуют цель |
-| `/pvpbot faction list` | List all factions |
+| `/pvpbot faction follow <faction> <target>`| Все боты во фракции следуют за целью |
+| `/pvpbot faction escort <faction> <target>`| Все боты в цели сопровождения фракции |
+| `/pvpbot faction goto <faction> <x> <y> <z>`| Переместить всех ботов фракции в координаты |
+| `/pvpbot faction startpath <faction> <path>`| Стартовый путь для всех ботов во фракции |
+| `/pvpbot faction stoppath <faction>`| Остановить путь для всех ботов во фракции |
+| `/pvpbot faction list`| Список всех фракций |
 | `/pvpbot faction info <faction>`| Показать детали фракции |
 
 ### Примеры
@@ -106,8 +143,23 @@
 # Order entire faction to attack
 /pvpbot faction attack RedTeam Steve
 
+# Make entire faction follow a player
+/pvpbot faction follow RedTeam Alex
+
+# Make entire faction escort a player
+/pvpbot faction escort RedTeam Steve
+
+# Move entire faction to coordinates
+/pvpbot faction goto RedTeam 100 64 200
+
 # Give swords to everyone in RedTeam
 /pvpbot faction give RedTeam diamond_sword
+
+# Make entire faction patrol a path
+/pvpbot faction startpath RedTeam patrol_route
+
+# Stop faction from patrolling
+/pvpbot faction stoppath RedTeam
 ```
 
 ---
@@ -143,16 +195,19 @@
 |---------|-------------|
 | `/pvpbot path create <name>`| Создать новый путь |
 | `/pvpbot path delete <name>`| Удалить путь |
-| `/pvpbot path add <name>`| Добавить текущую позицию в качестве путевой точки |
-| `/pvpbot path remove <name> <index>`| Удалить путевую точку по индексу |
+| `/pvpbot path addpoint <name>`| Добавить текущую позицию в качестве путевой точки |
+| `/pvpbot path removepoint <name> [index]`| Удалить путевую точку (последнюю или по индексу) |
 | `/pvpbot path clear <name>`| Удалить все путевые точки |
 | `/pvpbot path list`| Список всех путей |
 | `/pvpbot path info <name>`| Показать информацию о пути |
-| `/pvpbot path follow <bot> <path>`| Заставить бота следовать по пути |
+| `/pvpbot path start <bot> <path>`| Заставить бота следовать по пути |
 | `/pvpbot path stop <bot>`| Не дать боту следовать по пути |
 | `/pvpbot path loop <name> <true/false>`| Переключить режим цикла |
 | `/pvpbot path attack <name> <true/false>`| Переключить боевой режим |
 | `/pvpbot path show <name> <true/false>`| Переключить визуализацию пути |
+| `/pvpbot path distribute <path>`| Распределите ботов равномерно по пути |
+| `/pvpbot path startnear <path> <radius>`| Стартовый путь для ботов в радиусе |
+| `/pvpbot path stopall <path>`| Остановить всех ботов на этом пути |
 
 ### Примеры
 
@@ -161,12 +216,12 @@
 /pvpbot path create patrol
 
 # Add waypoints (stand at each location)
-/pvpbot path add patrol
-/pvpbot path add patrol
-/pvpbot path add patrol
+/pvpbot path addpoint patrol
+/pvpbot path addpoint patrol
+/pvpbot path addpoint patrol
 
 # Make bot follow the path
-/pvpbot path follow Guard1 patrol
+/pvpbot path start Guard1 patrol
 
 # Enable back-and-forth movement
 /pvpbot path loop patrol true
@@ -176,6 +231,15 @@
 
 # Show path with particles
 /pvpbot path show patrol true
+
+# Distribute all bots on path evenly
+/pvpbot path distribute patrol
+
+# Start path for all bots within 50 blocks
+/pvpbot path startnear patrol 50
+
+# Stop all bots following this path
+/pvpbot path stopall patrol
 ```
 
 Подробное руководство см. на странице [Пути](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Paths).

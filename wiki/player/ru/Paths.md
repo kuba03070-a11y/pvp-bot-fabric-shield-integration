@@ -9,10 +9,10 @@
 - [Обзор](#обзор)
 - [Создание путей](#creating-paths)
 - [Управление путевыми точками](#managing-waypoints)
-- [Bot Control](#bot-control)
-- [Path Settings](#path-settings)
-- [Visualization](#visualization)
-- [Examples](#examples)
+- [Управление ботом](#bot-control)
+- [Настройки пути](#path-settings)
+- [Визуализация](#визуализация)
+- [Примеры](#examples)
 
 ---
 
@@ -25,7 +25,7 @@
 - **Режим атаки** - останавливается ли бот для боя.
 - **Визуализация** — Эффекты частиц, показывающие путь.
 
-Paths are saved per-world in `config/pvpbot/worlds/{world}/paths.json`
+Пути сохраняются для каждого мира в`config/pvpbot/worlds/{world}/paths.json`
 
 ---
 
@@ -48,7 +48,7 @@ Paths are saved per-world in `config/pvpbot/worlds/{world}/paths.json`
 ```
 Удаляет путь и останавливает всех ботов, следующих по нему.
 
-**Example:**
+**Пример:**
 ```
 /pvpbot path delete patrol_route
 ```
@@ -163,7 +163,7 @@ Paths are saved per-world in `config/pvpbot/worlds/{world}/paths.json`
 ```
 
 Управляет боевым поведением при следовании по пути:
-- **true** (по умолчанию) — бот останавливается на текущей точке маршрута, чтобы сражаться, а затем продолжает бой.
+- **true** (по умолчанию) — бот останавливается на текущей точке пути, чтобы начать бой, а затем продолжает бой.
 - **false** — бот игнорирует бой и продолжает двигаться (BotCombat отключен)
 
 **Пример:**

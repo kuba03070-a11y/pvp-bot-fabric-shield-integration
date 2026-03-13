@@ -7,10 +7,10 @@ Mit dem Pfadsystem können Sie vordefinierte Routen erstellen, denen Bots folgen
 ## 📋 Inhaltsverzeichnis
 
 - [Übersicht](#Übersicht)
-- [Creating Paths](#creating-paths)
-- [Managing Waypoints](#managing-waypoints)
+- [Pfade erstellen](#creating-paths)
+- [Wegpunkte verwalten](#managing-waypoints)
 - [Bot-Kontrolle](#bot-control)
-- [Path Settings](#path-settings)
+- [Pfadeinstellungen](#path-settings)
 - [Visualisierung](#visualization)
 - [Beispiele](#Beispiele)
 
@@ -46,7 +46,7 @@ Erstellt einen leeren Pfad mit dem angegebenen Namen.
 ```
 /pvpbot path delete <name>
 ```
-Removes the path and stops all bots following it.
+Entfernt den Pfad und stoppt alle Bots, die ihm folgen.
 
 **Beispiel:**
 ```

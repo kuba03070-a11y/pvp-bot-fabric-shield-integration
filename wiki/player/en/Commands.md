@@ -58,6 +58,38 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 | `/pvpbot stop <bot>` | Stop bot from attacking |
 | `/pvpbot target <bot>` | Show bot's current target |
 
+---
+
+## 🚶 Movement Commands
+
+| Command | Description |
+|---------|-------------|
+| `/pvpbot follow <bot> <target>` | Make bot follow a player/bot |
+| `/pvpbot escort <bot> <target>` | Make bot follow and protect a target |
+| `/pvpbot goto <bot> <x> <y> <z>` | Move bot to specific coordinates |
+| `/pvpbot stopmovement <bot>` | Stop bot movement |
+
+### Movement Examples
+
+```mcfunction
+# Make Bot1 follow player Steve
+/pvpbot follow Bot1 Steve
+
+# Make Bot2 escort (follow + protect) player Alex
+/pvpbot escort Bot2 Alex
+
+# Send Bot3 to coordinates 100 64 200
+/pvpbot goto Bot3 100 64 200
+
+# Stop Bot1 from moving
+/pvpbot stopmovement Bot1
+```
+
+**Note:** 
+- **Follow**: Bot maintains 3-block distance from target
+- **Escort**: Same as follow, but bot will defend target if attacked
+- **Goto**: Bot moves to coordinates using smart pathfinding (Baritone if enabled)
+
 ### Examples
 
 ```mcfunction
@@ -86,6 +118,11 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 | `/pvpbot faction give <faction> <item>` | Give item to all members |
 | `/pvpbot faction givekit <faction> <kit>` | Give kit to all members |
 | `/pvpbot faction attack <faction> <target>` | All bots in faction attack target |
+| `/pvpbot faction follow <faction> <target>` | All bots in faction follow target |
+| `/pvpbot faction escort <faction> <target>` | All bots in faction escort target |
+| `/pvpbot faction goto <faction> <x> <y> <z>` | Move all bots in faction to coordinates |
+| `/pvpbot faction startpath <faction> <path>` | Start path for all bots in faction |
+| `/pvpbot faction stoppath <faction>` | Stop path for all bots in faction |
 | `/pvpbot faction list` | List all factions |
 | `/pvpbot faction info <faction>` | Show faction details |
 
@@ -106,8 +143,23 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 # Order entire faction to attack
 /pvpbot faction attack RedTeam Steve
 
+# Make entire faction follow a player
+/pvpbot faction follow RedTeam Alex
+
+# Make entire faction escort a player
+/pvpbot faction escort RedTeam Steve
+
+# Move entire faction to coordinates
+/pvpbot faction goto RedTeam 100 64 200
+
 # Give swords to everyone in RedTeam
 /pvpbot faction give RedTeam diamond_sword
+
+# Make entire faction patrol a path
+/pvpbot faction startpath RedTeam patrol_route
+
+# Stop faction from patrolling
+/pvpbot faction stoppath RedTeam
 ```
 
 ---
@@ -143,16 +195,19 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 |---------|-------------|
 | `/pvpbot path create <name>` | Create a new path |
 | `/pvpbot path delete <name>` | Delete a path |
-| `/pvpbot path add <name>` | Add current position as waypoint |
-| `/pvpbot path remove <name> <index>` | Remove waypoint by index |
+| `/pvpbot path addpoint <name>` | Add current position as waypoint |
+| `/pvpbot path removepoint <name> [index]` | Remove waypoint (last or by index) |
 | `/pvpbot path clear <name>` | Remove all waypoints |
 | `/pvpbot path list` | List all paths |
 | `/pvpbot path info <name>` | Show path information |
-| `/pvpbot path follow <bot> <path>` | Make bot follow path |
+| `/pvpbot path start <bot> <path>` | Make bot follow path |
 | `/pvpbot path stop <bot>` | Stop bot from following path |
 | `/pvpbot path loop <name> <true/false>` | Toggle loop mode |
 | `/pvpbot path attack <name> <true/false>` | Toggle combat mode |
 | `/pvpbot path show <name> <true/false>` | Toggle path visualization |
+| `/pvpbot path distribute <path>` | Distribute bots evenly along path |
+| `/pvpbot path startnear <path> <radius>` | Start path for bots within radius |
+| `/pvpbot path stopall <path>` | Stop all bots on this path |
 
 ### Examples
 
@@ -161,12 +216,12 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 /pvpbot path create patrol
 
 # Add waypoints (stand at each location)
-/pvpbot path add patrol
-/pvpbot path add patrol
-/pvpbot path add patrol
+/pvpbot path addpoint patrol
+/pvpbot path addpoint patrol
+/pvpbot path addpoint patrol
 
 # Make bot follow the path
-/pvpbot path follow Guard1 patrol
+/pvpbot path start Guard1 patrol
 
 # Enable back-and-forth movement
 /pvpbot path loop patrol true
@@ -176,6 +231,15 @@ All PVP Bot commands start with `/pvpbot`. Requires permission level 2 (operator
 
 # Show path with particles
 /pvpbot path show patrol true
+
+# Distribute all bots on path evenly
+/pvpbot path distribute patrol
+
+# Start path for all bots within 50 blocks
+/pvpbot path startnear patrol 50
+
+# Stop all bots following this path
+/pvpbot path stopall patrol
 ```
 
 See [Paths](https://github.com/Stepan1411/pvp-bot-fabric/wiki/Paths) page for detailed guide.

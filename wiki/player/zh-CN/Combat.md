@@ -6,10 +6,10 @@ PVP Bot 具有先进的战斗人工智能，可以使用不同的武器和战术
 
 ## 🗡️ 武器类型
 
-### 近战战斗
+### Melee Combat
 - **剑** - 快速攻击，良好的伤害
 - **斧头** - 速度较慢，但​​可以打破护盾
-- 当敌人靠近时，机器人会自动切换到近战模式
+- Bots automatically switch to melee when enemies are close
 
 ### 远程战斗
 - **弓** - 绘制并释放箭头
@@ -17,9 +17,16 @@ PVP Bot 具有先进的战斗人工智能，可以使用不同的武器和战术
 - 机器人保持最佳距离（8-20 个街区）
 
 ### 狼牙棒战斗
-- **狼牙棒+风能冲锋** - 跳跃攻击造成巨大伤害
+- **Mace + Wind Charge** - Jump attacks for massive damage
 - 机器人利用风能发射到空中
 - 毁灭性的坠落攻击
+
+### 鞘翅狼牙棒战斗
+- **鞘翅 + 狼牙棒 + 烟花** - 高级空中攻击技术
+- 机器人装备鞘翅，使用烟花获得高度
+- 在空中移除鞘翅并用狼牙棒攻击造成大量坠落伤害
+- 可用时选择最高优先级的武器
+- 可配置的高度、距离和重试设置
 
 ### 水晶 PVP
 - **末地水晶 + 黑曜石** - 放置黑曜石并引爆水晶
@@ -43,8 +50,8 @@ PVP Bot 具有先进的战斗人工智能，可以使用不同的武器和战术
 /pvpbot settings revenge true
 ```
 
-### 自动定位
-机器人会自动搜索视野范围内的敌人。
+### Auto-Target
+Bots automatically search for enemies within view distance.
 ```mcfunction
 /pvpbot settings autotarget true
 ```
@@ -55,8 +62,8 @@ Force a bot to attack a specific target.
 /pvpbot attack BotName TargetName
 ```
 
-### 目标过滤器
-选择机器人可以定位的目标：
+### Target Filters
+Choose what bots can target:
 ```mcfunction
 /pvpbot settings targetplayers true   # Target players
 /pvpbot settings targetmobs true      # Target hostile mobs
@@ -65,7 +72,7 @@ Force a bot to attack a specific target.
 
 ---
 
-## 🛡️ 防御
+## 🛡️ Defense
 
 ### 自动屏蔽
 当敌人攻击时，机器人会自动举起护盾。
@@ -80,14 +87,14 @@ Force a bot to attack a specific target.
 ```
 
 ### 自动图腾
-Bots keep totems of undying in offhand.
+机器人会随时保存不死图腾。
 ```mcfunction
 /pvpbot settings autototem true
 /pvpbot settings totempriority true  # Prioritize totem over shield
 ```
 
-### Auto-Mend
-Bots automatically repair damaged armor using XP bottles.
+### 自动修复
+机器人使用 XP 瓶自动修复受损的装甲。
 ```mcfunction
 /pvpbot settings automend true
 /pvpbot settings menddurability 0.5  # Repair at 50% durability
@@ -131,7 +138,7 @@ Bots automatically repair damaged armor using XP bottles.
 
 ---
 
-## 💥 Critical Hits
+## 💥 热门歌曲
 
 机器人可以通过跳跃攻击来进行致命一击。
 ```mcfunction
@@ -154,7 +161,7 @@ Bots automatically repair damaged armor using XP bottles.
 
 ## ⚙️ 战斗设置
 
-|设置|范围 |默认 |描述 |
+|设置|范围 |默认|描述 |
 |--------|--------|---------|------------|
 | `combat`|真/假|真实 |启用战斗 |
 | `revenge`|真/假|真实 |攻击攻击你的人 |
@@ -165,6 +172,7 @@ Bots automatically repair damaged armor using XP bottles.
 | `spear`|真/假|假 |使用长矛（越野车）|
 | `crystalpvp`|真/假|假 |使用水晶PVP |
 | `anchorpvp`|真/假|假 |使用主播PVP |
+| `elytramace`|真/假|真实 |使用鞘翅锤技巧 |
 | `autopotion`|真/假|真实 |自动使用药水 |
 | `automend`|真/假|真实 |自动修复装甲|
 | `menddurability`| 0.1-1.0 | 0.5 | 0.5修复耐久性% |
