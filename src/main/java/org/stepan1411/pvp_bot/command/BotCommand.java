@@ -22,6 +22,7 @@ import org.stepan1411.pvp_bot.bot.BotMovement;
 import org.stepan1411.pvp_bot.bot.BotNameGenerator;
 import org.stepan1411.pvp_bot.bot.BotPath;
 import org.stepan1411.pvp_bot.bot.BotSettings;
+import org.stepan1411.pvp_bot.api.PvpBotAPI;
 import org.stepan1411.pvp_bot.gui.SettingsGui;
 import org.stepan1411.pvp_bot.stats.StatsReporter;
 
@@ -163,6 +164,11 @@ public class BotCommand {
                         .then(CommandManager.literal("status")
                             .executes(ctx -> showDebugStatus(ctx.getSource(), StringArgumentType.getString(ctx, "bot")))
                         )
+                    )
+                    
+
+                    .then(CommandManager.literal("api")
+                        .executes(ctx -> showApiDebugInfo(ctx.getSource()))
                     )
                 )
                 
@@ -708,7 +714,7 @@ public class BotCommand {
                     )
                 )
                 
-                // Команда для остановки движения
+
                 .then(CommandManager.literal("stopmovement")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -716,7 +722,7 @@ public class BotCommand {
                     )
                 )
                 
-                // Команды follow
+
                 .then(CommandManager.literal("follow")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -729,7 +735,7 @@ public class BotCommand {
                     )
                 )
                 
-                // Команды escort (follow + defend)
+
                 .then(CommandManager.literal("escort")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -742,7 +748,7 @@ public class BotCommand {
                     )
                 )
                 
-                // Команды goto
+
                 .then(CommandManager.literal("goto")
                     .then(CommandManager.argument("botname", StringArgumentType.word())
                         .suggests(BOT_SUGGESTIONS)
@@ -2222,14 +2228,14 @@ public class BotCommand {
         }
     }
     
-    // Функции для команд follow/escort
+
     private static int setBotFollow(ServerCommandSource source, String botName, String targetName, boolean escort) {
         if (!BotManager.getAllBots().contains(botName)) {
             source.sendError(Text.literal("§cBot '" + botName + "' not found"));
             return 0;
         }
         
-        // Установить режим следования
+
         BotMovement.setFollow(botName, targetName, escort);
         
         String mode = escort ? "escorting" : "following";
@@ -2237,7 +2243,7 @@ public class BotCommand {
         return 1;
     }
     
-    // Функция для остановки движения бота
+
     private static int stopBotMovement(ServerCommandSource source, String botName) {
         if (!BotManager.getAllBots().contains(botName)) {
             source.sendError(Text.literal("§cBot '" + botName + "' not found"));
@@ -2249,14 +2255,14 @@ public class BotCommand {
         return 1;
     }
     
-    // Функции для команд goto
+
     private static int setBotGoto(ServerCommandSource source, String botName, double x, double y, double z) {
         if (!BotManager.getAllBots().contains(botName)) {
             source.sendError(Text.literal("§cBot '" + botName + "' not found"));
             return 0;
         }
         
-        // Установить режим перемещения к координатам
+
         Vec3d targetPos = new Vec3d(x, y, z);
         BotMovement.setGoto(botName, targetPos);
         
@@ -2265,7 +2271,7 @@ public class BotCommand {
         return 1;
     }
     
-    // Функции для faction команд
+
     private static int factionFollow(ServerCommandSource source, String factionName, String targetName, boolean escort) {
         var members = BotFaction.getMembers(factionName);
         if (members.isEmpty()) {
@@ -2315,6 +2321,52 @@ public class BotCommand {
             return count;
         } else {
             source.sendError(Text.literal("§cNo bots found in faction '" + factionName + "'"));
+            return 0;
+        }
+    }
+    
+    
+    private static int showApiDebugInfo(ServerCommandSource source) {
+        try {
+            String debugInfo = PvpBotAPI.getDebugInfo();
+            String[] lines = debugInfo.split("\n");
+            
+            source.sendFeedback(() -> Text.literal("=== PVP Bot API Debug Info ==="), false);
+            for (String line : lines) {
+                if (!line.trim().isEmpty()) {
+                    source.sendFeedback(() -> Text.literal(line), false);
+                }
+            }
+            
+
+            var eventManager = PvpBotAPI.getEventManager();
+            var strategyRegistry = PvpBotAPI.getCombatStrategyRegistry();
+            
+            source.sendFeedback(() -> Text.literal(""), false);
+            source.sendFeedback(() -> Text.literal("=== Detailed Event Handler Info ==="), false);
+            source.sendFeedback(() -> Text.literal("Spawn handlers: " + eventManager.getSpawnHandlerCount()), false);
+            source.sendFeedback(() -> Text.literal("Death handlers: " + eventManager.getDeathHandlerCount()), false);
+            source.sendFeedback(() -> Text.literal("Attack handlers: " + eventManager.getAttackHandlerCount()), false);
+            source.sendFeedback(() -> Text.literal("Damage handlers: " + eventManager.getDamageHandlerCount()), false);
+            source.sendFeedback(() -> Text.literal("Tick handlers: " + eventManager.getTickHandlerCount()), false);
+            
+            source.sendFeedback(() -> Text.literal(""), false);
+            source.sendFeedback(() -> Text.literal("=== Combat Strategy Details ==="), false);
+            String strategyDebugInfo = strategyRegistry.getDebugInfo();
+            String[] strategyLines = strategyDebugInfo.split("\n");
+            for (String line : strategyLines) {
+                if (!line.trim().isEmpty()) {
+                    source.sendFeedback(() -> Text.literal(line), false);
+                }
+            }
+            
+            source.sendFeedback(() -> Text.literal(""), false);
+            source.sendFeedback(() -> Text.literal("API Status: " + (PvpBotAPI.isInitialized() ? "Initialized" : "Not Initialized")), false);
+            
+            return 1;
+        } catch (Exception e) {
+            source.sendError(Text.literal("Failed to get API debug info: " + e.getMessage()));
+            e.printStackTrace();
             return 0;
         }
     }

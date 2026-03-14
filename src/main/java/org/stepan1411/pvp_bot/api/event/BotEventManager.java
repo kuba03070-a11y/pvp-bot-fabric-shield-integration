@@ -19,33 +19,44 @@ public class BotEventManager {
     
     private BotEventManager() {}
     
+    
     public static BotEventManager getInstance() {
         return INSTANCE;
     }
     
     
     public void registerSpawnHandler(BotSpawnHandler handler) {
-        spawnHandlers.add(handler);
+        if (handler != null) {
+            spawnHandlers.add(handler);
+        }
     }
     
     
     public void registerDeathHandler(BotDeathHandler handler) {
-        deathHandlers.add(handler);
+        if (handler != null) {
+            deathHandlers.add(handler);
+        }
     }
     
     
     public void registerAttackHandler(BotAttackHandler handler) {
-        attackHandlers.add(handler);
+        if (handler != null) {
+            attackHandlers.add(handler);
+        }
     }
     
     
     public void registerDamageHandler(BotDamageHandler handler) {
-        damageHandlers.add(handler);
+        if (handler != null) {
+            damageHandlers.add(handler);
+        }
     }
     
     
     public void registerTickHandler(BotTickHandler handler) {
-        tickHandlers.add(handler);
+        if (handler != null) {
+            tickHandlers.add(handler);
+        }
     }
     
     
@@ -55,6 +66,7 @@ public class BotEventManager {
                 handler.onBotSpawn(bot);
             } catch (Exception e) {
                 System.err.println("[PVP_BOT_API] Error in spawn handler: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -66,36 +78,41 @@ public class BotEventManager {
                 handler.onBotDeath(bot);
             } catch (Exception e) {
                 System.err.println("[PVP_BOT_API] Error in death handler: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
     
     
     public boolean fireAttackEvent(ServerPlayerEntity bot, Entity target) {
+        boolean cancelled = false;
         for (BotAttackHandler handler : attackHandlers) {
             try {
                 if (handler.onBotAttack(bot, target)) {
-                    return true;
+                    cancelled = true;
                 }
             } catch (Exception e) {
                 System.err.println("[PVP_BOT_API] Error in attack handler: " + e.getMessage());
+                e.printStackTrace();
             }
         }
-        return false;
+        return cancelled;
     }
     
     
     public boolean fireDamageEvent(ServerPlayerEntity bot, Entity attacker, float damage) {
+        boolean cancelled = false;
         for (BotDamageHandler handler : damageHandlers) {
             try {
                 if (handler.onBotDamage(bot, attacker, damage)) {
-                    return true;
+                    cancelled = true;
                 }
             } catch (Exception e) {
                 System.err.println("[PVP_BOT_API] Error in damage handler: " + e.getMessage());
+                e.printStackTrace();
             }
         }
-        return false;
+        return cancelled;
     }
     
     
@@ -105,7 +122,42 @@ public class BotEventManager {
                 handler.onBotTick(bot);
             } catch (Exception e) {
                 System.err.println("[PVP_BOT_API] Error in tick handler: " + e.getMessage());
+                e.printStackTrace();
             }
         }
+    }
+    
+    
+    public int getSpawnHandlerCount() {
+        return spawnHandlers.size();
+    }
+    
+    
+    public int getDeathHandlerCount() {
+        return deathHandlers.size();
+    }
+    
+    
+    public int getAttackHandlerCount() {
+        return attackHandlers.size();
+    }
+    
+    
+    public int getDamageHandlerCount() {
+        return damageHandlers.size();
+    }
+    
+    
+    public int getTickHandlerCount() {
+        return tickHandlers.size();
+    }
+    
+    
+    public void clearAllHandlers() {
+        spawnHandlers.clear();
+        deathHandlers.clear();
+        attackHandlers.clear();
+        damageHandlers.clear();
+        tickHandlers.clear();
     }
 }

@@ -56,10 +56,7 @@ public class BotAnchorPvp {
         return hasRespawnAnchor(inventory) && hasGlowstone(inventory);
     }
     
-    /**
-     * Main method - executes Anchor PVP
-     * Returns true if bot is busy with Anchor PVP (no need for regular combat)
-     */
+    
     public static boolean doAnchorPvp(ServerPlayerEntity bot, Entity target, BotSettings settings, net.minecraft.server.MinecraftServer server) {
         AnchorState state = getState(bot.getName().getString());
         World world = bot.getEntityWorld();
@@ -119,9 +116,7 @@ public class BotAnchorPvp {
         }
     }
     
-    /**
-     * Step 0: Place anchor
-     */
+    
     private static boolean stepPlaceAnchor(ServerPlayerEntity bot, Entity target, AnchorState state,
                                           net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         PlayerInventory inventory = bot.getInventory();
@@ -218,9 +213,7 @@ public class BotAnchorPvp {
         return true;
     }
 
-    /**
-     * Step 1: Charge anchor with glowstone
-     */
+    
     private static boolean stepChargeAnchor(ServerPlayerEntity bot, Entity target, AnchorState state,
                                            net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         PlayerInventory inventory = bot.getInventory();
@@ -313,9 +306,7 @@ public class BotAnchorPvp {
         return true;
     }
     
-    /**
-     * Step 2: Detonate anchor
-     */
+    
     private static boolean stepDetonateAnchor(ServerPlayerEntity bot, Entity target, AnchorState state,
                                              net.minecraft.server.MinecraftServer server, World world,
                                              BotSettings settings, double distance) {

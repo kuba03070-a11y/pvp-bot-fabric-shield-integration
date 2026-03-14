@@ -706,8 +706,8 @@ Before releasing your addon:
 
 ## Next Steps
 
-- [API Reference] - Complete method documentation
-- [Events] - Detailed event system guide
-- [Combat Strategies] - Create custom combat logic
-- [Examples] - Ready-to-use code examples
-- [Mod Integration] - Integration guide
+- [API Reference](APIReference.md) - Complete method documentation
+- [Events](Events.md) - Detailed event system guide
+- [Combat Strategies](CombatStrategies.md) - Create custom combat logic
+- [Examples](Examples.md) - Ready-to-use code examples
+- [Mod Integration](ModIntegration.md) - Integration guide

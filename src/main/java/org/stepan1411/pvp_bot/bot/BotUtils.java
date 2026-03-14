@@ -986,24 +986,24 @@ public class BotUtils {
         if (state.isEscapingCobweb) {
             state.cobwebEscapeTicks++;
             
-            // Keep bot immobilized and looking down
+
             bot.setPitch(90.0f);
             bot.setVelocity(0, bot.getVelocity().y, 0);
             
-            // Ensure water bucket is selected
+
             if (state.cobwebEscapeSlot >= 0 && state.cobwebEscapeSlot < 9) {
                 org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(bot.getInventory(), state.cobwebEscapeSlot);
             }
             
             if (state.cobwebEscapeTicks == 5) {
-                // Save water position for collection
+
                 net.minecraft.util.math.BlockPos waterPos = bot.getBlockPos().down();
                 state.waterPosition = waterPos;
                 
                 System.out.println("[COBWEB] Tick 5 - Collecting water at position: " + waterPos);
                 executeCommand(server, bot, "player " + bot.getName().getString() + " use once");
                 
-                // Check if water was actually collected
+
                 ItemStack currentItem = bot.getInventory().getStack(state.cobwebEscapeSlot);
                 if (currentItem.getItem() != Items.WATER_BUCKET) {
                     System.out.println("[COBWEB] Water not collected, will return later. Current item: " + currentItem.getItem());
@@ -1022,7 +1022,7 @@ public class BotUtils {
                 state.cobwebEscapeTicks = 0;
                 state.isInCobweb = false;
                 
-                // Only reset slot if water was collected
+
                 if (!state.needsToCollectWater) {
                     state.cobwebEscapeSlot = -1;
                 }
@@ -1044,9 +1044,9 @@ public class BotUtils {
             return;
         }
         
-        // Приоритет: сначала вода, потом эндер-жемчуг
+
         if (waterSlot >= 0) {
-            // Логика с водой (как было раньше)
+
             if (waterSlot >= 9) {
                 ItemStack water = bot.getInventory().getStack(waterSlot);
                 ItemStack current = bot.getInventory().getStack(8);
@@ -1060,22 +1060,22 @@ public class BotUtils {
             state.cobwebEscapeSlot = waterSlot;
             state.isEscapingCobweb = true;
             state.cobwebEscapeTicks = 0;
-            state.waterPosition = bot.getBlockPos().down(); // Save expected water position
+            state.waterPosition = bot.getBlockPos().down();
             state.needsToCollectWater = false;
             
-            // Stop all movement
+
             executeCommand(server, bot, "player " + bot.getName().getString() + " stop");
             bot.setVelocity(0, bot.getVelocity().y, 0);
             
-            // Select water bucket and look down
+
             org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(bot.getInventory(), waterSlot);
             bot.setPitch(90.0f);
             
-            // Place water
+
             System.out.println("[COBWEB] Placing water at position: " + state.waterPosition);
             executeCommand(server, bot, "player " + bot.getName().getString() + " use once");
         } else if (pearlSlot >= 0) {
-            // Логика с эндер-жемчугом
+
             if (pearlSlot >= 9) {
                 ItemStack pearl = bot.getInventory().getStack(pearlSlot);
                 ItemStack current = bot.getInventory().getStack(8);
@@ -1086,15 +1086,15 @@ public class BotUtils {
             
             System.out.println("[COBWEB] Using ender pearl to escape...");
             
-            // Выбираем эндер-жемчуг и бросаем его
+
             org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(bot.getInventory(), pearlSlot);
             
-            // Смотрим вперед (не вниз как с водой)
+
             bot.setPitch(0.0f);
             
             executeCommand(server, bot, "player " + bot.getName().getString() + " use once");
             
-            // Сразу завершаем процесс, так как эндер-жемчуг работает мгновенно
+
             state.isInCobweb = false;
         }
     }
@@ -1122,24 +1122,24 @@ public class BotUtils {
     
     
     public static boolean canAttack(ServerPlayerEntity bot, BotState state) {
-        // Если бот убегает из паутины или собирает воду - не может атаковать
+
         if (state.isEscapingCobweb || state.needsToCollectWater) {
             return false;
         }
         
-        // Если бот в паутине, проверяем есть ли у него средства для побега
+
         if (state.isInCobweb) {
             int waterSlot = findWaterBucket(bot.getInventory());
             int pearlSlot = findEnderPearl(bot.getInventory());
             
             if (waterSlot < 0 && pearlSlot < 0) {
                 System.out.println("[COBWEB] " + bot.getName().getString() + " in cobweb but no water/pearl - can attack");
-                return true; // Нет средств для побега, может атаковать
+                return true;
             }
             System.out.println("[COBWEB] " + bot.getName().getString() + " in cobweb with escape items - cannot attack");
-            return false; // Есть средства для побега, должен использовать их
+            return false;
         }
         
-        return true; // Не в паутине - может атаковать
+        return true;
     }
 }

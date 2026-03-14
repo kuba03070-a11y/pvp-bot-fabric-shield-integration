@@ -339,7 +339,7 @@ Event   Tick    Event    Remove
 ## Version Compatibility
 
 - **API Version:** 1.0.0
-- **Minecraft:** 1.21.10+
+- **Minecraft:** 1.21.11+
 - **Fabric Loader:** 0.16.0+
 - **Java:** 21+
 
@@ -350,7 +350,7 @@ String version = PvpBotAPI.getApiVersion();
 
 ## Next Steps
 
-- [API Reference] - Complete method documentation
-- [Events] - Detailed event system guide
-- [Combat Strategies] - Create custom combat logic
-- [Examples] - Ready-to-use code examples
+- [API Reference](APIReference.md) - Complete method documentation
+- [Events](Events.md) - Detailed event system guide
+- [Combat Strategies](CombatStrategies.md) - Create custom combat logic
+- [Examples](Examples.md) - Ready-to-use code examples

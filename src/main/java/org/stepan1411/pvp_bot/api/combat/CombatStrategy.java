@@ -24,4 +24,14 @@ public interface CombatStrategy {
     default int getCooldown() {
         return 20;
     }
+    
+    
+    default String getDescription() {
+        return getName();
+    }
+    
+    
+    default boolean isEnabledByDefault() {
+        return true;
+    }
 }

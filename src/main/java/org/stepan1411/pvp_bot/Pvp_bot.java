@@ -22,7 +22,22 @@ public class Pvp_bot implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("PVP Bot mod loaded!");
-        LOGGER.info("PVP Bot API version: " + org.stepan1411.pvp_bot.api.PvpBotAPI.getApiVersion());
+        
+
+        try {
+            org.stepan1411.pvp_bot.api.BotAPIIntegration.initialize();
+            LOGGER.info("PVP Bot API version: " + org.stepan1411.pvp_bot.api.PvpBotAPI.getApiVersion());
+            
+
+            org.stepan1411.pvp_bot.api.combat.CombatStrategyRegistry.getInstance()
+                .register(new org.stepan1411.pvp_bot.api.combat.ExampleStrategy());
+            
+
+            org.stepan1411.pvp_bot.api.ExampleEventHandlers.register();
+            
+        } catch (Exception e) {
+            LOGGER.error("Failed to initialize PVP Bot API: " + e.getMessage());
+        }
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             BotCommand.register(dispatcher);
@@ -48,6 +63,13 @@ public class Pvp_bot implements ModInitializer {
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
             StatsReporter.stop();
             BotManager.reset(server);
+            
+
+            try {
+                org.stepan1411.pvp_bot.api.BotAPIIntegration.cleanup();
+            } catch (Exception e) {
+                LOGGER.error("Error during API cleanup: " + e.getMessage());
+            }
         });
 
         BotTicker.register();

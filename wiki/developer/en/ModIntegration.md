@@ -1,506 +1,605 @@
 # Mod Integration
 
-This guide explains how to integrate PVP Bot with your Fabric mod.
+Guide for integrating PVP Bot API with other popular Minecraft mods.
 
-## Prerequisites
+## Overview
 
-- Java 21+
-- Fabric Loader 0.16.0+
-- Minecraft 1.21.10+
-- Basic knowledge of Fabric mod development
+The PVP Bot API is designed to work seamlessly with other mods. This guide covers integration patterns, compatibility considerations, and specific examples for popular mods.
 
-## Setup
+## General Integration Patterns
 
-### 1. Add Repository
+### Soft Dependencies
 
-Add JitPack repository to your `build.gradle`:
-
-```gradle
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-```
-
-### 2. Add Dependency
-
-Add PVP Bot as a dependency:
-[![](https://jitpack.io/v/Stepan1411/pvp-bot-fabric.svg)](https://jitpack.io/#Stepan1411/pvp-bot-fabric)
-
-```gradle
-dependencies {
-    // Required: PVP Bot API
-    modImplementation "com.github.Stepan1411:pvp-bot-fabric:VERSION"
-    
-    // Optional: Include in your JAR (if you want to bundle it)
-    // include "com.github.Stepan1411:pvp-bot-fabric:VERSION"
-}
-```
-
-
-### 3. Update fabric.mod.json
-
-Declare PVP Bot as a dependency:
-
-```json
-{
-  "schemaVersion": 1,
-  "id": "your-mod-id",
-  "version": "1.0.0",
-  "name": "Your Mod Name",
-  
-  "depends": {
-    "fabricloader": ">=0.16.0",
-    "minecraft": ">=1.21.10",
-    "fabric": "*",
-    "pvp_bot": "*"
-  }
-}
-```
-
-## Integration Methods
-
-### Method 1: Event-Based Integration (Recommended)
-
-Best for: Reacting to bot actions, modifying bot behavior, statistics tracking
+Use soft dependencies to integrate with mods that may not be present:
 
 ```java
-package com.example.yourmod;
-
-import net.fabricmc.api.ModInitializer;
-import org.stepan1411.pvp_bot.api.PvpBotAPI;
-import org.stepan1411.pvp_bot.api.event.BotEventManager;
-
-public class YourMod implements ModInitializer {
+public class MyBotAddon implements ModInitializer {
     
     @Override
     public void onInitialize() {
-        BotEventManager events = PvpBotAPI.getEventManager();
+        // Core functionality
+        initializeCore();
         
-        // React to bot spawns
-        events.registerSpawnHandler(bot -> {
-            System.out.println("Bot spawned: " + bot.getName().getString());
-            // Your logic here
-        });
+        // Optional integrations
+        if (isModLoaded("carpet")) {
+            initializeCarpetIntegration();
+        }
         
-        // React to bot deaths
-        events.registerDeathHandler(bot -> {
-            System.out.println("Bot died: " + bot.getName().getString());
-            // Your logic here
-        });
-        
-        // Control bot attacks
-        events.registerAttackHandler((bot, target) -> {
-            // Return true to cancel attack
-            if (shouldCancelAttack(bot, target)) {
-                return true;
-            }
-            return false;
-        });
-        
-        // Control bot damage
-        events.registerDamageHandler((bot, attacker, damage) -> {
-            // Return true to cancel damage
-            if (shouldCancelDamage(bot, attacker, damage)) {
-                return true;
-            }
-            return false;
-        });
-        
-        // Update every tick
-        events.registerTickHandler(bot -> {
-            // Called every tick for each bot
-            // Use sparingly - this runs frequently!
-        });
+        if (isModLoaded("litematica")) {
+            initializeLitematicaIntegration();
+        }
+    }
+    
+    private boolean isModLoaded(String modId) {
+        return FabricLoader.getInstance().isModLoaded(modId);
     }
 }
 ```
 
-### Method 2: Combat Strategy Integration
+### Conditional Class Loading
 
-Best for: Custom combat behaviors, weapon-specific logic, advanced AI
+Avoid class loading errors with optional dependencies:
 
 ```java
-package com.example.yourmod;
+// Create separate integration classes
+public class CarpetIntegration {
+    public static void initialize() {
+        // Carpet-specific code here
+        // This class only loads if Carpet is present
+    }
+}
 
-import net.fabricmc.api.ModInitializer;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import org.stepan1411.pvp_bot.api.combat.CombatStrategy;
-import org.stepan1411.pvp_bot.api.combat.CombatStrategyRegistry;
-import org.stepan1411.pvp_bot.bot.BotSettings;
+// Load conditionally
+if (isModLoaded("carpet")) {
+    try {
+        CarpetIntegration.initialize();
+    } catch (Exception e) {
+        System.err.println("Failed to initialize Carpet integration: " + e.getMessage());
+    }
+}
+```
 
-public class YourMod implements ModInitializer {
+## Popular Mod Integrations
+
+### Carpet Mod Integration
+
+Carpet Mod is a dependency of PVP Bot, so it's always available:
+
+```java
+public class CarpetBotIntegration {
     
-    @Override
-    public void onInitialize() {
-        // Register custom combat strategy
-        CombatStrategyRegistry.getInstance().register(new CustomStrategy());
+    public void initialize() {
+        // Access Carpet settings
+        PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
+            // Example: Apply carpet-specific settings to bots
+            configureCarpetSettings(bot);
+        });
     }
     
-    static class CustomStrategy implements CombatStrategy {
-        
+    private void configureCarpetSettings(ServerPlayerEntity bot) {
+        // Configure carpet settings for bot behavior
+        // This is handled internally by PVP Bot
+    }
+}
+```
+
+### Litematica Integration
+
+Build bots that can work with Litematica schematics:
+
+```java
+public class LitematicaBotIntegration {
+    
+    public void initialize() {
+        PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
+            // Check if bot should follow schematic
+            if (shouldFollowSchematic(bot)) {
+                startSchematicBuilding(bot);
+            }
+        });
+    }
+    
+    private boolean shouldFollowSchematic(ServerPlayerEntity bot) {
+        // Check if there's an active schematic
+        // Implementation depends on Litematica API
+        return false; // Placeholder
+    }
+    
+    private void startSchematicBuilding(ServerPlayerEntity bot) {
+        // Start building process
+        // This would require Litematica API access
+    }
+}
+```
+
+### WorldEdit Integration
+
+Bots that can work with WorldEdit selections:
+
+```java
+public class WorldEditBotIntegration {
+    
+    public void initialize() {
+        // Register custom combat strategy for WorldEdit areas
+        CombatStrategyRegistry.getInstance().register(new WorldEditAreaStrategy());
+    }
+    
+    private class WorldEditAreaStrategy implements CombatStrategy {
         @Override
         public String getName() {
-            return "Custom Strategy";
+            return "WorldEditAreaProtection";
         }
         
         @Override
         public int getPriority() {
-            return 100; // Higher = executed first
+            return 200; // High priority
         }
         
         @Override
         public boolean canUse(ServerPlayerEntity bot, Entity target, BotSettings settings) {
-            // Check if strategy can be used
-            // Example: only use if bot has specific item
-            return bot.getMainHandStack().getItem().toString().contains("diamond_sword");
+            // Check if target is in protected WorldEdit area
+            return isInProtectedArea(target.getPos());
         }
         
         @Override
         public boolean execute(ServerPlayerEntity bot, Entity target, BotSettings settings, MinecraftServer server) {
-            // Execute your custom combat logic
-            System.out.println("Executing custom strategy!");
+            // Don't attack in protected areas
+            bot.sendMessage(Text.literal("§cCannot attack in protected area!"));
+            return true; // Cancel attack
+        }
+        
+        private boolean isInProtectedArea(Vec3d pos) {
+            // Check WorldEdit regions
+            // Implementation depends on WorldEdit API
+            return false; // Placeholder
+        }
+    }
+}
+```
+
+### Baritone Integration
+
+Enhanced pathfinding with Baritone:
+
+```java
+public class BaritoneIntegration {
+    
+    public void initialize() {
+        // Baritone is already integrated into PVP Bot
+        // You can access settings through BotSettings
+        
+        PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
+            BotSettings settings = PvpBotAPI.getBotSettings();
             
-            // Your combat code here
-            // Return true if strategy was executed successfully
-            return true;
+            if (settings.isUseBaritone()) {
+                configureBaritoneForBot(bot);
+            }
+        });
+    }
+    
+    private void configureBaritoneForBot(ServerPlayerEntity bot) {
+        // Baritone configuration is handled internally
+        // You can influence it through bot commands and settings
+    }
+}
+```
+
+### Create Mod Integration
+
+Bots that can interact with Create contraptions:
+
+```java
+public class CreateModIntegration {
+    
+    public void initialize() {
+        CombatStrategyRegistry.getInstance().register(new CreateContraptionStrategy());
+    }
+    
+    private class CreateContraptionStrategy implements CombatStrategy {
+        @Override
+        public String getName() {
+            return "CreateContraption";
         }
         
         @Override
-        public int getCooldown() {
-            return 40; // 2 seconds cooldown
+        public int getPriority() {
+            return 80;
+        }
+        
+        @Override
+        public boolean canUse(ServerPlayerEntity bot, Entity target, BotSettings settings) {
+            // Check if there are Create contraptions nearby
+            return hasNearbyContraptions(bot);
+        }
+        
+        @Override
+        public boolean execute(ServerPlayerEntity bot, Entity target, BotSettings settings, MinecraftServer server) {
+            // Use Create contraptions tactically
+            activateNearbyContraptions(bot);
+            return true;
+        }
+        
+        private boolean hasNearbyContraptions(ServerPlayerEntity bot) {
+            // Check for Create mod blocks/entities
+            // Implementation depends on Create API
+            return false; // Placeholder
+        }
+        
+        private void activateNearbyContraptions(ServerPlayerEntity bot) {
+            // Activate contraptions
+            // Implementation depends on Create API
         }
     }
 }
 ```
 
-### Method 3: Query-Based Integration
+### Sodium/Iris Integration
 
-Best for: Checking bot status, getting bot information, conditional logic
+Performance optimization for rendering many bots:
 
 ```java
-package com.example.yourmod;
-
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import org.stepan1411.pvp_bot.api.PvpBotAPI;
-
-import java.util.Set;
-
-public class BotHelper {
+public class SodiumIrisIntegration {
     
-    public static void checkBots(MinecraftServer server) {
-        // Get all bot names
-        Set<String> bots = PvpBotAPI.getAllBots();
-        System.out.println("Active bots: " + bots.size());
-        
-        // Check if player is a bot
-        boolean isBot = PvpBotAPI.isBot("PlayerName");
-        
-        // Get bot entity
-        ServerPlayerEntity bot = PvpBotAPI.getBot(server, "BotName");
-        if (bot != null) {
-            System.out.println("Bot health: " + bot.getHealth());
-            System.out.println("Bot position: " + bot.getPos());
-        }
-        
-        // Get statistics
-        int spawned = PvpBotAPI.getTotalBotsSpawned();
-        int killed = PvpBotAPI.getTotalBotsKilled();
-        System.out.println("Stats: " + spawned + " spawned, " + killed + " killed");
+    public void initialize() {
+        // These mods are client-side, but you can optimize for them
+        PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
+            // Reduce visual effects when many bots are present
+            if (PvpBotAPI.getBotCount() > 50) {
+                optimizeForPerformance(bot);
+            }
+        });
+    }
+    
+    private void optimizeForPerformance(ServerPlayerEntity bot) {
+        // Reduce particle effects, sounds, etc.
+        // This helps with client performance when using Sodium/Iris
     }
 }
 ```
 
-### Method 4: Configuration Integration
+## Custom Mod Integration Example
 
-Best for: Adapting to bot settings, reading configuration
+Here's a complete example of integrating with a hypothetical "MagicMod":
 
 ```java
-package com.example.yourmod;
-
-import org.stepan1411.pvp_bot.api.PvpBotAPI;
-import org.stepan1411.pvp_bot.bot.BotSettings;
-
-public class ConfigHelper {
+public class MagicModIntegration {
     
-    public static void readSettings() {
-        BotSettings settings = PvpBotAPI.getBotSettings();
-        
-        // Read combat settings
-        boolean combatEnabled = settings.isCombatEnabled();
-        double meleeRange = settings.getMeleeRange();
-        int attackCooldown = settings.getAttackCooldown();
-        
-        // Read equipment settings
-        boolean autoEquipArmor = settings.isAutoEquipArmor();
-        boolean autoEquipWeapon = settings.isAutoEquipWeapon();
-        
-        // Read utility settings
-        boolean autoTotem = settings.isAutoTotemEnabled();
-        boolean autoEat = settings.isAutoEatEnabled();
-        
-        // Adapt your mod's behavior based on settings
-        if (combatEnabled) {
-            // Enable combat features
-        }
-    }
-}
-```
-
-## Common Integration Patterns
-
-### Pattern 1: Bot Protection System
-
-Prevent bots from being attacked by certain entities:
-
-```java
-events.registerDamageHandler((bot, attacker, damage) -> {
-    if (attacker != null && isProtectedEntity(attacker)) {
-        return true; // Cancel damage
-    }
-    return false;
-});
-```
-
-### Pattern 2: Bot Reward System
-
-Give rewards when bots kill players:
-
-```java
-events.registerAttackHandler((bot, target) -> {
-    if (target instanceof ServerPlayerEntity player) {
-        if (player.getHealth() - calculateDamage(bot) <= 0) {
-            giveReward(bot);
-        }
-    }
-    return false;
-});
-```
-
-### Pattern 3: Bot Statistics Tracking
-
-Track custom statistics:
-
-```java
-private final Map<String, Integer> botKills = new HashMap<>();
-
-events.registerDeathHandler(bot -> {
-    String name = bot.getName().getString();
-    botKills.put(name, botKills.getOrDefault(name, 0) + 1);
-});
-```
-
-### Pattern 4: Bot Team System
-
-Prevent friendly fire between team members:
-
-```java
-events.registerAttackHandler((bot, target) -> {
-    if (target instanceof ServerPlayerEntity targetPlayer) {
-        if (isSameTeam(bot, targetPlayer)) {
-            return true; // Cancel attack
-        }
-    }
-    return false;
-});
-```
-
-### Pattern 5: Custom Bot AI
-
-Add custom behavior to bots:
-
-```java
-events.registerTickHandler(bot -> {
-    // Only run every 20 ticks (1 second)
-    if (bot.age % 20 == 0) {
-        // Check conditions
-        if (shouldFlee(bot)) {
-            makeFleeFromDanger(bot);
-        } else if (shouldHeal(bot)) {
-            useHealingItem(bot);
-        }
-    }
-});
-```
-
-## Advanced Integration
-
-### Accessing Internal Bot Systems
-
-While the API provides most functionality, you can access internal systems if needed:
-
-```java
-import org.stepan1411.pvp_bot.bot.BotManager;
-import org.stepan1411.pvp_bot.bot.BotFaction;
-import org.stepan1411.pvp_bot.bot.BotPath;
-
-// Check bot faction
-String faction = BotFaction.getFaction("BotName");
-
-// Check if bots are enemies
-boolean enemies = BotFaction.areEnemies("Bot1", "Bot2");
-
-// Access path system
-// (Use with caution - internal API may change)
-```
-
-**Warning:** Internal APIs are not guaranteed to be stable. Prefer using the public API when possible.
-
-### Mixin Integration
-
-If you need deeper integration, you can use Mixins:
-
-```java
-@Mixin(ServerPlayerEntity.class)
-public class BotMixin {
+    private static final String MAGIC_MOD_ID = "magicmod";
     
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void onTick(CallbackInfo ci) {
-        ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
-        if (PvpBotAPI.isBot(player.getName().getString())) {
-            // Custom bot logic
+    public static void initialize() {
+        if (!FabricLoader.getInstance().isModLoaded(MAGIC_MOD_ID)) {
+            return;
         }
-    }
-}
-```
-
-## Compatibility Considerations
-
-### Version Checking
-
-Check API version at runtime:
-
-```java
-String apiVersion = PvpBotAPI.getApiVersion();
-if (!apiVersion.equals("1.0.0")) {
-    System.err.println("Warning: Unexpected API version: " + apiVersion);
-}
-```
-
-### Graceful Degradation
-
-Handle cases where PVP Bot is not installed:
-
-```java
-public class YourMod implements ModInitializer {
-    
-    private static boolean pvpBotLoaded = false;
-    
-    @Override
-    public void onInitialize() {
+        
         try {
-            Class.forName("org.stepan1411.pvp_bot.api.PvpBotAPI");
-            pvpBotLoaded = true;
-            initPvpBotIntegration();
-        } catch (ClassNotFoundException e) {
-            System.out.println("PVP Bot not found - integration disabled");
+            setupMagicIntegration();
+        } catch (Exception e) {
+            System.err.println("Failed to initialize MagicMod integration: " + e.getMessage());
         }
     }
     
-    private void initPvpBotIntegration() {
-        // Your integration code
+    private static void setupMagicIntegration() {
+        // Register magic-aware combat strategy
+        CombatStrategyRegistry.getInstance().register(new MagicCombatStrategy());
+        
+        // Handle magic events
+        PvpBotAPI.getEventManager().registerSpawnHandler(bot -> {
+            grantMagicAbilities(bot);
+        });
+        
+        PvpBotAPI.getEventManager().registerAttackHandler((bot, target) -> {
+            // Use magic attacks
+            return useMagicAttack(bot, target);
+        });
+    }
+    
+    private static void grantMagicAbilities(ServerPlayerEntity bot) {
+        // Grant magic abilities to bot
+        // This would use MagicMod's API
+        try {
+            // MagicAPI.grantAbility(bot, "fireball");
+            // MagicAPI.grantAbility(bot, "heal");
+        } catch (Exception e) {
+            System.err.println("Failed to grant magic abilities: " + e.getMessage());
+        }
+    }
+    
+    private static boolean useMagicAttack(ServerPlayerEntity bot, Entity target) {
+        // Check if bot should use magic instead of regular attack
+        if (shouldUseMagic(bot, target)) {
+            try {
+                // MagicAPI.castSpell(bot, "fireball", target);
+                return true; // Cancel regular attack
+            } catch (Exception e) {
+                System.err.println("Failed to cast spell: " + e.getMessage());
+            }
+        }
+        return false; // Use regular attack
+    }
+    
+    private static boolean shouldUseMagic(ServerPlayerEntity bot, Entity target) {
+        // Decide when to use magic
+        double distance = bot.distanceTo(target);
+        return distance > 5.0 && distance < 20.0; // Medium range
+    }
+    
+    private static class MagicCombatStrategy implements CombatStrategy {
+        @Override
+        public String getName() {
+            return "MagicCombat";
+        }
+        
+        @Override
+        public int getPriority() {
+            return 120; // High priority
+        }
+        
+        @Override
+        public boolean canUse(ServerPlayerEntity bot, Entity target, BotSettings settings) {
+            // Check if bot has mana and magic abilities
+            return hasMagicAbilities(bot) && hasSufficientMana(bot);
+        }
+        
+        @Override
+        public boolean execute(ServerPlayerEntity bot, Entity target, BotSettings settings, MinecraftServer server) {
+            // Execute magic combat
+            return castCombatSpell(bot, target);
+        }
+        
+        private boolean hasMagicAbilities(ServerPlayerEntity bot) {
+            // Check if bot has magic abilities
+            // Implementation depends on MagicMod API
+            return true; // Placeholder
+        }
+        
+        private boolean hasSufficientMana(ServerPlayerEntity bot) {
+            // Check mana levels
+            // Implementation depends on MagicMod API
+            return true; // Placeholder
+        }
+        
+        private boolean castCombatSpell(ServerPlayerEntity bot, Entity target) {
+            // Cast appropriate combat spell
+            // Implementation depends on MagicMod API
+            return true; // Placeholder
+        }
     }
 }
 ```
 
-### Soft Dependencies
+## Integration Best Practices
 
-Make PVP Bot optional in `fabric.mod.json`:
+### 1. Graceful Degradation
+
+Always handle missing dependencies gracefully:
+
+```java
+public class IntegrationManager {
+    
+    public void initializeIntegrations() {
+        // Try each integration separately
+        tryIntegration("Carpet", this::initializeCarpet);
+        tryIntegration("Litematica", this::initializeLitematica);
+        tryIntegration("WorldEdit", this::initializeWorldEdit);
+    }
+    
+    private void tryIntegration(String name, Runnable integration) {
+        try {
+            integration.run();
+            System.out.println("✓ " + name + " integration initialized");
+        } catch (Exception e) {
+            System.out.println("✗ " + name + " integration failed: " + e.getMessage());
+        }
+    }
+}
+```
+
+### 2. Version Compatibility
+
+Check mod versions when necessary:
+
+```java
+public class VersionChecker {
+    
+    public boolean isCompatibleVersion(String modId, String minVersion) {
+        Optional<ModContainer> mod = FabricLoader.getInstance().getModContainer(modId);
+        if (mod.isEmpty()) {
+            return false;
+        }
+        
+        String version = mod.get().getMetadata().getVersion().getFriendlyString();
+        return compareVersions(version, minVersion) >= 0;
+    }
+    
+    private int compareVersions(String version1, String version2) {
+        // Simple version comparison
+        // In practice, use a proper version comparison library
+        return version1.compareTo(version2);
+    }
+}
+```
+
+### 3. Configuration Integration
+
+Allow users to configure integrations:
+
+```java
+public class IntegrationConfig {
+    public boolean enableCarpetIntegration = true;
+    public boolean enableLitematicaIntegration = true;
+    public boolean enableWorldEditIntegration = false;
+    
+    // Load from config file
+    public static IntegrationConfig load() {
+        // Implementation depends on your config system
+        return new IntegrationConfig();
+    }
+}
+```
+
+### 4. Event Priority
+
+Consider event execution order with other mods:
+
+```java
+// Register with appropriate priority
+public void registerEvents() {
+    // High priority for critical integrations
+    EventPriority priority = EventPriority.HIGH;
+    
+    // Register with priority if supported by the mod
+    // Otherwise, register early in initialization
+}
+```
+
+## Testing Integrations
+
+### Unit Testing
+
+Test integrations with mock objects:
+
+```java
+public class IntegrationTest {
+    
+    @Test
+    public void testMagicIntegration() {
+        // Mock bot and target
+        ServerPlayerEntity mockBot = createMockBot();
+        Entity mockTarget = createMockTarget();
+        
+        // Test integration
+        MagicCombatStrategy strategy = new MagicCombatStrategy();
+        boolean canUse = strategy.canUse(mockBot, mockTarget, BotSettings.get());
+        
+        assertTrue(canUse);
+    }
+}
+```
+
+### Integration Testing
+
+Test with actual mod combinations:
+
+```java
+public class IntegrationTestSuite {
+    
+    @Test
+    public void testWithCarpetMod() {
+        // Test PVP Bot + Carpet integration
+        assumeTrue(isModLoaded("carpet"));
+        
+        // Run integration tests
+    }
+    
+    @Test
+    public void testWithLitematica() {
+        // Test PVP Bot + Litematica integration
+        assumeTrue(isModLoaded("litematica"));
+        
+        // Run integration tests
+    }
+}
+```
+
+## Common Integration Challenges
+
+### 1. Class Loading Issues
+
+**Problem:** NoClassDefFoundError when optional mod is missing.
+
+**Solution:** Use reflection or separate integration classes:
+
+```java
+// Safe integration loading
+try {
+    Class<?> integrationClass = Class.forName("com.example.MyIntegration");
+    Method initMethod = integrationClass.getMethod("initialize");
+    initMethod.invoke(null);
+} catch (ClassNotFoundException e) {
+    // Mod not present, skip integration
+} catch (Exception e) {
+    System.err.println("Integration failed: " + e.getMessage());
+}
+```
+
+### 2. API Changes
+
+**Problem:** Integrated mod changes its API.
+
+**Solution:** Version-specific integration:
+
+```java
+public class VersionedIntegration {
+    
+    public void initialize() {
+        String version = getModVersion("targetmod");
+        
+        if (version.startsWith("1.0")) {
+            initializeV1();
+        } else if (version.startsWith("2.0")) {
+            initializeV2();
+        } else {
+            System.err.println("Unsupported mod version: " + version);
+        }
+    }
+}
+```
+
+### 3. Event Conflicts
+
+**Problem:** Multiple mods handling the same events.
+
+**Solution:** Coordinate with other mods:
+
+```java
+// Check if other mods are handling the event
+public boolean shouldHandleEvent(ServerPlayerEntity bot) {
+    // Check for other mod markers
+    if (bot.getDataTracker().get(OTHER_MOD_MARKER)) {
+        return false; // Let other mod handle
+    }
+    return true;
+}
+```
+
+## Documentation
+
+When creating integrations, document:
+
+1. **Required mod versions**
+2. **Optional vs required dependencies**
+3. **Configuration options**
+4. **Known conflicts**
+5. **Usage examples**
+
+Example README section:
+
+```markdown
+## Mod Integrations
+
+### Supported Mods
+
+- **Carpet Mod** (Required) - Core functionality
+- **Litematica** (Optional) - Schematic building support
+- **WorldEdit** (Optional) - Region protection
+- **Create** (Optional) - Contraption interaction
+
+### Configuration
 
 ```json
 {
-  "depends": {
-    "fabricloader": ">=0.16.0",
-    "minecraft": ">=1.21.10"
-  },
-  "suggests": {
-    "pvp_bot": "*"
+  "integrations": {
+    "litematica": true,
+    "worldedit": false,
+    "create": true
   }
 }
 ```
 
-## Testing Your Integration
+### Known Issues
 
-### 1. Build Your Mod
-
-```bash
-./gradlew build
+- WorldEdit integration requires WorldEdit 7.2.0+
+- Create integration may conflict with Create: Extended
 ```
 
-### 2. Test in Development
-
-Place both mods in `run/mods/`:
-- Your mod JAR
-- PVP Bot JAR
-
-### 3. Test Bot Spawning
-
-```
-/pvpbot spawn TestBot
-```
-
-### 4. Check Logs
-
-Look for your integration messages in the console.
-
-### 5. Test Events
-
-- Spawn bot → Check spawn event
-- Attack bot → Check damage event
-- Bot attacks → Check attack event
-- Kill bot → Check death event
-
-## Troubleshooting
-
-### Issue: ClassNotFoundException
-
-**Cause:** PVP Bot not in classpath
-
-**Solution:** Check `build.gradle` dependency and rebuild
-
-### Issue: Events Not Firing
-
-**Cause:** Handler registered too late
-
-**Solution:** Register handlers in `onInitialize()`, not later
-
-### Issue: Strategy Not Executing
-
-**Cause:** Lower priority than existing strategies
-
-**Solution:** Increase priority value (higher = first)
-
-### Issue: Bot Not Found
-
-**Cause:** Bot name incorrect or bot not spawned
-
-**Solution:** Use `PvpBotAPI.getAllBots()` to check active bots
-
-## Example Projects
-
-[example mod](https://github.com/Stepan1411/pvpbot-example-mod)
-
-## Performance Tips
-
-1. **Avoid Heavy Tick Handlers:** Tick events run every tick (20 times/second per bot)
-2. **Use Cooldowns:** Add delays between expensive operations
-3. **Cache Results:** Don't query repeatedly in tight loops
-4. **Batch Operations:** Group multiple operations together
-5. **Profile Your Code:** Use profiler to find bottlenecks
-
-## Security Considerations
-
-1. **Validate Input:** Check bot/target validity before operations
-2. **Handle Exceptions:** Wrap handlers in try-catch
-3. **Limit Permissions:** Don't give bots excessive permissions
-4. **Rate Limiting:** Prevent spam from bot actions
-
-## Next Steps
-
-- [API Reference] - Complete method documentation
-- [Events] - Detailed event system guide
-- [Combat Strategies] - Create custom combat logic
-- [Examples] - Ready-to-use code examples
-- [Best Practices] - Recommendations for addon development
+Integration with other mods expands the possibilities for bot behavior and creates richer gameplay experiences. Always prioritize compatibility and graceful degradation to ensure your addon works well in diverse mod environments.

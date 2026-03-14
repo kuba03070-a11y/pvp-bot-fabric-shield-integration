@@ -50,7 +50,7 @@ public class BotTicker {
 
                 BotUtils.update(bot, server);
                 
-                // Обновить движение бота (follow/escort/goto)
+
                 BotMovement.updateMovement(bot);
                 
 

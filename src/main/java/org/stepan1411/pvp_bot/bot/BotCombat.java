@@ -62,7 +62,7 @@ public class BotCombat {
             SPEAR,
             CRYSTAL,
             ANCHOR,
-            ELYTRA_MACE // Новый режим
+            ELYTRA_MACE
         }
     }
     
@@ -249,15 +249,11 @@ public class BotCombat {
 
 
         try {
-            var strategies = org.stepan1411.pvp_bot.api.combat.CombatStrategyRegistry.getInstance().getStrategies();
-            for (var strategy : strategies) {
-                if (strategy.canUse(bot, target, settings)) {
-                    boolean executed = strategy.execute(bot, target, settings, server);
-                    if (executed) {
+            var strategyRegistry = org.stepan1411.pvp_bot.api.combat.CombatStrategyRegistry.getInstance();
+            boolean strategyExecuted = strategyRegistry.executeStrategy(bot, target, settings, server);
+            if (strategyExecuted) {
 
-                        return;
-                    }
-                }
+                return;
             }
         } catch (Exception e) {
             System.err.println("[PVP_BOT] Error executing combat strategy: " + e.getMessage());
@@ -298,7 +294,7 @@ public class BotCombat {
             case SPEAR -> settings.getSpearChargeRange();
             case CRYSTAL -> 10.0;
             case ANCHOR -> 10.0;
-            case ELYTRA_MACE -> 15.0; // Новый режим
+            case ELYTRA_MACE -> 15.0;
         };
         
         if (distance > maxRange) {
@@ -328,7 +324,7 @@ public class BotCombat {
                 }
             }
             case ELYTRA_MACE -> {
-                // Новый режим ElytraMace
+
                 boolean handled = BotElytraMace.doElytraMace(bot, target, settings, server);
                 if (!handled) {
                     state.currentMode = CombatState.WeaponMode.MELEE;
@@ -542,7 +538,7 @@ public class BotCombat {
         double maceRange = settings.getMaceRange();
         double spearRange = settings.getSpearRange();
         
-        // Приоритет: ElytraMace > Crystal > Anchor > остальные
+
         if (target != null && BotElytraMace.canUseElytraMace(bot, target, settings)) {
             state.currentMode = CombatState.WeaponMode.ELYTRA_MACE;
             System.out.println("[COMBAT] " + bot.getName().getString() + " selected ELYTRA_MACE mode");
@@ -656,11 +652,11 @@ public class BotCombat {
                 state.shieldToggleCooldown = 20;
             }
         }
-        // Проверяем готовность к атаке
+
         if (distance <= meleeRange && state.attackCooldown <= 0) {
             System.out.println("[COMBAT] " + bot.getName().getString() + " in attack range, checking conditions...");
             
-            // Проверяем кулдаун атаки
+
             if (bot.getAttackCooldownProgress(0.5f) < 1.0f) {
                 System.out.println("[COMBAT] " + bot.getName().getString() + " attack cooldown not ready: " + bot.getAttackCooldownProgress(0.5f));
                 return;
@@ -717,18 +713,18 @@ public class BotCombat {
 
             if (settings.isCriticalsEnabled()) {
                 if (bot.isOnGround()) {
-                    // Прыгаем для критического удара
+
                     System.out.println("[COMBAT] " + bot.getName().getString() + " jumping for critical hit");
                     bot.jump();
                     return;
                 } else {
-                    // В воздухе - проверяем условия для критического удара
+
                     double velocityY = bot.getVelocity().y;
                     
-                    // Упрощенное условие: атакуем если падаем (velocityY < 0)
-                    // Убираем проверку fallDistance, так как она может не работать с HeroBot
+
+
                     if (velocityY < 0) {
-                        // Критический удар!
+
                         System.out.println("[COMBAT] " + bot.getName().getString() + " performing critical hit (velocityY: " + velocityY + ")");
                         attackWithCarpet(bot, target, server);
                         
@@ -737,10 +733,10 @@ public class BotCombat {
                     } else {
                         System.out.println("[COMBAT] " + bot.getName().getString() + " waiting to fall for critical (velocityY: " + velocityY + ")");
                     }
-                    // Если еще поднимаемся (velocityY >= 0), ждем
+
                 }
             } else {
-                // Обычная атака без критических ударов
+
                 System.out.println("[COMBAT] " + bot.getName().getString() + " performing normal attack");
                 attackWithCarpet(bot, target, server);
                 
@@ -1067,7 +1063,7 @@ public class BotCombat {
             return;
         }
 
-        // Проверка дружественного огня
+
         if (!settings.isFriendlyFireEnabled() && target instanceof PlayerEntity) {
             String botName = bot.getName().getString();
             String targetName = target.getName().getString();
@@ -1078,7 +1074,7 @@ public class BotCombat {
             }
         }
         
-        // Шанс промаха
+
         if (random.nextInt(100) < settings.getMissChance()) {
             System.out.println("[COMBAT] " + bot.getName().getString() + " missed attack (miss chance)");
             try {
@@ -1092,14 +1088,14 @@ public class BotCombat {
             return;
         }
         
-        // Шанс ошибки (неточность)
+
         if (random.nextInt(100) < settings.getMistakeChance()) {
             float yawOffset = (random.nextFloat() - 0.5f) * 60;
             bot.setYaw(bot.getYaw() + yawOffset);
             System.out.println("[COMBAT] " + bot.getName().getString() + " made aiming mistake");
         }
         
-        // Выполняем атаку
+
         System.out.println("[COMBAT] " + bot.getName().getString() + " attacking " + target.getName().getString());
         try {
             server.getCommandManager().getDispatcher().execute(

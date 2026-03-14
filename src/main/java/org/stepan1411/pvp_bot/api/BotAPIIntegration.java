@@ -8,41 +8,57 @@ public class BotAPIIntegration {
     
     
     public static void fireSpawnEvent(ServerPlayerEntity bot) {
+        if (bot == null) return;
+        
         try {
             PvpBotAPI.getEventManager().fireSpawnEvent(bot);
         } catch (Exception e) {
-            System.err.println("[PVP_BOT_API] Error firing spawn event: " + e.getMessage());
+            System.err.println("[PVP_BOT_API] Error firing spawn event for " + getBotNameSafe(bot) + ": " + e.getMessage());
             e.printStackTrace();
         }
     }
     
     
     public static void fireDeathEvent(ServerPlayerEntity bot) {
+        if (bot == null) return;
+        
         try {
             PvpBotAPI.getEventManager().fireDeathEvent(bot);
         } catch (Exception e) {
-            System.err.println("[PVP_BOT_API] Error firing death event: " + e.getMessage());
+            System.err.println("[PVP_BOT_API] Error firing death event for " + getBotNameSafe(bot) + ": " + e.getMessage());
             e.printStackTrace();
         }
     }
     
     
     public static boolean fireAttackEvent(ServerPlayerEntity bot, Entity target) {
+        if (bot == null || target == null) return false;
+        
         try {
             return PvpBotAPI.getEventManager().fireAttackEvent(bot, target);
         } catch (Exception e) {
-            System.err.println("[PVP_BOT_API] Error firing attack event: " + e.getMessage());
+            System.err.println("[PVP_BOT_API] Error firing attack event for " + getBotNameSafe(bot) + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
     
-    
+    /**
+     * Fire a bot damage event.
+     * Called internally when a bot is about to take damage.
+     * 
+     * @param bot the bot taking damage
+     * @param attacker the entity causing damage (can be null)
+     * @param damage the amount of damage
+     * @return true if the damage should be cancelled, false otherwise
+     */
     public static boolean fireDamageEvent(ServerPlayerEntity bot, Entity attacker, float damage) {
+        if (bot == null) return false;
+        
         try {
             return PvpBotAPI.getEventManager().fireDamageEvent(bot, attacker, damage);
         } catch (Exception e) {
-            System.err.println("[PVP_BOT_API] Error firing damage event: " + e.getMessage());
+            System.err.println("[PVP_BOT_API] Error firing damage event for " + getBotNameSafe(bot) + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -50,11 +66,55 @@ public class BotAPIIntegration {
     
     
     public static void fireTickEvent(ServerPlayerEntity bot) {
+        if (bot == null) return;
+        
         try {
             PvpBotAPI.getEventManager().fireTickEvent(bot);
         } catch (Exception e) {
-            System.err.println("[PVP_BOT_API] Error firing tick event: " + e.getMessage());
 
+            if (bot.age % 200 == 0) {
+                System.err.println("[PVP_BOT_API] Error firing tick event for " + getBotNameSafe(bot) + ": " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Check if a bot name is valid for API operations.
+     * 
+     * @param botName the bot name to check
+     * @return true if valid, false otherwise
+     */
+    public static boolean isValidBotName(String botName) {
+        return botName != null && !botName.isEmpty() && botName.length() <= 16;
+    }
+    
+    /**
+     * Safely get a bot's name for logging.
+     * 
+     * @param bot the bot entity
+     * @return bot name or "Unknown" if null
+     */
+    public static String getBotNameSafe(ServerPlayerEntity bot) {
+        if (bot == null) return "Unknown";
+        try {
+            return bot.getName().getString();
+        } catch (Exception e) {
+            return "Unknown";
+        }
+    }
+    
+    
+    public static void initialize() {
+        System.out.println("[PVP_BOT_API] API Integration initialized");
+    }
+    
+    
+    public static void cleanup() {
+        try {
+            PvpBotAPI.getEventManager().clearAllHandlers();
+            System.out.println("[PVP_BOT_API] API Integration cleaned up");
+        } catch (Exception e) {
+            System.err.println("[PVP_BOT_API] Error during cleanup: " + e.getMessage());
         }
     }
 }

@@ -9,28 +9,24 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.stepan1411.pvp_bot.bot.BotSettings;
 
-/**
- * ElytraMace трюк - использование элитр и булавы для атаки сверху
- */
+
 public class BotElytraMace {
     
-    /**
-     * Состояние ElytraMace трюка
-     */
+    
     private static class ElytraMaceState {
         int step = 0;
         int cooldownTicks = 0;
         int stuckCounter = 0;
         int lastStep = -1;
         
-        // Специфичные поля для ElytraMace
+
         boolean elytraEquipped = false;
-        int takeoffTicks = 0; // Счетчик тиков взлета
-        double startY = 0; // Начальная высота для отслеживания взлета
-        int waitTicks = 0; // Счетчик ожидания
-        int retryCount = 0; // Счетчик попыток взлета
+        int takeoffTicks = 0;
+        double startY = 0;
+        int waitTicks = 0;
+        int retryCount = 0;
         
-        // Слоты предметов
+
         int elytraSlot = -1;
         int chestplateSlot = -1;
         int fireworkSlot = -1;
@@ -39,16 +35,12 @@ public class BotElytraMace {
     
     private static final java.util.Map<String, ElytraMaceState> states = new java.util.HashMap<>();
     
-    /**
-     * Получить состояние бота
-     */
+    
     private static ElytraMaceState getState(String botName) {
         return states.computeIfAbsent(botName, k -> new ElytraMaceState());
     }
     
-    /**
-     * Проверить возможность использования ElytraMace
-     */
+    
     public static boolean canUseElytraMace(ServerPlayerEntity bot, Entity target, BotSettings settings) {
         System.out.println("[ElytraMace] " + bot.getName().getString() + " checking canUseElytraMace...");
         
@@ -64,7 +56,7 @@ public class BotElytraMace {
         PlayerInventory inventory = bot.getInventory();
         boolean hasAllItems = hasElytra(inventory) && hasMace(inventory) && hasFireworks(inventory) && hasChestplate(inventory);
         
-        // Добавим отладочную информацию
+
         if (!hasAllItems) {
             int elytraSlot = findElytra(inventory);
             int chestSlot = findChestplate(inventory);
@@ -80,9 +72,7 @@ public class BotElytraMace {
         return hasAllItems;
     }
     
-    /**
-     * Выполнить ElytraMace трюк
-     */
+    
     public static boolean doElytraMace(ServerPlayerEntity bot, Entity target, BotSettings settings, net.minecraft.server.MinecraftServer server) {
         ElytraMaceState state = getState(bot.getName().getString());
         World world = bot.getEntityWorld();
@@ -90,7 +80,7 @@ public class BotElytraMace {
         
         System.out.println("[ElytraMace] " + bot.getName().getString() + " doElytraMace called - step: " + state.step + ", distance: " + String.format("%.1f", distance));
         
-        // Отладочная информация в начале каждого цикла
+
         if (state.step == 0 && state.cooldownTicks == 0) {
             PlayerInventory inventory = bot.getInventory();
             int elytraSlot = findElytra(inventory);
@@ -100,7 +90,7 @@ public class BotElytraMace {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " starting new cycle - Elytra: " + elytraInfo + ", Chestplate: " + chestInfo);
         }
         
-        // Проверка на застревание
+
         if (state.step == state.lastStep) {
             state.stuckCounter++;
             if (state.stuckCounter > 100) {
@@ -113,7 +103,7 @@ public class BotElytraMace {
             state.lastStep = state.step;
         }
         
-        // Обработка кулдаунов
+
         if (state.cooldownTicks > 0) {
             state.cooldownTicks--;
             return true;
@@ -124,14 +114,14 @@ public class BotElytraMace {
             return true;
         }
         
-        // Если цель слишком далеко - сброс
+
         if (distance > 20.0) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " target too far, resetting");
             resetState(state);
             return true;
         }
         
-        // Выполнение шагов
+
         switch (state.step) {
             case 0:
                 return stepPrepareElytra(bot, target, state, server, world, settings);
@@ -151,16 +141,14 @@ public class BotElytraMace {
         }
     }
     
-    /**
-     * Шаг 0: Подготовка элитр
-     */
+    
     private static boolean stepPrepareElytra(ServerPlayerEntity bot, Entity target, ElytraMaceState state, 
                                            net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         PlayerInventory inventory = bot.getInventory();
         
         System.out.println("[ElytraMace] " + bot.getName().getString() + " step 0: preparing elytra...");
         
-        // Находим все необходимые предметы
+
         state.elytraSlot = findElytra(inventory);
         state.chestplateSlot = findChestplate(inventory);
         state.fireworkSlot = findFireworks(inventory);
@@ -170,10 +158,10 @@ public class BotElytraMace {
         
         if (state.elytraSlot < 0 || state.fireworkSlot < 0 || state.maceSlot < 0) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " missing required items!");
-            return false; // Выход из ElytraMace режима
+            return false;
         }
         
-        // Берем элитры в руку
+
         System.out.println("[ElytraMace] " + bot.getName().getString() + " selecting elytra from slot " + state.elytraSlot);
         if (!selectItem(bot, state.elytraSlot)) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " failed to select elytra");
@@ -182,7 +170,7 @@ public class BotElytraMace {
         
         System.out.println("[ElytraMace] " + bot.getName().getString() + " equipping elytra...");
         
-        // Одеваем элитры (ПКМ)
+
         try {
             server.getCommandManager().getDispatcher().execute(
                 "player " + bot.getName().getString() + " use once", 
@@ -201,49 +189,47 @@ public class BotElytraMace {
         return true;
     }
     
-    /**
-     * Шаг 1: Взлет
-     */
+    
     private static boolean stepTakeoff(ServerPlayerEntity bot, Entity target, ElytraMaceState state,
                                      net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         PlayerInventory inventory = bot.getInventory();
         
-        // Инициализация счетчика тиков взлета
+
         if (state.takeoffTicks == 0) {
-            state.startY = bot.getY(); // Запоминаем начальную высоту
+            state.startY = bot.getY();
             System.out.println("[ElytraMace] " + bot.getName().getString() + " starting takeoff sequence at Y=" + String.format("%.1f", state.startY) + "...");
         }
         
         state.takeoffTicks++;
         System.out.println("[ElytraMace] " + bot.getName().getString() + " takeoff tick " + state.takeoffTicks);
         
-        // Первый прыжок и установка горизонтального взгляда
+
         if (state.takeoffTicks == 1) {
-            // Смотрим горизонтально (pitch = 0)
+
             bot.setPitch(0.0f);
             
-            // Используем прямой вызов jump вместо команды
+
             bot.jump();
             System.out.println("[ElytraMace] " + bot.getName().getString() + " jumping with horizontal look (direct call)...");
         }
         
-        // Активируем элитры через команду HeroBot
+
         if (state.takeoffTicks == 5) {
-            // Используем прямой вызов jump для активации элитр
+
             bot.jump();
             System.out.println("[ElytraMace] " + bot.getName().getString() + " activating elytra with direct jump...");
         }
         
-        // Используем фейерверки для ускорения (пока еще смотрим горизонтально)
+
         if (state.takeoffTicks == 8) {
-            // Выбираем фейерверки
+
             if (!selectItem(bot, state.fireworkSlot)) {
                 return true;
             }
             
             System.out.println("[ElytraMace] " + bot.getName().getString() + " launching with fireworks...");
             
-            // Запускаем фейерверки (используем настройку количества)
+
             int fireworkCount = settings.getElytraMaceFireworkCount();
             try {
                 for (int i = 0; i < fireworkCount; i++) {
@@ -260,7 +246,7 @@ public class BotElytraMace {
             }
         }
         
-        // Теперь поворачиваем взгляд вверх для набора высоты
+
         if (state.takeoffTicks == 12) {
             bot.setPitch(-90.0f);
             System.out.println("[ElytraMace] " + bot.getName().getString() + " looking up for altitude gain");
@@ -273,9 +259,7 @@ public class BotElytraMace {
         return true;
     }
     
-    /**
-     * Шаг 2: Ждем взлета на 10-20 блоков
-     */
+    
     private static boolean stepWaitAltitude(ServerPlayerEntity bot, Entity target, ElytraMaceState state,
                                           net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         state.takeoffTicks++;
@@ -284,7 +268,7 @@ public class BotElytraMace {
         
         System.out.println("[ElytraMace] " + bot.getName().getString() + " altitude: " + String.format("%.1f", currentHeight) + " blocks (tick " + state.takeoffTicks + ")");
         
-        // Проверяем успешный взлет
+
         if (currentHeight >= minAltitude) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " reached altitude " + String.format("%.1f", currentHeight) + ", moving to step 3");
             state.step = 3;
@@ -292,38 +276,36 @@ public class BotElytraMace {
             return true;
         }
         
-        // Проверяем неудачный взлет (таймаут или падение)
+
         if (state.takeoffTicks >= 80 || (state.takeoffTicks > 20 && currentHeight < 2.0)) {
             state.retryCount++;
             int maxRetries = settings.getElytraMaceMaxRetries();
             
             if (state.retryCount < maxRetries) {
                 System.out.println("[ElytraMace] " + bot.getName().getString() + " takeoff failed (altitude: " + String.format("%.1f", currentHeight) + "), retry " + state.retryCount + "/" + maxRetries);
-                // Сбрасываем к шагу 0 для повторной попытки
+
                 state.step = 0;
                 state.takeoffTicks = 0;
                 state.elytraEquipped = false;
-                state.cooldownTicks = 10; // Небольшая пауза перед повтором
+                state.cooldownTicks = 10;
             } else {
                 System.out.println("[ElytraMace] " + bot.getName().getString() + " takeoff failed after " + maxRetries + " attempts, giving up");
                 resetState(state);
-                return false; // Выходим из ElytraMace режима
+                return false;
             }
         }
         
         return true;
     }
     
-    /**
-     * Шаг 3: Снимаем элитры и ждем
-     */
+    
     private static boolean stepRemoveElytraAndWait(ServerPlayerEntity bot, Entity target, ElytraMaceState state,
                                                  net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         PlayerInventory inventory = bot.getInventory();
         
-        // Выбираем нагрудник
+
         if (state.chestplateSlot >= 0) {
-            // Если нагрудник уже надет (слот 38), не нужно его выбирать
+
             if (state.chestplateSlot != 38) {
                 if (!selectItem(bot, state.chestplateSlot)) {
                     return true;
@@ -332,7 +314,7 @@ public class BotElytraMace {
             
             System.out.println("[ElytraMace] " + bot.getName().getString() + " equipping chestplate...");
             
-            // Одеваем нагрудник (ПКМ) - это снимет элитры
+
             try {
                 server.getCommandManager().getDispatcher().execute(
                     "player " + bot.getName().getString() + " use once", 
@@ -342,28 +324,26 @@ public class BotElytraMace {
                 System.out.println("[ElytraMace] " + bot.getName().getString() + " error equipping chestplate: " + e.getMessage());
             }
         } else {
-            // Если нагрудника нет, просто снимаем элитры
+
             System.out.println("[ElytraMace] " + bot.getName().getString() + " no chestplate, removing elytra manually...");
-            // Можно попробовать снять элитры другим способом, но пока пропустим
+
         }
         
         state.elytraEquipped = false;
-        state.waitTicks = 5; // Ждем 5 тиков
+        state.waitTicks = 5;
         state.step = 4;
         System.out.println("[ElytraMace] " + bot.getName().getString() + " elytra removed, waiting 5 ticks");
         
         return true;
     }
     
-    /**
-     * Шаг 4: Планирование к цели
-     */
+    
     private static boolean stepGlideToTarget(ServerPlayerEntity bot, Entity target, ElytraMaceState state,
                                            net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         PlayerInventory inventory = bot.getInventory();
         double distance = bot.distanceTo(target);
         
-        // Одеваем элитры обратно
+
         if (!state.elytraEquipped) {
             if (!selectItem(bot, state.elytraSlot)) {
                 return true;
@@ -383,24 +363,24 @@ public class BotElytraMace {
             return true;
         }
         
-        // Улучшенное прицеливание - смотрим на цель с учетом движения
+
         lookAtEntity(bot, target);
         
-        // Вычисляем угол для планирования к цели
+
         double deltaX = target.getX() - bot.getX();
         double deltaY = target.getY() - bot.getY();
         double deltaZ = target.getZ() - bot.getZ();
         double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
         
-        // Устанавливаем pitch для планирования (не прямо вниз, а под углом к цели)
+
         float targetPitch = (float) Math.toDegrees(Math.atan2(deltaY, horizontalDistance));
-        // Ограничиваем pitch от 30 до 90 градусов (вниз)
+
         targetPitch = Math.max(30.0f, Math.min(90.0f, targetPitch));
         bot.setPitch(targetPitch);
         
         System.out.println("[ElytraMace] " + bot.getName().getString() + " gliding to target, distance: " + String.format("%.1f", distance) + ", pitch: " + String.format("%.1f", targetPitch));
         
-        // Проверяем дистанцию до цели
+
         double attackDistance = settings.getElytraMaceAttackDistance();
         if (distance <= attackDistance) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " close to target (" + String.format("%.1f", distance) + "), moving to step 5");
@@ -411,18 +391,16 @@ public class BotElytraMace {
         return true;
     }
     
-    /**
-     * Шаг 5: Атака булавой
-     */
+    
     private static boolean stepMaceAttack(ServerPlayerEntity bot, Entity target, ElytraMaceState state,
                                         net.minecraft.server.MinecraftServer server, World world, BotSettings settings) {
         PlayerInventory inventory = bot.getInventory();
         
-        // Снимаем элитры (одеваем нагрудник)
+
         if (state.elytraEquipped && state.chestplateSlot >= 0) {
             System.out.println("[ElytraMace] " + bot.getName().getString() + " removing elytra, chestplate slot: " + state.chestplateSlot);
             
-            // Если нагрудник уже надет (слот 38), не нужно его выбирать
+
             if (state.chestplateSlot != 38) {
                 if (!selectItem(bot, state.chestplateSlot)) {
                     return true;
@@ -436,7 +414,7 @@ public class BotElytraMace {
                 );
                 state.elytraEquipped = false;
                 
-                // Проверяем где теперь элитры
+
                 int elytraSlot = findElytra(inventory);
                 String elytraInfo = elytraSlot == 38 ? "still equipped" : (elytraSlot >= 0 ? "moved to slot " + elytraSlot : "disappeared");
                 System.out.println("[ElytraMace] " + bot.getName().getString() + " elytra removed for mace attack, elytra now: " + elytraInfo);
@@ -446,15 +424,15 @@ public class BotElytraMace {
             return true;
         }
         
-        // Выбираем булаву
+
         if (!selectItem(bot, state.maceSlot)) {
             return true;
         }
         
-        // Смотрим на цель
+
         lookAtEntity(bot, target);
         
-        // Спамим атаку булавой
+
         System.out.println("[ElytraMace] " + bot.getName().getString() + " attacking with mace!");
         
         try {
@@ -467,16 +445,14 @@ public class BotElytraMace {
             bot.swingHand(Hand.MAIN_HAND);
         }
         
-        // Сброс состояния для повтора цикла
+
         resetState(state);
-        state.cooldownTicks = 20; // Кулдаун перед следующим циклом
+        state.cooldownTicks = 20;
         
         return true;
     }
     
-    /**
-     * Сброс состояния
-     */
+    
     private static void resetState(ElytraMaceState state) {
         state.step = 0;
         state.elytraEquipped = false;
@@ -485,16 +461,14 @@ public class BotElytraMace {
         state.waitTicks = 0;
         state.stuckCounter = 0;
         state.lastStep = -1;
-        state.retryCount = 0; // Сбрасываем счетчик попыток
+        state.retryCount = 0;
         state.elytraSlot = -1;
         state.chestplateSlot = -1;
         state.fireworkSlot = -1;
         state.maceSlot = -1;
     }
     
-    /**
-     * Смотреть на сущность
-     */
+    
     private static void lookAtEntity(ServerPlayerEntity bot, Entity target) {
         double dx = target.getX() - bot.getX();
         double dy = target.getY() - bot.getY();
@@ -508,15 +482,13 @@ public class BotElytraMace {
         bot.setPitch(-pitch);
     }
     
-    /**
-     * Выбрать предмет в слоте
-     */
+    
     private static boolean selectItem(ServerPlayerEntity bot, int slot) {
         if (slot < 0 || slot >= 36) return false;
         
         PlayerInventory inventory = bot.getInventory();
         
-        // Если предмет не в хотбаре, перемещаем его
+
         if (slot >= 9) {
             ItemStack item = inventory.getStack(slot);
             ItemStack current = inventory.getStack(8);
@@ -529,17 +501,15 @@ public class BotElytraMace {
         return true;
     }
     
-    /**
-     * Найти элитры в инвентаре или проверить что они уже надеты
-     */
+    
     private static int findElytra(PlayerInventory inventory) {
-        // Сначала проверяем, надеты ли уже элитры (слот 38)
+
         ItemStack equippedChest = inventory.getStack(38);
         if (!equippedChest.isEmpty() && equippedChest.getItem() == Items.ELYTRA) {
-            return 38; // Возвращаем слот брони
+            return 38;
         }
         
-        // Если не надеты, ищем в обычном инвентаре
+
         for (int i = 0; i < 36; i++) {
             ItemStack stack = inventory.getStack(i);
             if (stack.getItem() == Items.ELYTRA) {
@@ -549,23 +519,19 @@ public class BotElytraMace {
         return -1;
     }
     
-    /**
-     * Найти нагрудник в инвентаре
-     */
-    /**
-     * Найти нагрудник в инвентаре или проверить что он уже надет
-     */
+    
+    
     private static int findChestplate(PlayerInventory inventory) {
-        // Сначала проверяем, надет ли уже нагрудник (слот 38)
+
         ItemStack equippedChest = inventory.getStack(38);
         if (!equippedChest.isEmpty()) {
             String itemName = equippedChest.getItem().toString().toLowerCase();
             if (itemName.contains("chestplate")) {
-                return 38; // Возвращаем слот брони
+                return 38;
             }
         }
         
-        // Если не надет, ищем в обычном инвентаре
+
         for (int i = 0; i < 36; i++) {
             ItemStack stack = inventory.getStack(i);
             String itemName = stack.getItem().toString().toLowerCase();
@@ -576,9 +542,7 @@ public class BotElytraMace {
         return -1;
     }
     
-    /**
-     * Найти фейерверки в инвентаре
-     */
+    
     private static int findFireworks(PlayerInventory inventory) {
         for (int i = 0; i < 36; i++) {
             ItemStack stack = inventory.getStack(i);
@@ -589,9 +553,7 @@ public class BotElytraMace {
         return -1;
     }
     
-    /**
-     * Найти булаву в инвентаре
-     */
+    
     private static int findMace(PlayerInventory inventory) {
         for (int i = 0; i < 36; i++) {
             ItemStack stack = inventory.getStack(i);
@@ -602,37 +564,27 @@ public class BotElytraMace {
         return -1;
     }
     
-    /**
-     * Проверить наличие элитр
-     */
+    
     private static boolean hasElytra(PlayerInventory inventory) {
         return findElytra(inventory) >= 0;
     }
     
-    /**
-     * Проверить наличие булавы
-     */
+    
     private static boolean hasMace(PlayerInventory inventory) {
         return findMace(inventory) >= 0;
     }
     
-    /**
-     * Проверить наличие фейерверков
-     */
+    
     private static boolean hasFireworks(PlayerInventory inventory) {
         return findFireworks(inventory) >= 0;
     }
     
-    /**
-     * Проверить наличие нагрудника
-     */
+    
     private static boolean hasChestplate(PlayerInventory inventory) {
         return findChestplate(inventory) >= 0;
     }
     
-    /**
-     * Сброс состояния бота
-     */
+    
     public static void reset(String botName) {
         ElytraMaceState state = states.get(botName);
         if (state != null) {

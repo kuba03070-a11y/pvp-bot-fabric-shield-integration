@@ -1,198 +1,484 @@
 # Events
 
-PVP Bot API provides an event system for tracking bot lifecycle.
-Or use [example mod](https://github.com/Stepan1411/pvpbot-example-mod)
+PVP Bot API provides a comprehensive event system for tracking bot lifecycle and behavior.
 
-## Registering Handlers
+## Event Manager
 
-All handlers are registered through `BotEventManager`:
+All event handlers are registered through the singleton `BotEventManager`:
 
 ```java
 BotEventManager eventManager = PvpBotAPI.getEventManager();
 ```
 
-## Available Events
+## Event Types
 
-### BotSpawnHandler
+### 1. BotSpawnHandler
 
-Called when a bot spawns on the server.
+**Trigger:** When a bot spawns in the world  
+**Cancellable:** No  
+**Frequency:** Once per bot spawn
 
 ```java
 eventManager.registerSpawnHandler(bot -> {
     System.out.println("Bot spawned: " + bot.getName().getString());
     
-    // You can modify inventory, position, etc.
+    // Initialize bot state
     bot.setHealth(20.0f);
+    
+    // Give starting equipment
+    ItemStack sword = new ItemStack(Items.IRON_SWORD);
+    bot.getInventory().setStack(0, sword);
+    
+    // Set custom data
+    bot.getDataTracker().set(/* custom data */);
 });
 ```
 
-**Parameters:**
-- `bot` - ServerPlayerEntity of the bot
+**Use Cases:**
+- Initialize bot equipment
+- Set custom bot properties
+- Log spawn events
+- Send welcome messages
 
-### BotDeathHandler
+### 2. BotDeathHandler
 
-Called when a bot dies.
+**Trigger:** When a bot dies or is removed  
+**Cancellable:** No  
+**Frequency:** Once per bot death
 
 ```java
 eventManager.registerDeathHandler(bot -> {
-    System.out.println("Bot died: " + bot.getName().getString());
+    String botName = bot.getName().getString();
+    System.out.println("Bot died: " + botName);
     
-    // You can save statistics, send messages, etc.
+    // Save death statistics
+    saveDeathStats(botName, bot.getPos());
+    
+    // Drop custom items
+    dropCustomLoot(bot);
+    
+    // Schedule respawn
+    scheduleRespawn(botName, 100); // 5 seconds
 });
 ```
 
-**Parameters:**
-- `bot` - ServerPlayerEntity of the bot
+**Use Cases:**
+- Death statistics tracking
+- Custom loot drops
+- Respawn scheduling
+- Achievement systems
 
-### BotAttackHandler
+### 3. BotAttackHandler
 
-Called when a bot attacks an entity. Can cancel the attack.
+**Trigger:** When a bot is about to attack an entity  
+**Cancellable:** Yes  
+**Frequency:** Every attack attempt
 
 ```java
 eventManager.registerAttackHandler((bot, target) -> {
-    System.out.println(bot.getName().getString() + " attacks " + target.getName().getString());
+    String botName = bot.getName().getString();
+    String targetName = target.getName().getString();
     
-    // Cancel attack on specific entities
+    System.out.println(botName + " attacks " + targetName);
+    
+    // Cancel attack on villagers
     if (target instanceof VillagerEntity) {
-        return true; // true = cancel attack
+        System.out.println("Protecting villager from " + botName);
+        return true; // Cancel attack
     }
     
-    return false; // false = allow attack
+    // Cancel attack on faction members
+    if (target instanceof PlayerEntity player) {
+        if (isSameFaction(botName, player.getName().getString())) {
+            return true; // Cancel friendly fire
+        }
+    }
+    
+    // Apply custom damage modifiers
+    if (target instanceof PlayerEntity) {
+        applyPvpModifiers(bot, target);
+    }
+    
+    return false; // Allow attack
 });
 ```
 
-**Parameters:**
-- `bot` - ServerPlayerEntity of the bot
-- `target` - Entity being attacked
+**Return Values:**
+- `true` - Cancel the attack
+- `false` - Allow the attack
 
-**Return value:**
-- `true` - cancel attack
-- `false` - allow attack
+**Use Cases:**
+- Faction protection
+- Entity-specific rules
+- Custom damage calculations
+- Attack logging
 
-### BotDamageHandler
+### 4. BotDamageHandler
 
-Called when a bot takes damage. Can cancel the damage.
+**Trigger:** When a bot is about to take damage  
+**Cancellable:** Yes  
+**Frequency:** Every damage event
 
 ```java
 eventManager.registerDamageHandler((bot, attacker, damage) -> {
-    System.out.println(bot.getName().getString() + " took " + damage + " damage");
+    String botName = bot.getName().getString();
+    System.out.println(botName + " taking " + damage + " damage");
     
-    // Make bot immune to specific sources
-    if (attacker instanceof CreeperEntity) {
-        return true; // true = cancel damage
+    // Make bot immune to fall damage
+    if (attacker == null) { // Environmental damage
+        DamageSource lastDamage = bot.getRecentDamageSource();
+        if (lastDamage != null && lastDamage.isOf(DamageTypes.FALL)) {
+            return true; // Cancel fall damage
+        }
     }
     
-    return false; // false = allow damage
+    // Reduce damage from specific sources
+    if (attacker instanceof CreeperEntity) {
+        // Apply custom damage reduction
+        float reducedDamage = damage * 0.5f;
+        bot.damage(DamageSource.explosion(attacker), reducedDamage);
+        return true; // Cancel original damage
+    }
+    
+    // God mode for low health
+    if (bot.getHealth() <= 2.0f) {
+        System.out.println("God mode activated for " + botName);
+        return true; // Cancel damage
+    }
+    
+    return false; // Allow damage
 });
 ```
 
 **Parameters:**
-- `bot` - ServerPlayerEntity of the bot
-- `attacker` - Entity that attacked (can be null)
-- `damage` - amount of damage
+- `bot` - The bot taking damage
+- `attacker` - Entity causing damage (can be null for environmental)
+- `damage` - Amount of damage
 
-**Return value:**
-- `true` - cancel damage
-- `false` - allow damage
+**Return Values:**
+- `true` - Cancel the damage
+- `false` - Allow the damage
 
-### BotTickHandler
+**Use Cases:**
+- Damage immunity systems
+- Custom damage calculations
+- Protection mechanics
+- Health-based rules
 
-Called every tick for each bot (20 times per second).
+### 5. BotTickHandler
+
+**Trigger:** Every game tick (20 times per second)  
+**Cancellable:** No  
+**Frequency:** 20 times per second per bot
 
 ```java
 eventManager.registerTickHandler(bot -> {
-    // Executed every tick
+    String botName = bot.getName().getString();
     
-    // Example: heal bot every 100 ticks
-    if (bot.age % 100 == 0 && bot.getHealth() < bot.getMaxHealth()) {
-        bot.setHealth(bot.getHealth() + 1.0f);
+    // Regeneration every 5 seconds (100 ticks)
+    if (bot.age % 100 == 0) {
+        if (bot.getHealth() < bot.getMaxHealth()) {
+            bot.setHealth(Math.min(bot.getMaxHealth(), bot.getHealth() + 1.0f));
+        }
     }
+    
+    // Check for special conditions
+    if (bot.age % 20 == 0) { // Every second
+        checkSpecialConditions(bot);
+    }
+    
+    // Update custom AI
+    updateCustomBehavior(bot);
 });
 ```
 
-**Parameters:**
-- `bot` - ServerPlayerEntity of the bot
+**⚠️ Performance Warning:** This handler is called very frequently (20 times per second per bot). Avoid heavy operations!
 
-**⚠️ Warning:** This handler is called very frequently. Avoid heavy operations!
+**Use Cases:**
+- Custom regeneration
+- Periodic checks
+- Custom AI behaviors
+- Status updates
 
-## Usage Examples
+## Advanced Examples
 
-### Achievement System
-
-```java
-public class BotAchievements {
-    private final Map<String, Integer> kills = new HashMap<>();
-    
-    public void register() {
-        PvpBotAPI.getEventManager().registerAttackHandler((bot, target) -> {
-            if (target.isDead()) {
-                String botName = bot.getName().getString();
-                kills.put(botName, kills.getOrDefault(botName, 0) + 1);
-                
-                int killCount = kills.get(botName);
-                if (killCount == 10) {
-                    bot.sendMessage(Text.literal("Achievement: 10 kills!"));
-                }
-            }
-            return false;
-        });
-    }
-}
-```
-
-### Auto Respawn
+### 1. Bot Statistics System
 
 ```java
-public class AutoRespawn {
+public class BotStatsTracker {
+    private final Map<String, BotStats> stats = new HashMap<>();
+    
     public void register() {
-        PvpBotAPI.getEventManager().registerDeathHandler(bot -> {
-            String botName = bot.getName().getString();
-            MinecraftServer server = bot.getServer();
-            
-            // Respawn after 5 seconds (100 ticks)
-            server.execute(() -> {
-                scheduleRespawn(server, botName, 100);
-            });
+        BotEventManager manager = PvpBotAPI.getEventManager();
+        
+        // Track spawns
+        manager.registerSpawnHandler(bot -> {
+            String name = bot.getName().getString();
+            stats.computeIfAbsent(name, k -> new BotStats()).spawns++;
+        });
+        
+        // Track deaths
+        manager.registerDeathHandler(bot -> {
+            String name = bot.getName().getString();
+            stats.computeIfAbsent(name, k -> new BotStats()).deaths++;
+        });
+        
+        // Track attacks
+        manager.registerAttackHandler((bot, target) -> {
+            String name = bot.getName().getString();
+            stats.computeIfAbsent(name, k -> new BotStats()).attacks++;
+            return false; // Don't cancel
+        });
+        
+        // Track damage taken
+        manager.registerDamageHandler((bot, attacker, damage) -> {
+            String name = bot.getName().getString();
+            BotStats botStats = stats.computeIfAbsent(name, k -> new BotStats());
+            botStats.damageTaken += damage;
+            return false; // Don't cancel
         });
     }
     
-    private void scheduleRespawn(MinecraftServer server, String name, int delay) {
-        if (delay <= 0) {
-            server.getCommandManager().getDispatcher()
-                .execute("pvpbot spawn " + name, server.getCommandSource());
-        } else {
-            server.execute(() -> scheduleRespawn(server, name, delay - 1));
+    public BotStats getStats(String botName) {
+        return stats.getOrDefault(botName, new BotStats());
+    }
+    
+    public static class BotStats {
+        public int spawns = 0;
+        public int deaths = 0;
+        public int attacks = 0;
+        public float damageTaken = 0.0f;
+        
+        public double getKDRatio() {
+            return deaths == 0 ? attacks : (double) attacks / deaths;
         }
     }
 }
 ```
 
-### Damage Protection
+### 2. Faction System Integration
 
 ```java
-public class DamageProtection {
-    private final Set<String> protectedBots = new HashSet<>();
+public class FactionEventHandler {
+    private final Map<String, String> botFactions = new HashMap<>();
     
     public void register() {
-        PvpBotAPI.getEventManager().registerDamageHandler((bot, attacker, damage) -> {
-            String botName = bot.getName().getString();
-            
-            // Protect bots with low HP
-            if (bot.getHealth() < 5.0f) {
-                protectedBots.add(botName);
-                return true; // Cancel damage
+        BotEventManager manager = PvpBotAPI.getEventManager();
+        
+        // Prevent friendly fire
+        manager.registerAttackHandler((bot, target) -> {
+            if (target instanceof PlayerEntity player) {
+                String botFaction = getBotFaction(bot.getName().getString());
+                String targetFaction = getBotFaction(player.getName().getString());
+                
+                if (botFaction != null && botFaction.equals(targetFaction)) {
+                    // Same faction - cancel attack
+                    bot.sendMessage(Text.literal("Cannot attack faction member!"));
+                    return true;
+                }
             }
-            
-            return protectedBots.contains(botName);
+            return false;
         });
+        
+        // Faction-based damage reduction
+        manager.registerDamageHandler((bot, attacker, damage) -> {
+            if (attacker instanceof PlayerEntity player) {
+                String botFaction = getBotFaction(bot.getName().getString());
+                String attackerFaction = getBotFaction(player.getName().getString());
+                
+                if (botFaction != null && botFaction.equals(attackerFaction)) {
+                    // Reduce friendly fire damage by 50%
+                    float reducedDamage = damage * 0.5f;
+                    bot.damage(bot.getRecentDamageSource(), reducedDamage);
+                    return true; // Cancel original damage
+                }
+            }
+            return false;
+        });
+    }
+    
+    private String getBotFaction(String botName) {
+        return botFactions.get(botName);
+    }
+    
+    public void setBotFaction(String botName, String faction) {
+        botFactions.put(botName, faction);
     }
 }
 ```
 
-## Execution Order
+### 3. Auto-Respawn System
 
-Handlers are executed in registration order. If one handler cancels an event (returns `true`), others will still be called.
+```java
+public class AutoRespawnSystem {
+    private final Map<String, Integer> respawnDelays = new HashMap<>();
+    
+    public void register() {
+        PvpBotAPI.getEventManager().registerDeathHandler(bot -> {
+            String botName = bot.getName().getString();
+            MinecraftServer server = bot.getServer();
+            
+            // Get respawn delay (default 5 seconds)
+            int delay = respawnDelays.getOrDefault(botName, 100);
+            
+            // Schedule respawn
+            scheduleRespawn(server, botName, delay);
+            
+            // Announce death
+            server.getPlayerManager().broadcast(
+                Text.literal("§c" + botName + " died! Respawning in " + (delay/20) + " seconds..."),
+                false
+            );
+        });
+    }
+    
+    private void scheduleRespawn(MinecraftServer server, String botName, int delay) {
+        if (delay <= 0) {
+            // Respawn the bot
+            server.getCommandManager().getDispatcher().execute(
+                "pvpbot spawn " + botName,
+                server.getCommandSource()
+            );
+        } else {
+            // Wait one more tick
+            server.execute(() -> scheduleRespawn(server, botName, delay - 1));
+        }
+    }
+    
+    public void setRespawnDelay(String botName, int ticks) {
+        respawnDelays.put(botName, ticks);
+    }
+}
+```
 
-## Error Handling
+### 4. Custom Bot Behavior
 
-All exceptions in handlers are caught and logged. An error in one handler won't affect others.
+```java
+public class CustomBotBehavior {
+    private final Map<String, BotState> botStates = new HashMap<>();
+    
+    public void register() {
+        BotEventManager manager = PvpBotAPI.getEventManager();
+        
+        // Initialize bot state on spawn
+        manager.registerSpawnHandler(bot -> {
+            String name = bot.getName().getString();
+            botStates.put(name, new BotState());
+        });
+        
+        // Update behavior every tick
+        manager.registerTickHandler(bot -> {
+            String name = bot.getName().getString();
+            BotState state = botStates.get(name);
+            if (state == null) return;
+            
+            // Custom behavior based on health
+            if (bot.getHealth() < 6.0f && !state.isRetreating) {
+                startRetreat(bot, state);
+            } else if (bot.getHealth() > 15.0f && state.isRetreating) {
+                stopRetreat(bot, state);
+            }
+            
+            // Update state
+            state.ticksAlive++;
+        });
+        
+        // Clean up on death
+        manager.registerDeathHandler(bot -> {
+            botStates.remove(bot.getName().getString());
+        });
+    }
+    
+    private void startRetreat(ServerPlayerEntity bot, BotState state) {
+        state.isRetreating = true;
+        // Implement retreat logic
+        bot.sendMessage(Text.literal("§eRetreating!"));
+    }
+    
+    private void stopRetreat(ServerPlayerEntity bot, BotState state) {
+        state.isRetreating = false;
+        bot.sendMessage(Text.literal("§aRe-engaging!"));
+    }
+    
+    private static class BotState {
+        boolean isRetreating = false;
+        int ticksAlive = 0;
+    }
+}
+```
+
+## Event Execution
+
+### Order
+Events are executed in the order handlers were registered. Multiple handlers for the same event will all be called.
+
+### Cancellation
+For cancellable events (Attack, Damage), if any handler returns `true`, the event is cancelled. However, all handlers are still called.
+
+### Error Handling
+All exceptions in event handlers are caught and logged. An error in one handler won't prevent other handlers from executing.
+
+```java
+// Example of safe event handling
+manager.registerAttackHandler((bot, target) -> {
+    try {
+        // Your logic here
+        return customAttackLogic(bot, target);
+    } catch (Exception e) {
+        System.err.println("Error in attack handler: " + e.getMessage());
+        return false; // Default behavior on error
+    }
+});
+```
+
+### Performance Considerations
+
+1. **Tick Handlers:** Keep tick handler logic minimal - it runs 20 times per second per bot
+2. **Heavy Operations:** Use async processing for database operations or file I/O
+3. **Caching:** Cache frequently accessed data instead of recalculating
+4. **Conditional Logic:** Use early returns to avoid unnecessary processing
+
+```java
+// Good: Early return for performance
+manager.registerTickHandler(bot -> {
+    // Only process every 20 ticks (1 second)
+    if (bot.age % 20 != 0) return;
+    
+    // Your logic here
+});
+
+// Bad: Heavy operation every tick
+manager.registerTickHandler(bot -> {
+    // This runs 20 times per second!
+    expensiveCalculation(bot);
+});
+```
+
+## Integration with Combat Strategies
+
+Events can be used alongside combat strategies for comprehensive bot control:
+
+```java
+public class IntegratedBotSystem {
+    public void register() {
+        // Register events
+        PvpBotAPI.getEventManager().registerAttackHandler(this::handleAttack);
+        
+        // Register combat strategy
+        CombatStrategyRegistry.getInstance().register(new CustomStrategy());
+    }
+    
+    private boolean handleAttack(ServerPlayerEntity bot, Entity target) {
+        // Event-based attack filtering
+        if (shouldCancelAttack(bot, target)) {
+            return true;
+        }
+        return false;
+    }
+    
+    private class CustomStrategy implements CombatStrategy {
+        // Strategy-based combat logic
+        // ...
+    }
+}
+```

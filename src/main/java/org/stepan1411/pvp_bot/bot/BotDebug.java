@@ -172,9 +172,7 @@ public class BotDebug {
         }
     }
     
-    /**
-     * Show target block as red cube
-     */
+    
     public static void showTargetBlock(ServerPlayerEntity bot, Vec3d targetPos) {
         DebugSettings settings = getSettings(bot.getName().getString());
         if (!settings.navigationInfo) {
@@ -216,9 +214,7 @@ public class BotDebug {
         drawLine(world, redDust, blockX + 1, blockY, blockZ + 1, blockX + 1, blockY + 1, blockZ + 1, step);
     }
     
-    /**
-     * Show target entity hitbox in purple
-     */
+    
     public static void showTargetEntity(ServerPlayerEntity bot, net.minecraft.entity.Entity target) {
         DebugSettings settings = getSettings(bot.getName().getString());
         if (!settings.targetVisualization) {
@@ -256,9 +252,7 @@ public class BotDebug {
         drawLine(world, purpleDust, box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ, step);
     }
     
-    /**
-     * Draw line with dust particles between two points
-     */
+    
     private static void drawLine(ServerWorld world, DustParticleEffect dust, double x1, double y1, double z1, double x2, double y2, double z2, double step) {
         double dx = x2 - x1;
         double dy = y2 - y1;

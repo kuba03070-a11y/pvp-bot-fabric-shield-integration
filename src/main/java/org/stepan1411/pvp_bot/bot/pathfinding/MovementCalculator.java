@@ -24,10 +24,7 @@ public class MovementCalculator {
         this.world = world;
     }
     
-    /**
-     * Get all possible movements from a position
-     * Inspired by Baritone's movement calculation
-     */
+    
     public List<PossibleMovement> getMovements(BlockPos from) {
         List<PossibleMovement> movements = new ArrayList<>();
         

@@ -162,7 +162,7 @@ public class BotSettings {
     public boolean isSpearEnabled() { return spearEnabled; }
     public boolean isCrystalPvpEnabled() { return crystalPvpEnabled; }
     public boolean isAnchorPvpEnabled() { return anchorPvpEnabled; }
-    public boolean isElytraMaceEnabled() { return elytraMaceEnabled; } // Новый геттер
+    public boolean isElytraMaceEnabled() { return elytraMaceEnabled; }
     public double getSpearRange() { return spearRange; }
     public double getSpearChargeRange() { return spearChargeRange; }
     public int getSpearMinChargeTime() { return spearMinChargeTime; }
@@ -205,13 +205,13 @@ public class BotSettings {
     public boolean isSendStats() { return sendStats; }
     public boolean isUseSpecialNames() { return useSpecialNames; }
     
-    // Геттеры для ElytraMace настроек
+
     public int getElytraMaceMaxRetries() { return elytraMaceMaxRetries; }
     public int getElytraMaceMinAltitude() { return elytraMaceMinAltitude; }
     public double getElytraMaceAttackDistance() { return elytraMaceAttackDistance; }
     public int getElytraMaceFireworkCount() { return elytraMaceFireworkCount; }
     
-    // Геттер для goto настроек
+
     public boolean isGotoUseBaritone() { return gotoUseBaritone; }
     public boolean isEscortUseBaritone() { return escortUseBaritone; }
     public boolean isFollowUseBaritone() { return followUseBaritone; }
@@ -296,7 +296,7 @@ public class BotSettings {
     public void setSpearEnabled(boolean value) { this.spearEnabled = value; save(); }
     public void setCrystalPvpEnabled(boolean value) { this.crystalPvpEnabled = value; save(); }
     public void setAnchorPvpEnabled(boolean value) { this.anchorPvpEnabled = value; save(); }
-    public void setElytraMaceEnabled(boolean value) { this.elytraMaceEnabled = value; save(); } // Новый сеттер
+    public void setElytraMaceEnabled(boolean value) { this.elytraMaceEnabled = value; save(); }
     public void setSpearRange(double value) { 
         this.spearRange = Math.max(2.0, Math.min(8.0, value)); 
         save(); 
@@ -381,7 +381,7 @@ public class BotSettings {
     public void setBotsRelogs(boolean value) { this.botsRelogs = value; save(); }
     public void setUseSpecialNames(boolean value) { this.useSpecialNames = value; save(); }
     
-    // Сеттеры для ElytraMace настроек
+
     public void setElytraMaceMaxRetries(int value) { 
         this.elytraMaceMaxRetries = Math.max(1, Math.min(10, value)); 
         save(); 
@@ -399,7 +399,7 @@ public class BotSettings {
         save(); 
     }
     
-    // Сеттер для goto настроек
+
     public void setGotoUseBaritone(boolean value) { 
         this.gotoUseBaritone = value; 
         save(); 

@@ -68,17 +68,12 @@ public class BotBaritone {
         }
     }
     
-    /**
-     * Check if pathfinding is available
-     * Always returns true as we use server-side A* pathfinding
-     */
+    
     public static boolean isBaritoneAvailable(ServerPlayerEntity bot) {
         return true;
     }
     
-    /**
-     * Move bot to a specific position using A* pathfinding
-     */
+    
     public static boolean goToPosition(ServerPlayerEntity bot, Vec3d targetPos) {
         String botName = bot.getName().getString();
         PathState state = pathStates.get(botName);
@@ -275,43 +270,32 @@ public class BotBaritone {
         return false;
     }
     
-    /**
-     * Move bot near an entity using A* pathfinding
-     */
+    
     public static boolean goToEntity(ServerPlayerEntity bot, Entity target, double distance) {
         Vec3d targetPos = new Vec3d(target.getX(), target.getY(), target.getZ());
         return goToPosition(bot, targetPos);
     }
     
-    /**
-     * Move bot away from an entity
-     * Uses direct navigation instead of pathfinding for retreat
-     */
+    
     public static boolean moveAwayFrom(ServerPlayerEntity bot, Entity target, double minDistance) {
 
         return false;
     }
     
-    /**
-     * Stop current pathfinding
-     */
+    
     public static void stop(ServerPlayerEntity bot) {
         String botName = bot.getName().getString();
         pathStates.remove(botName);
     }
     
-    /**
-     * Check if bot is currently pathfinding
-     */
+    
     public static boolean isPathing(ServerPlayerEntity bot) {
         String botName = bot.getName().getString();
         PathState state = pathStates.get(botName);
         return state != null && state.currentPath != null && state.currentIndex < state.currentPath.size();
     }
     
-    /**
-     * Get distance to current goal
-     */
+    
     public static double getDistanceToGoal(ServerPlayerEntity bot) {
         String botName = bot.getName().getString();
         PathState state = pathStates.get(botName);
@@ -322,17 +306,12 @@ public class BotBaritone {
         return botPos.distanceTo(state.targetPos);
     }
     
-    /**
-     * Remove pathfinding state when bot is removed
-     */
+    
     public static void removeBaritone(String botName) {
         pathStates.remove(botName);
     }
     
-    /**
-     * Generate group cache key based on position and target
-     * Rounds position to GROUP_RADIUS grid to group nearby bots
-     */
+    
     private static String generateGroupKey(Vec3d botPos, Vec3d targetPos) {
 
         int gridX = (int) Math.floor(botPos.x / GROUP_RADIUS);
@@ -347,9 +326,7 @@ public class BotBaritone {
         return String.format("%d_%d_%d_to_%d_%d_%d", gridX, gridY, gridZ, targetX, targetY, targetZ);
     }
     
-    /**
-     * Clean old group cache entries
-     */
+    
     private static void cleanOldGroupCache() {
         long currentTime = System.currentTimeMillis();
         groupPathCache.entrySet().removeIf(entry -> 

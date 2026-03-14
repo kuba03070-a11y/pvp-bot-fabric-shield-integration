@@ -389,6 +389,13 @@ public class BotManager {
         BotNavigation.resetIdle(name);
         BotBaritone.removeBaritone(name);
         BotMovement.clearState(name);
+        
+
+        try {
+            org.stepan1411.pvp_bot.api.combat.CombatStrategyRegistry.getInstance().clearCooldowns(name);
+        } catch (Exception e) {
+            System.err.println("[PVP_BOT_API] Error clearing strategy cooldowns: " + e.getMessage());
+        }
 
         String command = "player " + name + " kill";
         var dispatcher = server.getCommandManager().getDispatcher();
@@ -417,6 +424,13 @@ public class BotManager {
             BotBaritone.removeBaritone(name);
             BotMovement.clearState(name);
             
+
+            try {
+                org.stepan1411.pvp_bot.api.combat.CombatStrategyRegistry.getInstance().clearCooldowns(name);
+            } catch (Exception e) {
+                System.err.println("[PVP_BOT_API] Error clearing strategy cooldowns: " + e.getMessage());
+            }
+            
             String command = "player " + name + " kill";
             try {
                 dispatcher.execute(command, source);
@@ -439,10 +453,7 @@ public class BotManager {
         return new HashSet<>(bots);
     }
     
-    /**
-     * РџСЂРѕРІРµСЂСЏРµС‚ Р¶РёРІ Р»Рё Р±РѕС‚ - СѓРґР°Р»СЏРµС‚ РјС‘СЂС‚РІС‹С… РёР· СЃРїРёСЃРєР°
-     * РќР• СѓРґР°Р»СЏРµС‚ Р±РѕС‚РѕРІ РєРѕС‚РѕСЂС‹Рµ РїСЂРѕСЃС‚Рѕ РЅРµ Р·Р°РіСЂСѓР¶РµРЅС‹ (bot == null)
-     */
+    
     public static void cleanupDeadBots(MinecraftServer server) {
         boolean changed = false;
         for (String name : new HashSet<>(bots)) {
@@ -471,6 +482,14 @@ public class BotManager {
                 BotUtils.removeState(name);
                 BotNavigation.resetIdle(name);
                 BotBaritone.removeBaritone(name);
+                
+
+                try {
+                    org.stepan1411.pvp_bot.api.combat.CombatStrategyRegistry.getInstance().clearCooldowns(name);
+                } catch (Exception e) {
+                    System.err.println("[PVP_BOT_API] Error clearing strategy cooldowns: " + e.getMessage());
+                }
+                
                 incrementBotsKilled();
                 changed = true;
                 System.out.println("[PVP_BOT] Removed dead bot: " + name);
@@ -481,10 +500,7 @@ public class BotManager {
         }
     }
     
-    /**
-     * РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµС‚ СЃРїРёСЃРѕРє Р±РѕС‚РѕРІ СЃ СЂРµР°Р»СЊРЅС‹РјРё Carpet Р±РѕС‚Р°РјРё РЅР° СЃРµСЂРІРµСЂРµ
-     * Р”РѕР±Р°РІР»СЏРµС‚ Р±РѕС‚РѕРІ РєРѕС‚РѕСЂС‹Рµ РµСЃС‚СЊ РЅР° СЃРµСЂРІРµСЂРµ РЅРѕ РЅРµС‚ РІ СЃРїРёСЃРєРµ
-     */
+    
     public static void syncBots(MinecraftServer server) {
         boolean changed = false;
 
@@ -513,10 +529,7 @@ public class BotManager {
         }
     }
     
-    /**
-     * РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµС‚ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ Р±РѕС‚Р° РїРѕ РёРјРµРЅРё
-     * Р”РѕР±Р°РІР»СЏРµС‚ Р±РѕС‚Р° РІ СЃРїРёСЃРѕРє РµСЃР»Рё РѕРЅ fake player Рё РµРіРѕ РЅРµС‚ РІ СЃРїРёСЃРєРµ
-     */
+    
     public static boolean syncBot(MinecraftServer server, String name) {
 
         if (bots.contains(name)) {
@@ -548,41 +561,31 @@ public class BotManager {
         return false;
     }
     
-    /**
-     * РЈРІРµР»РёС‡РёРІР°РµС‚ СЃС‡РµС‚С‡РёРє Р·Р°СЃРїР°РІРЅРµРЅРЅС‹С… Р±РѕС‚РѕРІ
-     */
+    
     public static void incrementBotsSpawned() {
         botsSpawnedTotal++;
         saveStats();
 
     }
     
-    /**
-     * РЈРІРµР»РёС‡РёРІР°РµС‚ СЃС‡РµС‚С‡РёРє СѓР±РёС‚С‹С… Р±РѕС‚РѕРІ
-     */
+    
     public static void incrementBotsKilled() {
         botsKilledTotal++;
         saveStats();
 
     }
     
-    /**
-     * Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°СЃРїР°РІРЅРµРЅРЅС‹С… Р±РѕС‚РѕРІ
-     */
+    
     public static int getBotsSpawnedTotal() {
         return botsSpawnedTotal;
     }
     
-    /**
-     * Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СѓР±РёС‚С‹С… Р±РѕС‚РѕРІ
-     */
+    
     public static int getBotsKilledTotal() {
         return botsKilledTotal;
     }
     
-    /**
-     * РЎРѕС…СЂР°РЅРµРЅРёРµ СЃС‚Р°С‚РёСЃС‚РёРєРё
-     */
+    
     private static void saveStats() {
         Path statsPath = WorldConfigHelper.getGlobalConfigDir().resolve("stats.json");
         try (Writer writer = Files.newBufferedWriter(statsPath)) {
@@ -595,9 +598,7 @@ public class BotManager {
         }
     }
     
-    /**
-     * Р—Р°РіСЂСѓР·РєР° СЃС‚Р°С‚РёСЃС‚РёРєРё
-     */
+    
     private static void loadStats() {
         Path statsPath = WorldConfigHelper.getGlobalConfigDir().resolve("stats.json");
         if (!Files.exists(statsPath)) return;

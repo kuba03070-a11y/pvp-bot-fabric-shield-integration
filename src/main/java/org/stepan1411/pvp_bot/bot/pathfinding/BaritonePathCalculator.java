@@ -31,17 +31,12 @@ public class BaritonePathCalculator {
         return AStarPathfinder.findPath(bot, targetPos);
     }
     
-    /**
-     * Check if Baritone classes are available
-     */
+    
     public static boolean isBaritoneAvailable() {
         return baritoneAvailable;
     }
     
-    /**
-     * Try to use Baritone's pathfinding algorithm directly
-     * This is experimental and may not work
-     */
+    
     private static List<Vec3d> tryBaritonePathfinding(ServerPlayerEntity bot, Vec3d targetPos) {
 
 
