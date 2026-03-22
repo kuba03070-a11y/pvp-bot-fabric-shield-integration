@@ -2,17 +2,23 @@
   "projectPath": ":",
   "classpaths": {
     "test": [
-      "C:\\Users\\Stepan1411\\IdeaProjects\\pvp-bot-fabric\\build\\classes\\java\\test",
-      "C:\\Users\\Stepan1411\\IdeaProjects\\pvp-bot-fabric\\build\\resources\\test"
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\build\\classes\\java\\test",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\build\\resources\\test",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\out\\test\\classes",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\out\\test\\resources"
     ],
     "client": [
-      "C:\\Users\\Stepan1411\\IdeaProjects\\pvp-bot-fabric\\build\\classes\\java\\client",
-      "C:\\Users\\Stepan1411\\IdeaProjects\\pvp-bot-fabric\\build\\resources\\client"
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\build\\classes\\java\\client",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\build\\resources\\client",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\out\\client\\classes",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\out\\client\\resources"
     ],
     "main": [
-      "C:\\Users\\Stepan1411\\IdeaProjects\\pvp-bot-fabric\\build\\classes\\java\\main",
-      "C:\\Users\\Stepan1411\\IdeaProjects\\pvp-bot-fabric\\build\\resources\\main",
-      "C:\\Users\\Stepan1411\\IdeaProjects\\pvp-bot-fabric\\build\\devlibs\\PVP_bot-0.0.14-dev.jar"
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\build\\classes\\java\\main",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\build\\resources\\main",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\build\\devlibs\\PVP_bot-0.0.14-dev.jar",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\out\\production\\classes",
+      "C:\\Users\\oem\\desktop\\pvp-bot-fabric-main\\out\\production\\resources"
     ]
   }
 }

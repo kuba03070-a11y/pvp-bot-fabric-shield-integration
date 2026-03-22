@@ -599,14 +599,86 @@ public class BotCombat {
     }
     
     
+    /**
+     * Returns true if the target (player) has a mace anywhere in their inventory
+     * and is currently in the air (not on the ground).
+     * Used for passive offhand-shield raising, independent of the shieldMace setting.
+     */
+    private static boolean targetHasMaceAndIsAirborne(Entity target) {
+        if (!(target instanceof PlayerEntity player)) return false;
+        if (player.isOnGround()) return false;
+
+        // Fast path: check held items first
+        if (player.getMainHandStack().getItem() == Items.MACE) return true;
+        if (player.getOffHandStack().getItem() == Items.MACE) return true;
+
+        // Check full inventory
+        var inv = player.getInventory();
+        for (int i = 0; i < inv.size(); i++) {
+            if (inv.getStack(i).getItem() == Items.MACE) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Passive shield raise: if the bot already has a shield in its offhand (slot 40)
+     * and the target has a mace anywhere in their inventory while airborne, hold up the shield.
+     * This runs on every tick and is always active regardless of the shieldMace setting.
+     */
+    private static void handlePassiveOffhandShieldRaise(ServerPlayerEntity bot, Entity target,
+                                                         CombatState combatState,
+                                                         net.minecraft.server.MinecraftServer server) {
+        // Only act if the bot already has a shield equipped in the offhand slot
+        boolean shieldInOffhand = bot.getOffHandStack().getItem() == Items.SHIELD;
+        if (!shieldInOffhand) return;
+
+        boolean threatActive = targetHasMaceAndIsAirborne(target);
+
+        if (threatActive) {
+            if (!combatState.isUsingShield) {
+                try {
+                    server.getCommandManager().getDispatcher().execute(
+                        "player " + bot.getName().getString() + " use continuous",
+                        server.getCommandSource()
+                    );
+                    System.out.println("[PASSIVE_SHIELD] " + bot.getName().getString()
+                        + " raising offhand shield — " + target.getName().getString()
+                        + " has mace and is airborne");
+                } catch (Exception e) {
+                    bot.setCurrentHand(Hand.OFF_HAND);
+                }
+                combatState.isUsingShield = true;
+            }
+        } else {
+            // Lower the shield once the threat is gone, but only if the mace-defense
+            // cooldown system isn't already managing it
+            if (combatState.isUsingShield && !combatState.isMaceDefending) {
+                try {
+                    server.getCommandManager().getDispatcher().execute(
+                        "player " + bot.getName().getString() + " stop",
+                        server.getCommandSource()
+                    );
+                    System.out.println("[PASSIVE_SHIELD] " + bot.getName().getString()
+                        + " lowering offhand shield — threat gone");
+                } catch (Exception e) {
+                    bot.clearActiveItem();
+                }
+                combatState.isUsingShield = false;
+            }
+        }
+    }
+
     private static void handleMaceDefense(ServerPlayerEntity bot, Entity target, BotSettings settings, net.minecraft.server.MinecraftServer server) {
+        // Always run passive offhand shield raise, independent of the shieldMace setting
+        var combatState = getState(bot.getName().getString());
+        handlePassiveOffhandShieldRaise(bot, target, combatState, server);
+
         if (!settings.isShieldMace()) {
             return;
         }
         
         var inventory = bot.getInventory();
         var utilsState = BotUtils.getState(bot.getName().getString());
-        var combatState = getState(bot.getName().getString());
         
 
         if (combatState.maceDefenseCooldown > 0) {
