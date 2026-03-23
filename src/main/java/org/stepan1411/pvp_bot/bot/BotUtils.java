@@ -41,6 +41,8 @@ public class BotUtils {
         public int cobwebEscapeSlot = -1;
         public net.minecraft.util.math.BlockPos waterPosition = null;
         public boolean needsToCollectWater = false;
+        /** Cooldown after using a chorus fruit to avoid spamming. */
+        public int chorusFruitCooldown = 0;
     }
     
     public static BotState getState(String botName) {
@@ -63,6 +65,7 @@ public class BotUtils {
         if (state.potionCooldown > 0) state.potionCooldown--;
         if (state.buffPotionCooldown > 0) state.buffPotionCooldown--;
         if (state.mendingCooldown > 0) state.mendingCooldown--;
+        if (state.chorusFruitCooldown > 0) state.chorusFruitCooldown--;
         
 
         if (settings.isAutoMendEnabled()) {
@@ -1042,6 +1045,27 @@ public class BotUtils {
             return;
         }
         
+        // Fastest escape: chorus fruit teleports the bot out instantly with no side effects.
+        // Try it first, before water bucket or ender pearl.
+        int chorusSlot = findChorusFruit(bot.getInventory());
+        if (chorusSlot >= 0 && state.chorusFruitCooldown <= 0) {
+            var inv = bot.getInventory();
+            if (chorusSlot >= 9) {
+                ItemStack chorus = inv.getStack(chorusSlot);
+                ItemStack current = inv.getStack(8);
+                inv.setStack(chorusSlot, current);
+                inv.setStack(8, chorus);
+                chorusSlot = 8;
+            }
+            org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inv, chorusSlot);
+            bot.setCurrentHand(net.minecraft.util.Hand.MAIN_HAND);
+            executeCommand(server, bot, "player " + bot.getName().getString() + " use once");
+            state.chorusFruitCooldown = 40; // ~2 s before trying again
+            state.isInCobweb = false;
+            System.out.println("[COBWEB] Using chorus fruit to escape!");
+            return;
+        }
+
         int waterSlot = findWaterBucket(bot.getInventory());
         int pearlSlot = findEnderPearl(bot.getInventory());
         
@@ -1125,6 +1149,16 @@ public class BotUtils {
         }
         return -1;
     }
+
+    private static int findChorusFruit(net.minecraft.entity.player.PlayerInventory inventory) {
+        for (int i = 0; i < 36; i++) {
+            ItemStack stack = inventory.getStack(i);
+            if (stack.getItem() == Items.CHORUS_FRUIT) {
+                return i;
+            }
+        }
+        return -1;
+    }
     
     
     public static boolean canAttack(ServerPlayerEntity bot, BotState state) {
@@ -1137,9 +1171,10 @@ public class BotUtils {
         if (state.isInCobweb) {
             int waterSlot = findWaterBucket(bot.getInventory());
             int pearlSlot = findEnderPearl(bot.getInventory());
+            int chorusSlot = findChorusFruit(bot.getInventory());
             
-            if (waterSlot < 0 && pearlSlot < 0) {
-                System.out.println("[COBWEB] " + bot.getName().getString() + " in cobweb but no water/pearl - can attack");
+            if (waterSlot < 0 && pearlSlot < 0 && chorusSlot < 0) {
+                System.out.println("[COBWEB] " + bot.getName().getString() + " in cobweb but no escape items - can attack");
                 return true;
             }
             System.out.println("[COBWEB] " + bot.getName().getString() + " in cobweb with escape items - cannot attack");

@@ -58,6 +58,11 @@ public class BotCombat {
 
         public boolean isMaceDefending = false;
         public int maceDefenseCooldown = 0;
+
+        /** Cooldown between any ender pearl throws (both flee and chase). ~20 s. */
+        public int enderPearlCooldown = 0;
+        /** Per-bot random delay before the next pearl throw fires, to desync group pearls. */
+        public int enderPearlDelay = 0;
         
         public enum WeaponMode {
             MELEE,
@@ -109,6 +114,12 @@ public class BotCombat {
         }
         if (state.crystalCooldown > 0) {
             state.crystalCooldown--;
+        }
+        if (state.enderPearlCooldown > 0) {
+            state.enderPearlCooldown--;
+        }
+        if (state.enderPearlDelay > 0) {
+            state.enderPearlDelay--;
         }
         
 
@@ -208,6 +219,14 @@ public class BotCombat {
 
         if (shouldRetreat) {
             state.isRetreating = true;
+
+            // Try to enderpearl away from the target while retreating.
+            // Only do this when the target is close enough to pose immediate danger.
+            if (state.enderPearlCooldown <= 0 && distance < 16.0) {
+                if (tryEnderPearlAway(bot, target, state, server)) {
+                    return;
+                }
+            }
             
 
             if (settings.isAutoShieldEnabled()) {
@@ -244,6 +263,11 @@ public class BotCombat {
             return;
         }
         state.isRetreating = false;
+
+        // Chase with ender pearl if the target is running away and out of melee range.
+        if (state.enderPearlCooldown <= 0) {
+            tryEnderPearlChase(bot, target, state, distance, settings, server);
+        }
         
 
         if (utilsState.isMending) {
@@ -267,12 +291,23 @@ public class BotCombat {
 
 
         selectWeaponMode(bot, state, distance, settings);
-        
 
+        // Run mace defense (including passive offhand shield raise) first, before movement
+        // and look-at decisions, so state.isUsingShield is up to date for the rest of the tick.
+        handleMaceDefense(bot, target, settings, server);
 
+        // Suppress sprinting while holding the shield — must happen every tick because
+        // moveToward() unconditionally calls setSprinting(true) inside BotNavigation.
+        if (state.isUsingShield) {
+            bot.setSprinting(false);
+        }
+
+        // Always face the target when actively shielding against a mace threat,
+        // regardless of Baritone distance limits.
+        boolean isPassiveShielding = state.isUsingShield && !state.isMaceDefending;
         boolean shouldLookAt = !utilsState.isThrowingPotion;
-        
-        if (shouldLookAt && settings.isUseBaritone()) {
+
+        if (shouldLookAt && settings.isUseBaritone() && !isPassiveShielding) {
 
             var mainHandStack = bot.getMainHandStack();
             boolean usingMace = mainHandStack.getItem().toString().toLowerCase().contains("mace");
@@ -302,13 +337,12 @@ public class BotCombat {
         };
         
         if (distance > maxRange) {
-
-            BotNavigation.moveToward(bot, target, settings.getMoveSpeed());
+            // Only chase if not actively shielding; a bot holding a shield shouldn't sprint.
+            if (!state.isUsingShield) {
+                BotNavigation.moveToward(bot, target, settings.getMoveSpeed());
+            }
             return;
         }
-        
-
-        handleMaceDefense(bot, target, settings, server);
         
 
         switch (state.currentMode) {
@@ -635,6 +669,12 @@ public class BotCombat {
         boolean threatActive = targetHasMaceAndIsAirborne(target);
 
         if (threatActive) {
+            // Always face the threat while shielding
+            BotNavigation.lookAt(bot, target);
+            // Stop sprinting — you can't use a shield while sprinting in vanilla,
+            // and it looks wrong for the bot to barrel forward with the shield up
+            bot.setSprinting(false);
+
             if (!combatState.isUsingShield) {
                 try {
                     server.getCommandManager().getDispatcher().execute(
@@ -650,20 +690,20 @@ public class BotCombat {
                 combatState.isUsingShield = true;
             }
         } else {
-            // Lower the shield once the threat is gone, but only if the mace-defense
-            // cooldown system isn't already managing it
+            // No threat — make sure the shield is lowered. Re-issue stop every tick
+            // while isUsingShield is true so "use continuous" doesn't keep it stuck up.
             if (combatState.isUsingShield && !combatState.isMaceDefending) {
                 try {
                     server.getCommandManager().getDispatcher().execute(
                         "player " + bot.getName().getString() + " stop",
                         server.getCommandSource()
                     );
-                    System.out.println("[PASSIVE_SHIELD] " + bot.getName().getString()
-                        + " lowering offhand shield — threat gone");
                 } catch (Exception e) {
                     bot.clearActiveItem();
                 }
                 combatState.isUsingShield = false;
+                System.out.println("[PASSIVE_SHIELD] " + bot.getName().getString()
+                    + " lowering offhand shield — target landed or no longer has mace");
             }
         }
     }
@@ -823,7 +863,18 @@ public class BotCombat {
         }
         
 
+        // While passively shielding against an airborne mace threat, hold ground,
+        // stop sprinting, and keep facing the target — don't chase or retreat.
+        if (state.isUsingShield && !state.isMaceDefending) {
+            bot.setSprinting(false);
+            bot.forwardSpeed = 0;
+            bot.sidewaysSpeed = 0;
+            BotNavigation.lookAt(bot, target);
+            return;
+        }
+
         if (distance > meleeRange) {
+            // Use smart A* pathfinding to navigate around walls and obstacles
             BotNavigation.moveToward(bot, target, settings.getMoveSpeed());
         } else if (distance < 1.5) {
 
@@ -1459,6 +1510,158 @@ public class BotCombat {
     }
     
     
+    // -------------------------------------------------------------------------
+    // Ender pearl utilities
+    // -------------------------------------------------------------------------
+
+    /**
+     * Finds an ender pearl in the bot's inventory (hotbar first for speed).
+     * Returns the slot index, or -1 if none found.
+     */
+    private static int findEnderPearlSlot(net.minecraft.entity.player.PlayerInventory inventory) {
+        for (int i = 0; i < 9; i++) {
+            if (inventory.getStack(i).getItem() == Items.ENDER_PEARL) return i;
+        }
+        for (int i = 9; i < 36; i++) {
+            if (inventory.getStack(i).getItem() == Items.ENDER_PEARL) return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Throws an ender pearl in the given yaw/pitch direction.
+     * Moves the pearl to hotbar slot 8 if needed, selects it, aims, and throws.
+     * Returns true if the throw was initiated.
+     */
+    private static boolean throwEnderPearl(ServerPlayerEntity bot, float yaw, float pitch,
+                                            CombatState state, net.minecraft.server.MinecraftServer server) {
+        var inventory = bot.getInventory();
+        int pearlSlot = findEnderPearlSlot(inventory);
+        if (pearlSlot < 0) return false;
+
+        // If a per-bot delay is active, skip this tick (returns true so callers know
+        // a throw is "in progress" and don't fall through to other logic).
+        if (state.enderPearlDelay > 0) return true;
+
+        // Move to hotbar if needed
+        if (pearlSlot >= 9) {
+            ItemStack pearl = inventory.getStack(pearlSlot);
+            ItemStack current = inventory.getStack(8);
+            inventory.setStack(pearlSlot, current);
+            inventory.setStack(8, pearl);
+            pearlSlot = 8;
+        }
+
+        org.stepan1411.pvp_bot.utils.InventoryHelper.setSelectedSlot(inventory, pearlSlot);
+        bot.setYaw(yaw);
+        bot.setPitch(pitch);
+        bot.setHeadYaw(yaw);
+
+        try {
+            server.getCommandManager().getDispatcher().execute(
+                "player " + bot.getName().getString() + " use once",
+                server.getCommandSource()
+            );
+        } catch (Exception e) {
+            return false;
+        }
+
+        // ~20 second cooldown (400 ticks) between pearl throws
+        state.enderPearlCooldown = 400;
+        return true;
+    }
+
+    /**
+     * Attempts to throw an ender pearl AWAY from the target (flee).
+     * Aims directly opposite the target direction at a slight upward angle so the
+     * pearl clears the ground and lands several blocks behind the bot.
+     */
+    private static boolean tryEnderPearlAway(ServerPlayerEntity bot, Entity target,
+                                              CombatState state,
+                                              net.minecraft.server.MinecraftServer server) {
+        var inventory = bot.getInventory();
+        if (findEnderPearlSlot(inventory) < 0) return false;
+
+        Vec3d botPos = bot.getEyePos();
+        Vec3d targetPos = target.getEyePos();
+
+        double dx = botPos.x - targetPos.x;
+        double dz = botPos.z - targetPos.z;
+        double horizontalDist = Math.sqrt(dx * dx + dz * dz);
+        if (horizontalDist < 0.001) return false;
+
+        // Direction pointing AWAY from target
+        float yaw = (float)(Math.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0f;
+        // Slight upward angle so pearl travels far enough to be useful
+        float pitch = -25.0f;
+
+        // Assign a random per-bot delay (0–40 ticks) so bots in a group don't all pearl simultaneously.
+        // 20% chance of not pearling at all this trigger (delay set to cooldown value to skip).
+        if (state.enderPearlDelay <= 0) {
+            if (Math.random() < 0.20) {
+                // Skip this pearl entirely — bot hesitates
+                state.enderPearlCooldown = 100; // short cooldown before reconsidering
+                return false;
+            }
+            state.enderPearlDelay = (int)(Math.random() * 41); // 0–40 ticks random delay
+        }
+        System.out.println("[PEARL_FLEE] " + bot.getName().getString()
+            + " enderpearling away from " + target.getName().getString()
+            + " (delay=" + state.enderPearlDelay + ")");
+        return throwEnderPearl(bot, yaw, pitch, state, server);
+    }
+
+    /**
+     * Attempts to throw an ender pearl TOWARD a fleeing target (chase).
+     * Triggers when the target is sprinting away, is farther than melee range,
+     * and no recent pearl has been thrown.
+     */
+    private static void tryEnderPearlChase(ServerPlayerEntity bot, Entity target,
+                                            CombatState state, double distance,
+                                            BotSettings settings,
+                                            net.minecraft.server.MinecraftServer server) {
+        // Only chase-pearl when target is clearly running away and out of easy reach
+        double chaseThreshold = settings.getMeleeRange() + 6.0;
+        if (distance <= chaseThreshold) return;
+
+        // Check if the target is sprinting away from the bot
+        if (!(target instanceof net.minecraft.entity.player.PlayerEntity player)) return;
+        if (!player.isSprinting()) return;
+
+        // Make sure they're actually moving AWAY (dot product of their velocity with
+        // the bot→target vector should be positive)
+        Vec3d toTarget = new Vec3d(target.getX() - bot.getX(), target.getY() - bot.getY(), target.getZ() - bot.getZ()).normalize();
+        Vec3d targetVel = target.getVelocity();
+        double dot = toTarget.x * targetVel.x + toTarget.z * targetVel.z;
+        if (dot <= 0.05) return; // target is not moving away
+
+        // Aim slightly above the target for arc compensation
+        Vec3d botEye = bot.getEyePos();
+        Vec3d targetEye = target.getEyePos();
+        double dx = targetEye.x - botEye.x;
+        double dy = targetEye.y - botEye.y;
+        double dz = targetEye.z - botEye.z;
+        double horizontal = Math.sqrt(dx * dx + dz * dz);
+
+        float yaw   = (float)(Math.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0f;
+        // Aim slightly higher to account for projectile arc over distance
+        float pitch = (float)-(Math.atan2(dy + horizontal * 0.15, horizontal) * (180.0 / Math.PI));
+
+        // Assign a random per-bot delay (0–60 ticks) so bots don't all pearl at once.
+        // 25% chance of skipping the chase pearl entirely.
+        if (state.enderPearlDelay <= 0) {
+            if (Math.random() < 0.25) {
+                state.enderPearlCooldown = 80;
+                return;
+            }
+            state.enderPearlDelay = (int)(Math.random() * 61); // 0–60 ticks random delay
+        }
+        System.out.println("[PEARL_CHASE] " + bot.getName().getString()
+            + " enderpearling toward fleeing " + target.getName().getString()
+            + " (dist=" + String.format("%.1f", distance) + ", delay=" + state.enderPearlDelay + ")");
+        throwEnderPearl(bot, yaw, pitch, state, server);
+    }
+
     private static int findAxe(net.minecraft.entity.player.PlayerInventory inventory) {
         int bestSlot = -1;
         double bestDamage = 0;

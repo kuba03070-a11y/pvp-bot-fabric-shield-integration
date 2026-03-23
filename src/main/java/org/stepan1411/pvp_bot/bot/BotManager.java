@@ -386,6 +386,8 @@ public class BotManager {
 
         BotCombat.removeState(name);
         BotUtils.removeState(name);
+        BotNavigation.removeState(name);
+        BotNavigation.removeState(name);
         BotNavigation.resetIdle(name);
         BotBaritone.removeBaritone(name);
         BotMovement.clearState(name);
